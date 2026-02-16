@@ -1,0 +1,96 @@
+# Demon Lord's Beloved Commander - Project Overview
+**Version:** v1.2 – Added Core UI Scaling & Layout Rules  
+**Last Updated:** [Insert Current Date]  
+**Engine:** Godot 4.6+  
+**VN Dialogue System:** Dialogic (Godot plugin – timelines, portraits, choices, variables, signals for battle/CG triggers)  
+**Card System:** Custom singleton card battler (Commander-inspired); use open-source Godot Card Game Framework (e.g., db0's or similar from Asset Library)  
+**Native Resolution:** 1920×1080 (Full HD base for design & asset creation)  
+**Resolution Scalability:** Any screen size/aspect ratio supported via Godot Stretch + responsive Control layout.  
+**Stretch Settings (Project Settings > Display > Window > Stretch):**  
+- **Mode:** canvas_items (scales UI elements smoothly with viewport; recommended for VN + card UI)  
+- **Aspect:** expand (fills screen proportionally; content stretches to fit any aspect without black bars — test alternatives like 'keep' for letterboxing if distortion concerns arise)  
+- **Scale Mode:** disabled (or integer for crispness if pixel-art elements appear; test both)  
+**Target Platforms:** PC first (Windows/Linux/Mac); mobile potential later  
+
+## Core Concept & Gameplay Hybrid
+- **Visual Novel (~60-70%)**: Branching story, dates, politics, explicit 18+ scenes via Dialogic timelines/signals.  
+- **Card Duels (~30-40%)**: 100-card singleton battles; waifu as commander; win/loss advances story.  
+- **Integration**: Dialogic variables track loyalty/Corruption → modify card abilities/unlocks.  
+
+## Setting & World
+[Unchanged from previous – dark fantasy factions, possession premise, etc.]
+
+## Protagonist & Possession Mechanic
+[Unchanged]
+
+## Main Waifus (Legendary Commanders)
+[Unchanged – including Miri as the blue-haired childhood best friend yandere]
+
+## Core UI Scaling & Layout Rules (Resolution-Independent Design)
+All UI (VN scenes, Dialogic overlays, card battlefield, menus, HUD) built to scale cleanly from 720p to 4K/ultrawide/mobile without manual tweaks. Design at 1920×1080, but never rely on absolute pixels for positioning/sizing.
+
+1. **Root Layout**:
+   - Every scene starts with a **Control** node as root (or CanvasLayer for overlays).
+   - Set root Control anchors to **Full Rect** (preset: top-left 0,0 → bottom-right 1,1) so it fills the viewport.
+
+2. **Primary Positioning Tool: Anchors & Presets**:
+   - Use **Anchor Presets** (toolbar dropdown) for quick setup: Full Rect, Center, Top Wide, Bottom Right, etc.
+   - Manual anchors for fine control (e.g., anchor_left/right/top/bottom as 0.0–1.0 fractions of parent).
+   - Combine with **Margins/Offsets** for pixel-perfect padding (e.g., 20px margin on edges).
+
+3. **Containers for Responsive Layout**:
+   - Always prefer **containers** over manual positioning:
+     - **VBoxContainer** / **HBoxContainer**: Stack elements vertically/horizontally; auto-resizes children.
+     - **MarginContainer**: Adds automatic padding/spacing around content.
+     - **CenterContainer**: Centers child perfectly (great for portraits, titles, CGs).
+     - **GridContainer**: For card hands/grids or inventory.
+     - **PanelContainer** / **ScrollContainer**: For framed text boxes, logs, or scrollable areas.
+   - Nest containers deeply (e.g., MarginContainer → VBoxContainer → elements) for complex but adaptive layouts.
+
+4. **Spacer Nodes**:
+   - Use empty **Control** nodes as flexible spacers:
+     - Set **Size Flags** → Horizontal/Vertical: Fill + Expand (to grow and push siblings apart).
+     - Or set fixed **Minimum Size** (e.g., 100×0 for horizontal gap).
+     - Example: In a HBoxContainer for dialogue choices → Spacer (expand) → Button → Spacer (expand) centers them.
+
+5. **Size Flags & Minimum Sizes**:
+   - On children: **Size Flags** → Fill + Expand to grow proportionally.
+   - Use **Minimum Size** on key elements (e.g., cards min 200×300) to prevent squishing on small screens.
+   - Dialogic portraits/bubbles: Wrap in MarginContainer or Anchor to parent for responsive placement.
+
+6. **Dialogic-Specific Best Practices**:
+   - Dialogic scenes use Control-based nodes → nest Dialogic root in a full-rect Control with anchors.
+   - Portraits/Nameplates: Use Anchor Presets (e.g., Bottom Wide) or containers to pin to edges.
+   - Text bubbles: MarginContainer around RichTextLabel for padding that scales.
+
+7. **Card Battlefield Specifics**:
+   - Battlefield root: Control full rect.
+   - Zones (hand, battlefield, command): Use HBox/VBox/GridContainer with anchors (e.g., hand at bottom: anchor_bottom=1, anchor_top=0.7).
+   - Cards: TextureRect/Control children with min_size; size flags Fill+Expand for hand spreading.
+   - Scale card art with mipmaps enabled; use NinePatchRect for scalable frames.
+
+8. **Testing & Edge Cases**:
+   - Test resolutions: 1280×720, 2560×1440, 3840×2160, ultrawide (3440×1440), 16:9/21:9/4:3.
+   - Window resize + fullscreen toggle.
+   - Avoid hard-coded positions; debug with ProjectSettings overrides.
+
+This approach ensures the game looks polished on any device without distortion or cutoff.
+
+## Tech Stack & Best Practices
+[Unchanged, but now reinforced by UI rules above]
+
+## Tone & Content Warnings
+[Unchanged]
+
+## Endings & Scope
+[Unchanged]
+
+[Changelog]  
+- v1.0: Initial  
+- v1.1: Dialogic/tech polish  
+- v1.2: Core UI Scaling & Layout Rules section added  
+
+[To Expand]  
+- Sample scene tree diagrams (VN, battle, menu)  
+- Dialogic integration examples  
+- Card framework setup notes

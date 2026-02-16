@@ -1,0 +1,110 @@
+# Demon Lord's Beloved Commander - Card Game Mechanics
+**Version:** v1.10 – Balanced Elements (Exactly 2 Waifus per Element), Full Rules Compiled  
+**Format Inspiration:** Slay the Spire (full refresh mana, no lands) + Commander singleton hybrid.  
+**Deck Size:** 60 cards + commander (waifu) in command zone (snappy 5-10 min duels).  
+**Goal:** Reduce opponent's life from 40 to 0 (or mill deckout).
+
+## Core Rules
+- **Singleton:** No duplicates except "Echo Crystals" (neutral mana ramp, max 4).
+- **Starting Life:** 40 each.
+- **Starting Hand:** 7 cards.
+- **Mulligan:** Once only — shuffle deck, draw 6 cards (no further).
+- **Hand Size Limit:** Max 13 cards.
+  - **Draw Resolution:** Draw 1 card. Immediately discard down to 13 if exceeded (player chooses which).
+  - **End Step Cleanup:** Discard to 13 if >13 from effects (player chooses).
+- **Draw:** 1 card/turn (skipped if at 13 pre-draw).
+- **Commander Rules:** Waifu in command zone. Recast tax: +2 mana per prior cast (cast to battlefield like creature).
+- **Sorcery-Speed Only:** All cards/abilities activate in *your* main phase (no interrupts/counters/stacks).
+- **Turn Structure:** 
+  1. **Untap** (untap tapped cards/abilities).
+  2. **Upkeep** (full mana refresh; cascade triggers; bleed check).
+  3. **Draw** (1 card; discard excess immediately if >13).
+  4. **Main Phase** (play cards from hand, activate abilities/commander).
+  5. **Combat** (targeted blocking).
+  6. **End Step** (cleanup; final discard to 13).
+
+## Mana System (Full Refresh – Explosive Starts)
+- **Starts at 3 Max:** Every turn refreshes to full current max (UI: orbs fill instantly).
+- **Upkeep Refresh:** current_mana = max_mana.
+- **Max 10:** Upgrades add +1 permanent (story romance, duel wins, cards).
+- **Echo Crystals** (0-cost basics, max 4 in deck): Play → +1 mana this turn only (extra burst). **Cascade:** +0 (neutral, no change).
+
+## Elemental Cascade Meter (Single Chaining Momentum – Mana Cost Adds)
+**Each player has one cascade meter:** Single value (0-10) + current Element (Fire/Holy/Arcane/Nature/Shadow/None). Builds by chaining; switches less punishing via mana cost scaling.
+
+- **Elements (5 Total – Balanced Coverage):**
+  | Element  | Vibe                  | Primary Waifu     | Secondary Waifu   |
+  |----------|-----------------------|-------------------|-------------------|
+  | **Fire** | Damage/sabotage      | Miri             | Chesy            |
+  | **Holy** | Heal/removal         | Priestess        | Lyra             |
+  | **Arcane**| Draw/control        | Lyra             | Succubus         |
+  | **Nature**| Ramp/creatures      | Chesy            | Miri             |
+  | **Shadow**| Sac/drain           | Succubus         | Priestess        |
+
+- **Building Cascade (On Play Any Non-Neutral Card):**
+  - If card's element **matches current** → cascade += **card's mana cost** (cap at 10).
+  - Else → **reset cascade = card's mana cost**, set current = card's element (cheap switches lose less).
+  - **0-cost Cascade Cards:** +0 to cascade (payoff only).
+  - Neutral (Echo Crystals): No cascade change.
+  - **UI:** Single ProgressBar (0-10) + glowing element icon/color.
+
+- **Upkeep Triggers** (Auto-resolve flavor bonuses, tied to current element):
+  - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = current/2 (rounded down)."
+  - **Bleed:** If cascade <3, cascade -=1 (min 0; anti-turtle).
+
+- **Spending (Main Phase Only):**
+  - **Cascade Cards** (0-mana payoffs): Consume X from *current element* → effect + optional *convert* (e.g., "Consume 5 Fire: Deal 10 damage. Convert: Set current=Holy, cascade=3").
+  - **Commander Abilities:** E.g., "Spend 4 cascade: Destroy target creature + gain life equal to spent."
+
+- **Alignment Bonus:** 70%+ deck cards in waifu's prim/sec → +[mana cost / 2] extra cascade on matching chains; -1 recast tax.
+
+## Combat Phase (Targeted Blocking – Punch Through)
+1. **Declare Attackers:** Choose/tap your creatures to attack.
+2. **Opponent Declares Blockers:** Assign their creatures to block specific attackers (1:1 or multi if allowed).
+3. **Damage:** Simultaneous. Blocked = attacker vs. blocker(s). Unblocked = hits opponent life.
+   - **No Summon Sickness:** All freshly played creatures can attack same turn.
+   - Cascade buffs: E.g., "+1/+1 per 2 cascade points" on themed creatures.
+
+- **Keywords** (Simple icons):
+  | Keyword      | Effect                                      |
+  |--------------|---------------------------------------------|
+  | **Ethereal** | Can only be blocked by creatures with Ethereal. |
+  | **Breakthrough** | Excess damage after lethal to blocker(s) hits life. |
+  | **Endure**   | Attacks *and* blocks same turn.             |
+  | **Ward X**   | Opponent pays X mana to target it (stackable). |
+
+## Waifu Playstyles (Dual Elements – Commander Examples)
+1. **Priestess (Holy/Shadow):** Chain Holy bombs → convert Shadow drain.
+2. **Lyra (Arcane/Holy):** Arcane value chains → Holy protection.
+3. **Succubus (Shadow/Arcane):** Shadow sacs → Arcane tricks/disruption.
+4. **Chesy (Nature/Fire):** Nature ramp → Fire overwhelm.
+5. **Miri (Fire/Nature):** Fire sabotage → Nature possessive growth/walls.
+
+## Example Duel: 2 Full Turns (Player: Miri Fire/Nature vs. Opponent: Priestess Holy/Shadow)
+**Setup:** Both 40 life, 3 mana max, 7-card hands, cascade=0/None.  
+*Player Hand Excerpt:* Echo Crystal (0m neutral +1 mana), Flame Dart (1m Fire), Ward Prayer (1m Holy), Big Flame (3m Fire 3/3), Purge Flame (0m: Consume 5 Fire → Deal 10, convert to Nature=3), Blazing Guard (2m Fire 2/2 Endure), Thorn Grasp (1m Nature: Ward all creatures you control).
+
+**Player Turn 1** (Chains Fire; hand ends 4):
+1. **Untap:** —
+2. **Upkeep:** Refresh 3/3. Cascade=0.
+3. **Draw:** Big Flame (hand=5 post-draw, no discard).
+4. **Main:** Echo (0m +1→4/3, neutral). Flame Dart (1m → cascade=1 Fire). Blazing Guard (2m → matches, +2 → cascade=3 Fire). **Cascade: 3/10 Fire**.
+5. **Combat:** Blazing Guard attacks unblocked (2 dmg [Priestess 38 life]).
+6. **End:** Cascade=3 Fire carries.
+
+**Opponent Turn 1** (Chains Holy: 1m (+1 Holy=1), 2m (+2=3 Holy), 1m Shadow switch → reset=1 Shadow; attacks 2 dmg [Player 38]).
+
+**Player Turn 2:**
+1. **Untap:** Guard.
+2. **Upkeep:** Refresh 3/3. Bleed skip (3>=3).
+3. **Draw:** Thorn Grasp (hand=5).
+4. **Main:** Big Flame (3m → matches Fire, +3 → cascade=6 Fire). Thorn Grasp (1m Nature → **switch**: reset=1 Nature). Purge Flame? (Not 5 – save). Mana left 0/3.
+5. **Combat:** Guard + Big Flame attack (5 total dmg [Priestess 33 life]).
+6. **End:** Cascade=1 Nature carries. (Cheap 1m switch lost only 6→1.)
+
+## Godot Implementation Notes
+- **Cascade UI:** Single ProgressBar + element icon (smooth fill on +mana_cost; flash reset on switch).
+- **Hand/Combat/Discard:** HBox modals, drag-drop.
+- **Mulligan:** Pre-duel popup.
+
+[To Expand: 10-card starter decks per waifu, Possession integration, full card templates]
