@@ -1,33 +1,33 @@
 # Demon Lord's Beloved Commander - Card Game Mechanics
-**Version:** v1.11 – Added Core Target Modes & Standardized Effect Types, ModifyCascade supports negative values  
+**Version:** v1.13 – Integrated Balance Tweaks: Echo max3/Tap Persistent, Upkeep Scry3 if Cascade=0, Life35 Start, Hand Temp15 on Draw, Upkeep Converts Cost 1 Mana  
 **Format Inspiration:** Slay the Spire (full refresh mana, no lands) + Commander singleton hybrid.  
-**Deck Size:** 60 cards + commander (waifu) in command zone (snappy 5-10 min duels).  
-**Goal:** Reduce opponent's life from 40 to 0 (or mill deckout).
+**Deck Size:** 60 cards total (commander separate in command zone; editable in deckbuilder menu when not in combat). Snappy 5-10 min duels.  
+**Deckbuilding:** Up to **2 copies** of any card (Echo Crystals max 3 total in deck for ramp reliability).  
+**Goal:** Reduce opponent's life from **35** to 0 (or mill deckout).
 
 ## Core Rules
-- **Singleton:** No duplicates except "Echo Crystals" (neutral mana ramp, max 4).
-- **Starting Life:** 40 each.
+- **Starting Life:** **35** each.
 - **Starting Hand:** 7 cards.
 - **Mulligan:** Once only — shuffle deck, draw 6 cards (no further).
 - **Hand Size Limit:** Max 13 cards.
-  - **Draw Resolution:** Draw 1 card. Immediately discard down to 13 if exceeded (player chooses which).
+  - **Draw Resolution (Turn Draw or Effects):** Temporarily allow up to **15 cards**. Immediately discard down to 13 if exceeded (player chooses which).
   - **End Step Cleanup:** Discard to 13 if >13 from effects (player chooses).
-- **Draw:** 1 card/turn (skipped if at 13 pre-draw).
-- **Commander Rules:** Waifu in command zone. Recast tax: +2 mana per prior cast (cast to battlefield like creature).
+- **Draw:** 1 card/turn (**skipped if at 13 pre-draw**).
+- **Commander Rules:** Waifu in command zone (1-of singleton). Recast tax: +2 mana per prior cast (cast to battlefield like creature).
 - **Sorcery-Speed Only:** All cards/abilities activate in *your* main phase (no interrupts/counters/stacks).
 - **Turn Structure:** 
   1. **Untap** (untap tapped cards/abilities).
-  2. **Upkeep** (full mana refresh; cascade triggers; bleed check).
-  3. **Draw** (1 card; discard excess immediately if >13).
+  2. **Upkeep** (full mana refresh; cascade triggers **+ Scry3 if cascade=0**).
+  3. **Draw** (1 card; temp to 15, discard excess to 13 immediately if needed).
   4. **Main Phase** (play cards from hand, activate abilities/commander).
   5. **Combat** (targeted blocking).
   6. **End Step** (cleanup; final discard to 13).
 
-## Mana System (Full Refresh – Explosive Starts)
-- **Starts at 3 Max:** Every turn refreshes to full current max (UI: orbs fill instantly).
+## Mana System (Full Refresh – Explosive Starts, Starts at 3)
+- **Every Turn:** Refreshes to full current max_mana (UI: orbs fill instantly). **Starts at 3 max.**
 - **Upkeep Refresh:** current_mana = max_mana.
-- **Max 10:** Upgrades add +1 permanent (story romance, duel wins, cards).
-- **Echo Crystals** (0-cost basics, max 4 in deck): Play → +1 mana this turn only (extra burst). **Cascade:** +0 (neutral, no change).
+- **Max 10:** Ramp cards/upgrades add +1 permanent (e.g., story romance, duel wins).
+- **Echo Crystals** (0-cost artifacts, **max 3 in deck**): Play to battlefield (neutral, no cascade change). **Tap: Add 1 mana** (usable in main phase). **Untaps in upkeep.** **When played: If cascade >=3, permanently +1 max_mana.**
 
 ## Core Target Modes (used by most effects)
 | Target Mode              | Description                                      | Common Effects That Use It                     |
@@ -61,9 +61,9 @@
   - Neutral (Echo Crystals): No cascade change.
   - **UI:** Single ProgressBar (0-10) + glowing element icon/color.
 
-- **Upkeep Triggers** (Auto-resolve flavor bonuses, tied to current element):
-  - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = current/2 (rounded down)."
-  - **Bleed:** If cascade <3, cascade -=1 (min 0; anti-turtle).
+- **Upkeep Triggers** (Auto-resolve flavor bonuses, tied to current element; **converts cost 1 mana**):
+  - **New:** If cascade = 0, **Scry 3** (look at top 3 cards of library; put them back on top in any order).
+  - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = current/2 (rounded down)" **(costs 1 mana)**.
 
 - **Spending (Main Phase Only):**
   - **Cascade Cards** (0-mana payoffs): Consume X from *current element* → effect + optional *convert* (e.g., "Consume 5 Fire: Deal 10 damage. Convert: Set current=Holy, cascade=3").
@@ -71,9 +71,9 @@
 
 - **Alignment Bonus:** 70%+ deck cards in waifu's prim/sec → +[mana cost / 2] extra cascade on matching chains; -1 recast tax.
 
-## Standardized Effect Types
-These are the reusable building blocks for card effects in Godot (parameterized, composable).
+- **Bleed (Card Effect Only):** Cards apply **Bleed counters** to opponent (e.g., via new effect). **End Step:** Opponent loses 1 cascade per Bleed counter (min 0). Counters fade after 1 full turn or via removal effects.
 
+## Standardized Effect Types
 | Effect Name              | Parameters                              | Description / Examples                                                                 | Common Target Modes                  |
 |--------------------------|-----------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------|
 | **DrawCards**            | amount: int                             | Draw X cards.                                                                          | Player (self)                        |
@@ -95,8 +95,11 @@ These are the reusable building blocks for card effects in Godot (parameterized,
 | **ReturnToHand**         | —                                       | Return target to hand.                                                                 | Creature (any)                       |
 | **Equip**                | —                                       | Attach this equipment to target creature.                                              | Creature (yours)                     |
 | **AuraAttach**           | —                                       | Attach this aura to target (ongoing effect).                                           | Creature (yours / any)               |
-| **ConvertCascade**       | new_element: enum, amount: int          | Switch element and set cascade to amount.                                              | — (affects meter)                    |
-| **ModifyCascade**        | amount: int (positive or negative)      | Add or subtract from current cascade (cap 0–10). Negative used for penalty effects.    | — (affects meter)                    |
+| **ConvertCascade**       | new_element: enum, amount: int, retain_pct: int (0-100, optional) | Switch element and set cascade to amount (or retain % of current if pct>0).            | — (affects meter)                    |
+| **ModifyCascade**        | amount: int (positive or negative)      | Add or subtract from current cascade (cap 0–10). Negative for penalties.               | — (affects meter)                    |
+| **ApplyBleed**           | amount: int                             | Add X Bleed counters to opponent (end step: -1 cascade per counter).                   | Player (opponent)                    |
+| **RemoveBleed**          | amount: int                             | Remove X Bleed counters.                                                               | Player (opponent)                    |
+| **Scry**                 | amount: int                             | Look at top X cards of library; put them back on top in any order.                     | Player (self)                        |
 
 ## Combat Phase (Targeted Blocking – Punch Through)
 [Unchanged from previous version]
@@ -113,11 +116,15 @@ These are the reusable building blocks for card effects in Godot (parameterized,
 [Unchanged]
 
 ## Example Duel: 2 Full Turns (Player: Miri Fire/Nature vs. Opponent: Priestess Holy/Shadow)
-[Unchanged from previous version]
+[Updated: Starting life 35; Turn1 Upkeep Scry3 example if cascade=0; Echo tap for mana; no auto-bleed.]
 
 ## Godot Implementation Notes
-- **Cascade UI:** Single ProgressBar + element icon (smooth fill on +mana_cost; flash reset on switch).
-- **Hand/Combat/Discard:** HBox modals, drag-drop.
-- **Mulligan:** Pre-duel popup.
+- **Echo Crystals:** Persistent on battlefield (Track tapped state; tap signal adds mana).
+- **Upkeep Scry:** UI popup: Drag/reorder top3 cards preview.
+- **Hand Temp15:** Draw func: hand.size() <=15 before adding; post-draw discard UI if >13.
+- **Decks:** Validate max3 Echo on save.
+- **Cascade/Bleed UI:** ProgressBar + Bleed icon/counter.
+- **Deck Editor:** Non-combat scene (drag-drop, waifu filter, 2-copy/3-Echo limit).
 
-[To Expand: 10-card starter decks per waifu, Possession integration, full card templates]
+
+**Balance Notes:** Echo persistent/tap curbs overramp (needs chains for max_mana); Scry3 digs early plays; Life35 accelerates; temp15 smooths draws; upkeep converts (1 mana) strategic.  
