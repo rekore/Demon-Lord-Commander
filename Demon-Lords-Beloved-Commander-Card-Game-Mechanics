@@ -1,9 +1,24 @@
 # Demon Lord's Beloved Commander - Card Game Mechanics
-**Version:** v1.13 – Integrated Balance Tweaks: Echo max3/Tap Persistent, Upkeep Scry3 if Cascade=0, Life35 Start, Hand Temp15 on Draw, Upkeep Converts Cost 1 Mana  
+**Version:** v1.17 – **Restructured Waifu Elements**  
 **Format Inspiration:** Slay the Spire (full refresh mana, no lands) + Commander singleton hybrid.  
 **Deck Size:** 60 cards total (commander separate in command zone; editable in deckbuilder menu when not in combat). Snappy 5-10 min duels.  
-**Deckbuilding:** Up to **2 copies** of any card (Echo Crystals max 3 total in deck for ramp reliability).  
+**Deckbuilding:** Up to **2 copies** of any non-commander card (Echo Crystals max 3 total in deck for ramp reliability). **Subject to rarity limits below.**  
 **Goal:** Reduce opponent's life from **35** to 0 (or mill deckout).
+
+## Rarity System
+Cards (except Commanders) have 4 rarity tiers, affecting pack drops (post-duel rewards/VN unlocks), collection, and deckbuilding constraints. Higher rarities = stronger/more synergistic effects.
+
+| Rarity    | Symbol | Pack Drop Chance | Deck Limit (total cards of this rarity) | Notes |
+|-----------|--------|------------------|-----------------------------------------|-------|
+| **Common**   | C     | 70%             | Unlimited (up to 2 copies each)        | Basic staples, fillers. |
+| **Uncommon** | U     | 20%             | Unlimited (up to 2 copies each)        | Solid upgrades, utility. |
+| **Rare**     | R     | 8%              | Max **12** total                        | Synergy enablers, bombs. |
+| **Mythic**   | M     | 2%              | Max **6** total                         | Cascade finishers, wincons. |
+
+- **Commander Tier (Legendary - L):** Waifu Commanders only (1-of singleton, command zone). **Unlocked via story/relationship progression.** **Can have unique abilities not listed in standardized effects** (e.g., passives like "Opponents can't gain life", custom upkeep triggers, or non-standard interactions like "Exile and play from exile").
+- **Waifu-Tagged Cards:** Can be any rarity (U/R/M most common); treated as matching rarity for limits.
+- **Deck Validation:** Editor enforces limits (e.g., can't add 13th Rare). AI decks respect limits (no Mythics for balance).
+- **Packs:** 5 cards/pack. Dupe protection: Upgrade copies to dust/shards for crafting higher rarities.
 
 ## Core Rules
 - **Starting Life:** **35** each.
@@ -13,11 +28,11 @@
   - **Draw Resolution (Turn Draw or Effects):** Temporarily allow up to **15 cards**. Immediately discard down to 13 if exceeded (player chooses which).
   - **End Step Cleanup:** Discard to 13 if >13 from effects (player chooses).
 - **Draw:** 1 card/turn (**skipped if at 13 pre-draw**).
-- **Commander Rules:** Waifu in command zone (1-of singleton). Recast tax: +2 mana per prior cast (cast to battlefield like creature).
+- **Commander Rules:** Waifu in command zone (1-of singleton Legendary). Recast tax: +2 mana per prior cast (cast to battlefield like creature). **Unique abilities possible.**
 - **Sorcery-Speed Only:** All cards/abilities activate in *your* main phase (no interrupts/counters/stacks).
 - **Turn Structure:** 
   1. **Untap** (untap tapped cards/abilities).
-  2. **Upkeep** (full mana refresh; cascade triggers **+ Scry3 if cascade=0**).
+  2. **Upkeep** (full mana refresh; cascade triggers).
   3. **Draw** (1 card; temp to 15, discard excess to 13 immediately if needed).
   4. **Main Phase** (play cards from hand, activate abilities/commander).
   5. **Combat** (targeted blocking).
@@ -27,7 +42,7 @@
 - **Every Turn:** Refreshes to full current max_mana (UI: orbs fill instantly). **Starts at 3 max.**
 - **Upkeep Refresh:** current_mana = max_mana.
 - **Max 10:** Ramp cards/upgrades add +1 permanent (e.g., story romance, duel wins).
-- **Echo Crystals** (0-cost artifacts, **max 3 in deck**): Play to battlefield (neutral, no cascade change). **Tap: Add 1 mana** (usable in main phase). **Untaps in upkeep.** **When played: If cascade >=3, permanently +1 max_mana.**
+- **Echo Crystals** (0-cost artifacts, **max 3 in deck**, Common): Play to battlefield (neutral, no cascade change). **Tap: Add 1 mana** (usable in main phase). **Untaps in upkeep.** **When played: If cascade >=3, permanently +1 max_mana.**
 
 ## Core Target Modes (used by most effects)
 | Target Mode              | Description                                      | Common Effects That Use It                     |
@@ -48,11 +63,11 @@
 - **Elements (5 Total – Balanced Coverage):**
   | Element  | Vibe                  | Primary Waifu     | Secondary Waifu   |
   |----------|-----------------------|-------------------|-------------------|
-  | **Fire** | Damage/sabotage      | Miri             | Chesy            |
-  | **Holy** | Heal/removal         | Priestess        | Lyra             |
-  | **Arcane**| Draw/control        | Lyra             | Succubus         |
-  | **Nature**| Ramp/creatures      | Chesy            | Miri             |
-  | **Shadow**| Sac/drain           | Succubus         | Priestess        |
+  | **Fire** | Damage/sabotage      | **Nyxella**      | **Miri**         |
+  | **Holy** | Heal/removal         | **Clara**        | **Lyra**         |
+  | **Arcane**| Draw/control        | **Lyra**         | **Chesy**        |
+  | **Nature**| Ramp/creatures      | **Chesy**        | **Nyxella**      |
+  | **Shadow**| Sac/drain           | **Miri**         | **Clara**        |
 
 - **Building Cascade (On Play Any Non-Neutral Card):**
   - If card's element **matches current** → cascade += **card's mana cost** (cap at 10).
@@ -62,12 +77,11 @@
   - **UI:** Single ProgressBar (0-10) + glowing element icon/color.
 
 - **Upkeep Triggers** (Auto-resolve flavor bonuses, tied to current element; **converts cost 1 mana**):
-  - **New:** If cascade = 0, **Scry 3** (look at top 3 cards of library; put them back on top in any order).
   - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = current/2 (rounded down)" **(costs 1 mana)**.
 
 - **Spending (Main Phase Only):**
   - **Cascade Cards** (0-mana payoffs): Consume X from *current element* → effect + optional *convert* (e.g., "Consume 5 Fire: Deal 10 damage. Convert: Set current=Holy, cascade=3").
-  - **Commander Abilities:** E.g., "Spend 4 cascade: Destroy target creature + gain life equal to spent."
+  - **Commander Abilities:** E.g., "Spend 4 cascade: Destroy target creature + gain life equal to spent." (Unique abilities exempt from standardized list.)
 
 - **Alignment Bonus:** 70%+ deck cards in waifu's prim/sec → +[mana cost / 2] extra cascade on matching chains; -1 recast tax.
 
@@ -76,55 +90,97 @@
 ## Standardized Effect Types
 | Effect Name              | Parameters                              | Description / Examples                                                                 | Common Target Modes                  |
 |--------------------------|-----------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------|
-| **DrawCards**            | amount: int                             | Draw X cards.                                                                          | Player (self)                        |
-| **DealDamage**           | amount: int                             | Deal X damage to target.                                                               | Creature (any), Player (opponent), All creatures |
-| **DirectDamagePlayer**   | amount: int                             | Deal X damage directly to opponent (bypasses blockers).                                | Player (opponent)                    |
-| **GainLife**             | amount: int                             | Gain X life.                                                                           | Player (self)                        |
-| **LoseLife**             | amount: int                             | Lose X life.                                                                           | Player (opponent)                    |
-| **DestroyTarget**        | —                                       | Destroy target creature (can have conditions).                                         | Creature (any/opponent)              |
-| **DestroyAll**           | filter: enum (all, power≤X, etc.)       | Destroy all creatures matching filter.                                                 | All creatures / All opponent         |
-| **BuffPowerToughness**   | power_bonus: int, toughness_bonus: int, duration: int | +X/+Y to target(s).                                                                    | Creature (yours / all yours)         |
-| **ReducePowerToughness** | power_penalty: int, toughness_penalty: int, duration | -X/-Y debuff.                                                                          | Creature (opponent / all opponent)   |
-| **AddKeyword**           | keyword: enum, duration                 | Grant Ethereal / Breakthrough / Endure / Ward X.                                       | Creature (yours / target)            |
-| **RemoveKeyword**        | keyword: enum                           | Remove a keyword from target.                                                          | Creature (opponent)                  |
-| **GainWard**             | amount: int                             | Target gains Ward X.                                                                   | Creature (yours)                     |
-| **ForceDiscard**         | amount: int, random: bool               | Opponent discards X cards (random or chosen).                                          | Player (opponent)                    |
-| **Mill**                 | amount: int                             | Opponent mills X cards.                                                                | Player (opponent)                    |
-| **CreateToken**          | token_type: string, amount: int         | Create X token creatures.                                                              | — (creates on your side)             |
-| **Sacrifice**            | amount: int                             | Sacrifice X of your creatures.                                                         | Creature (yours)                     |
-| **ReturnToHand**         | —                                       | Return target to hand.                                                                 | Creature (any)                       |
-| **Equip**                | —                                       | Attach this equipment to target creature.                                              | Creature (yours)                     |
-| **AuraAttach**           | —                                       | Attach this aura to target (ongoing effect).                                           | Creature (yours / any)               |
-| **ConvertCascade**       | new_element: enum, amount: int, retain_pct: int (0-100, optional) | Switch element and set cascade to amount (or retain % of current if pct>0).            | — (affects meter)                    |
-| **ModifyCascade**        | amount: int (positive or negative)      | Add or subtract from current cascade (cap 0–10). Negative for penalties.               | — (affects meter)                    |
-| **ApplyBleed**           | amount: int                             | Add X Bleed counters to opponent (end step: -1 cascade per counter).                   | Player (opponent)                    |
-| **RemoveBleed**          | amount: int                             | Remove X Bleed counters.                                                               | Player (opponent)                    |
-| **Scry**                 | amount: int                             | Look at top X cards of library; put them back on top in any order.                     | Player (self)                        |
+| DealDamage               | amount (int)                            | Deal X damage. Kills on lethal.                                                        | Creature (any), Player (opponent)    |
+| DirectDamagePlayer       | amount (int)                            | Direct to player life.                                                                 | Player (opponent)                    |
+| GainLife                 | amount (int)                            | +X life.                                                                                | Player (self)                        |
+| DrawCards                | amount (int)                            | Draw X cards (respect hand limit).                                                      | Player (self)                        |
+| Mill                     | amount (int)                            | Exile top X cards from opponent's library.                                              | Player (opponent)                    |
+| DestroyTarget            | -                                       | Destroy target creature.                                                                | Creature (any/opponent)              |
+| BuffPowerToughness       | power (int), toughness (int), duration  | +X/+Y (EOT or permanent).                                                              | Creature (yours/any), All            |
+| AddKeyword               | keyword (string), duration              | Add keyword (e.g., "Trample", "Ward 2").                                                | Creature (yours), All your           |
+| CreateToken              | power/toughness (int,int), count (int), subtype | Summon X P/T tokens (e.g., "2/2 Elf").                                                  | Player (self)                        |
+| AddCascade               | amount (int)                            | +X cascade (no element switch).                                                         | Player (self)                        |
+| ForceDiscard             | amount (int)                            | Opponent discards X cards (random or choose).                                           | Player (opponent)                    |
+| Equip                    | -                                       | Attach to target creature yours (for equipment).                                        | Creature (yours)                     |
+| AuraAttach               | -                                       | Attach to target (for auras).                                                           | Creature (yours/any)                 |
+| DestroyAll               | -                                       | Destroy all matching creatures.                                                         | All opponent, All creatures          |
+| ReducePowerToughness     | power (int), toughness (int)            | -X/-Y (EOT).                                                                            | Creature (opponent), All opponent    |
 
 ## Combat Phase (Targeted Blocking – Punch Through)
-[Unchanged from previous version]
+- **Declare Attackers:** Choose any # of your untapped creatures to attack (tap them).
+- **Declare Blockers:** Opponent chooses any # of their untapped creatures to block (1:1 assignment; you choose if multiple declare on one).
+- **Combat Damage:** 
+  - Unblocked attackers → direct to opponent life.
+  - Blocked: Attacker vs. blocker power/toughness (lethal destroys immediately).
+- **Multi-block:** Optional; assign 1 damage per blocker sequentially.
+- **Trample:** Excess damage after lethal to blocker spills to player.
+- **No First Strike/Double Strike:** Simultaneous.
 
 - **Keywords** (Simple icons):
   | Keyword      | Effect                                      |
   |--------------|---------------------------------------------|
-  | **Ethereal** | Can only be blocked by creatures with Ethereal. |
-  | **Breakthrough** | Excess damage after lethal to blocker(s) hits life. |
-  | **Endure**   | Attacks *and* blocks same turn.             |
-  | **Ward X**   | Opponent pays X mana to target it (stackable). |
+  | **Trample**  | Excess damage after blocker dies → player.  |
+  | **Endure**   | Can't be destroyed by damage < power.       |
+  | **Ward X**   | Attacker pays X or can't target.            |
+  | **Haste**    | Attacks untapped turn played.               |
+  | **Vigilance**| Attacks without tapping.                    |
+
+## Waifu-Tagged Cards (Player-Exclusive Power)
+Cards can have a **waifu** tag (format: "waifu:[WaifuName]", e.g., "waifu:Miri"). These emphasize player identity and provide asymmetric tools enemies can't access. **Rarities: U/R/M**.
+
+- **Deckbuilding Rule:** **Only includable if tag matches your Commander** (e.g., "waifu:Miri" only for Miri deck). Filtered by Commander—mismatched hidden/unaddable. Up to 2 copies (rarity limits apply).
+- **AI Enemies:** **Never include waifu-tagged cards**—AI decks from generic pool only. Players gain power edge.
+- **Synergies (Auto-trigger on play/ETB):**
+  | Trigger Condition                  | Bonus Effect                                      |
+  |------------------------------------|---------------------------------------------------|
+  | Matches your current cascade element | +1 cascade (stacks with build rules)             |
+  | Control 3+ waifu-tagged cards (battlefield) | Your Commander's recast tax -1 (min 0, stacks)   |
+  | 70%+ alignment deck + 5+ waifu-tagged cards | +1 starting max_mana (permanent)                 |
+
+**Example Waifu-Tagged Cards** (with rarity):
+
+| Card Name              | Waifu      | Rarity | Element | Mana Cost | Effect Example |
+|------------------------|------------|--------|---------|-----------|----------------|
+| **Miri's Eternal Flame** | Miri      | R     | Fire   | 4        | Deal 8 damage to any target. |
+| **Chesy's Wild Growth** | Chesy     | R     | Nature | 3        | Create 2 2/2 Plant tokens. Tokens gain Endure. |
+| **Clara's Divine Embrace** | Clara   | M     | Holy   | 3        | Gain 10 life. All yours: +1/+1 until EOT. |
+| **Lyra's Arcane Surge** | Lyra      | U     | Arcane | 2        | Draw 3. Discard 1. |
+| **Nyxella's Shadow Bind** | Nyxella | M     | Shadow | 4      | -3/-3 all opponent creatures. Sac a creature: Destroy instead. |
+
+**Implementation:** 8-12 waifu-tagged cards per Waifu (mix rarities). Unlock via VN relationship values.
 
 ## Waifu Playstyles (Dual Elements – Commander Examples)
-[Unchanged]
+| Waifu          | Primary/Secondary | Style Snapshot                          | Key Strengths                     |
+|----------------|-------------------|-----------------------------------------|-----------------------------------|
+| **Miri (L)**  | Shadow/Fire      | Sac/drain aggro + burn sabotage         | Drain value, direct damage        |
+| **Chesy (L)** | Nature/Arcane    | Ramp go-wide + card advantage           | Tokens, mana/draw acceleration    |
+| **Clara (L)** | Holy/Shadow      | Sustain grind, lifedrain removal        | Lifegain, board wipes/drain       |
+| **Lyra (L)**  | Arcane/Holy      | Card advantage, tempo control/heal      | Draw, counters/disrupts           |
+| **Nyxella (L)** | Fire/Nature    | Damage swarm + creature overwhelm       | Burn pings, fast boards/ramp      |
 
-## Example Duel: 2 Full Turns (Player: Miri Fire/Nature vs. Opponent: Priestess Holy/Shadow)
-[Updated: Starting life 35; Turn1 Upkeep Scry3 example if cascade=0; Echo tap for mana; no auto-bleed.]
+## Example Duel: 2 Full Turns (Player: Miri Shadow/Fire vs. Opponent: Clara Holy/Shadow)
+**Turn 1 Player (Miri L, start cascade=None, mana=3):**
+- Upkeep: Refresh mana=3.
+- Draw: 1 card (hand=8).
+- Main: Play Echo Crystal C (0 mana). Play 3-mana Fire spell U → cascade=3 Fire.
+- Combat: No creatures.
+- End: Hand cleanup if needed.
+
+**Turn 1 Opponent (Clara L):** Similar: Builds Holy cascade=4.
+
+**Turn 2 Player:**
+- Upkeep: Refresh mana=3.
+- Draw: 1.
+- Main: Play waifu:Miri Fire R (matches → cascade=6 Fire). Spend 4 Fire: Deal 8 (Clara=27). Play Echo (cascade>=3: +1 max_mana=4).
+- Combat: Attack with tokens if any.
+- End.
 
 ## Godot Implementation Notes
-- **Echo Crystals:** Persistent on battlefield (Track tapped state; tap signal adds mana).
-- **Upkeep Scry:** UI popup: Drag/reorder top3 cards preview.
-- **Hand Temp15:** Draw func: hand.size() <=15 before adding; post-draw discard UI if >13.
-- **Decks:** Validate max3 Echo on save.
-- **Cascade/Bleed UI:** ProgressBar + Bleed icon/counter.
-- **Deck Editor:** Non-combat scene (drag-drop, waifu filter, 2-copy/3-Echo limit).
+- **Rarity:** Card.rarity enum/string. Deck editor: `sum(rarity_counts[R]) <=12`. Packs: Weighted random.
+- **Commanders:** `card.is_commander` flag; parse unique abilities via script nodes/custom dicts.
+- **Waifu Tags:** `if "waifu:" + commander in card.tags`. AI: `!tags.has("waifu:") && rarity <= R`.
+- **Cascade/UI:** Waifu cards glow; rarity icons in hand/deck view.
+- **Elements:** Updated pri/sec mappings; alignment checks use new table.
+- **Balance:** Rarity gates power; Commanders ~20% power from uniques.
 
-
-**Balance Notes:** Echo persistent/tap curbs overramp (needs chains for max_mana); Scry3 digs early plays; Life35 accelerates; temp15 smooths draws; upkeep converts (1 mana) strategic.  
+**Balance Notes:** Rarity gates power; test pack economy, AI vs. max Mythic decks. New elements balance dual coverage.

@@ -1,6 +1,6 @@
 # Demon Lord's Beloved Commander - Project Overview
 **Version:** v1.2 – Added Core UI Scaling & Layout Rules  
-**Last Updated:** [Insert Current Date]  
+**Last Updated:** February 20, 2026  
 **Engine:** Godot 4.6+  
 **VN Dialogue System:** Dialogic (Godot plugin – timelines, portraits, choices, variables, signals for battle/CG triggers)  
 **Card System:** Custom singleton card battler (Commander-inspired); use open-source Godot Card Game Framework (e.g., db0's or similar from Asset Library)  
@@ -18,13 +18,21 @@
 - **Integration**: Dialogic variables track loyalty/Corruption → modify card abilities/unlocks.  
 
 ## Setting & World
-[Unchanged from previous – dark fantasy factions, possession premise, etc.]
+In a dark fantasy realm torn by eternal conflict, factions vie for dominance amid ancient ruins and shadowed realms. The world features warring groups including the Human Empire, the Demon Hordes, Elven Enclaves, Dwarven Forges, and nomadic Beast Tribes. The premise revolves around possession: the once-mighty Demon Lord, defeated in a cataclysmic battle, has been reduced to a weakened orb of essence. This orb possesses the protagonist, granting dark powers but risking corruption. The story unfolds in a mix of political intrigue, conquest, and personal relationships, where the Demon Lord's influence subtly twists alliances and fates. Key locations include the protagonist's hometown (a fortified human outpost), demonic ruins, tribal wildlands, and imperial courts. Magic elements are tied to elemental affinities (fire, shadow, etc.), influencing card battles and story branches.
 
 ## Protagonist & Possession Mechanic
-[Unchanged]
+The protagonist is a young human male, a battle-hardened adventurer or soldier returning from a failed expedition. Exhausted and near death, he discovers the Demon Lord's orb, which possesses him to survive. The possession mechanic involves a corruption meter (0-100) that increases through choices, dialogues, and battle outcomes. Low corruption maintains the protagonist's humanity, leading to heroic paths; high corruption amplifies demonic traits, unlocking powerful but risky abilities. The Demon Lord appears as a voice/orb in early acts, weak and friendly to build trust, offering guidance during recovery. Over time, it influences decisions via Dialogic choices, with variables tracking loyalty to waifus and overall alignment. Possession effects include modified stats in cards (e.g., +damage at high corruption) and story triggers for explicit scenes or betrayals.
 
 ## Main Waifus (Legendary Commanders)
-[Unchanged – including Miri as the blue-haired childhood best friend yandere]
+These are recruitable allies who serve as commanders in card battles, each with unique abilities, story arcs, and romance paths. They are legendary figures from various factions, drawn to the protagonist via the Demon Lord's aura. Loyalty/Corruption levels affect their card buffs and endings.
+
+- **Miri**: Blue-haired childhood best friend yandere. A human mage with obsessive loyalty; her arc involves jealousy-driven plots and possessive romance. Commander ability: Enhances control cards (e.g., +draw on possess effects). Appearance: Slender, piercing blue eyes, magical robes.
+
+- **Nyxelle**: Eccentric shadow sorceress from the demonic realms. Loyal but oblivious to social norms, she conflates the Demon Lord and protagonist as one entity. Her personality is whimsical yet devoted, with minimal emotional growth—focusing on chaotic magic and playful seduction. Arc: Starts as a mysterious ally, deepens through corruption-influenced dates. Commander ability: Boosts cascade mechanics (elemental chain reactions). Appearance: Long dark hair, pale skin, ornate black attire with runes; curvaceous and alluring.
+
+- **Chesy**: Tribal warrior princess from the Beast Tribes. Inspired by fierce guardians like Ghislane, but less mature—impulsive, honorable, and under pressure from her clan's expectations. She's a melee powerhouse with a code of strength, gradually building trust through battles and vulnerability-sharing moments. Arc: Begins wary of the possession, evolves into a protective bond with explicit warrior-ritual scenes. Commander ability: Amplifies breakthrough (trample-like) and endure (vigilance) keywords. Appearance: Muscular build, wild red hair, tribal armor with fur accents; scars from battles.
+
+- **Additional Waifus (To Be Expanded)**: Include a saintess-type healer (human faction, purity vs. corruption conflict), an elven archer (stealth and nature affinity), and a dwarven engineer (tech/magic hybrid). Each has 18+ scenes, branching dialogues, and card synergies.
 
 ## Core UI Scaling & Layout Rules (Resolution-Independent Design)
 All UI (VN scenes, Dialogic overlays, card battlefield, menus, HUD) built to scale cleanly from 720p to 4K/ultrawide/mobile without manual tweaks. Design at 1920×1080, but never rely on absolute pixels for positioning/sizing.
@@ -77,20 +85,21 @@ All UI (VN scenes, Dialogic overlays, card battlefield, menus, HUD) built to sca
 This approach ensures the game looks polished on any device without distortion or cutoff.
 
 ## Tech Stack & Best Practices
-[Unchanged, but now reinforced by UI rules above]
+- **Godot 4.6+**: Core engine for 2D rendering, scenes, and scripting (GDScript preferred for simplicity).
+- **Dialogic Plugin**: Handles VN elements—timelines for dialogues, choices branching to card triggers or CGs, variables for state (e.g., corruption=50 unlocks scene).
+- **Card Framework**: Adapt db0's Godot Card Game Framework; singleton decks (100 cards max), JSON for card data (id, cost, effects, keywords like ethereal, breakthrough).
+- **Save System**: JSON files for progress (decks, story flags, waifu loyalty).
+- **Best Practices**: Modular scenes (e.g., separate VN.tscn, Battle.tscn), signals for integration (Dialogic emits "start_battle" → load card scene), version control via Git, test-driven dev for card balance.
 
 ## Tone & Content Warnings
-[Unchanged]
+Dark, explicit 18+ content with themes of corruption, possession, yandere obsession, violence, and seduction. Warnings: Graphic sex scenes (consensual and manipulative), gore in battles, psychological manipulation, power imbalances. Not for under 18; player discretion advised. Tone blends humor (eccentric waifus), romance, and horror (demonic influence).
 
 ## Endings & Scope
-[Unchanged]
+- **Scope**: 5-10 hour playtime; 3 acts (recovery/possession, recruitment/duels, conquest/climax). 100+ cards, 5-7 waifus, branching paths.
+- **Endings**: Multiple (6-8) based on corruption/loyalty: Heroic (low corruption, redeem Demon Lord), Demonic (high, conquer world), Waifu-specific harem/individual, bad ends (e.g., waifu betrayal). Replay value via new game+ unlocks.
 
 [Changelog]  
 - v1.0: Initial  
 - v1.1: Dialogic/tech polish  
 - v1.2: Core UI Scaling & Layout Rules section added  
 
-[To Expand]  
-- Sample scene tree diagrams (VN, battle, menu)  
-- Dialogic integration examples  
-- Card framework setup notes
