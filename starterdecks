@@ -1,0 +1,45 @@
+starterdecks
+
+{
+  "commander": {
+    "name": "Chesy",
+    "rarity": "L",
+    "element": "Nature",
+    "primary_secondary": "Nature/Arcane"
+  },
+  "deck": [
+    {"name": "Pack Leader's Command", "count": 2, "rarity": "M"},
+    {"name": "Feral Instinct Surge", "count": 1, "rarity": "M"},
+    {"name": "Beastkin Heir's Fury", "count": 1, "rarity": "M"},
+    {"name": "Feral Pack Howl", "count": 1, "rarity": "M"},
+    {"name": "Lunar Ravager", "count": 1, "rarity": "M"},
+    {"name": "Chesy's Wild Growth", "count": 2, "rarity": "R"},
+    {"name": "Tribal Warcry", "count": 2, "rarity": "R"},
+    {"name": "Chesy's Border Patrol", "count": 2, "rarity": "R"},
+    {"name": "Beastkin Survival Instinct", "count": 2, "rarity": "R"},
+    {"name": "Beastkin Protector", "count": 2, "rarity": "R"},
+    {"name": "Thornwood Guardian", "count": 1, "rarity": "R"},
+    {"name": "Wolf Ears Vigil", "count": 1, "rarity": "R"},
+    {"name": "Chesy's Tribal Rally", "count": 2, "rarity": "U"},
+    {"name": "Chesy's Feral Charge", "count": 2, "rarity": "U"},
+    {"name": "Chesy's Pack Ambush", "count": 2, "rarity": "U"},
+    {"name": "Warrior's Growl", "count": 2, "rarity": "U"},
+    {"name": "Impulsive Claw Strike", "count": 2, "rarity": "U"},
+    {"name": "Tribal Infighting Purge", "count": 2, "rarity": "U"},
+    {"name": "Oakheart Dryad", "count": 2, "rarity": "U"},
+    {"name": "Feral Wolf", "count": 2, "rarity": "U"},
+    {"name": "Vine Creeper", "count": 2, "rarity": "U"},
+    {"name": "Rune Scribe", "count": 2, "rarity": "U"},
+    {"name": "Echo Crystal", "count": 3, "rarity": "C"},
+    {"name": "Mana Prism", "count": 2, "rarity": "C"},
+    {"name": "Mystic Dart", "count": 2, "rarity": "C"},
+    {"name": "Mana Wispling", "count": 2, "rarity": "C"},
+    {"name": "Ether Hound", "count": 2, "rarity": "C"},
+    {"name": "Mystic Owl", "count": 2, "rarity": "C"},
+    {"name": "Thornling", "count": 2, "rarity": "C"},
+    {"name": "Wild Boar", "count": 2, "rarity": "C"},
+    {"name": "Leafkin", "count": 2, "rarity": "C"},
+    {"name": "Forest Scout", "count": 2, "rarity": "C"}
+  ],
+  "notes": "Maxed 6 Mythics, 12 Rares (11 waifu-tagged), 24 Uncommons (12 waifu-tagged). 6 Artifacts maxed. 100% Nature/Arcane/Neutral focus (91% colored in prim/sec). Heavy token swarm (Wild Growth, Pack Ambush, Feral Charge, Heir's Fury, etc.), draw engines (Pack Leader, Survival Instinct, Oakheart), buffs/removal (Warcry, Border Patrol, Feral Instinct wipe), cascade bombs. Synergizes with Chesy: Nature ramps/tokens draw cards; Arcane draws make Plant tokens."
+}
