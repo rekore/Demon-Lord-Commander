@@ -144,7 +144,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "DealDamage(amount=2, target=Creature(opponent))",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Infernal sparks ignite the fray."
     },
@@ -180,7 +182,9 @@
         "type": "Creature",
         "power_toughness": "3/4",
         "effects": "CreateToken(power=1, toughness=1, count=2, subtype=Plant)",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Ancient roots birth thorny defenders."
     },
@@ -228,7 +232,9 @@
         "type": "Creature",
         "power_toughness": "5/4",
         "effects": "DealDamage(amount=3, target=Random opponent creature); GainLife(amount=3)",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Full moon unleashes primal fury."
     },
@@ -264,7 +270,9 @@
         "type": "Creature",
         "power_toughness": "1/1",
         "effects": "ETB: DealDamage(amount=1, target=Creature(opponent))",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "A flicker of malice ignites the spark."
     },
@@ -288,7 +296,9 @@
         "type": "Creature",
         "power_toughness": "2/3",
         "effects": "Tap: DealDamage(amount=2, target=Creature(opponent))",
-        "keywords": ["Flying"],
+        "keywords": [
+            "Flying"
+        ],
         "waifu_tag": null,
         "flavor_text": "Wings of ash, talons of inferno."
     },
@@ -312,7 +322,9 @@
         "type": "Creature",
         "power_toughness": "4/4",
         "effects": "ETB: DealDamage(amount=3, target=Random opponent creature)",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Forged in volcanic fury, unyielding."
     },
@@ -324,7 +336,9 @@
         "type": "Creature",
         "power_toughness": "4/3",
         "effects": "Tap, Sac: DealDamage(amount=4, target=Player(opponent))",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Barks summon the abyss's rage."
     },
@@ -336,7 +350,10 @@
         "type": "Creature",
         "power_toughness": "6/5",
         "effects": "ETB: DestroyTarget(target=Creature(opponent)); DealDamage(amount=2, target=Player(opponent))",
-        "keywords": ["Trample", "Endure"],
+        "keywords": [
+            "Trample",
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Earth trembles before its molten steps."
     },
@@ -348,7 +365,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Horned fury, wreathed in embers."
     },
@@ -360,7 +379,9 @@
         "type": "Creature",
         "power_toughness": "3/4",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Soars on thermals of destruction."
     },
@@ -396,7 +417,9 @@
         "type": "Creature",
         "power_toughness": "2/2",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Wings shield the divine order."
     },
@@ -432,7 +455,9 @@
         "type": "Creature",
         "power_toughness": "4/4",
         "effects": "ETB: All opponent creatures: ReducePowerToughness(power=-2, toughness=-2)",
-        "keywords": ["Ward 2"],
+        "keywords": [
+            "Ward 2"
+        ],
         "waifu_tag": null,
         "flavor_text": "Judgment falls upon the wicked."
     },
@@ -444,7 +469,9 @@
         "type": "Creature",
         "power_toughness": "4/5",
         "effects": "ETB: GainLife(amount=5); BuffPowerToughness(power=1, toughness=1, target=All your creatures)",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Heaven's gaze fortifies the pure."
     },
@@ -456,7 +483,10 @@
         "type": "Creature",
         "power_toughness": "5/6",
         "effects": "ETB: DestroyAll(target=All opponent creatures)",
-        "keywords": ["Flying", "Trample"],
+        "keywords": [
+            "Flying",
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Wings of wrath purge the battlefield."
     },
@@ -468,7 +498,9 @@
         "type": "Creature",
         "power_toughness": "3/2",
         "effects": "",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Armor gleams with sacred fire."
     },
@@ -516,7 +548,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Sniffs out the threads of fate."
     },
@@ -552,7 +586,9 @@
         "type": "Creature",
         "power_toughness": "3/4",
         "effects": "ETB: Mill(amount=3, target=Player(opponent))",
-        "keywords": ["Ward 1"],
+        "keywords": [
+            "Ward 1"
+        ],
         "waifu_tag": null,
         "flavor_text": "Runes pulse with forbidden knowledge."
     },
@@ -564,7 +600,9 @@
         "type": "Creature",
         "power_toughness": "3/3",
         "effects": "Tap: AddCascade(amount=2)",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Time bends to its whimsical dance."
     },
@@ -576,7 +614,9 @@
         "type": "Creature",
         "power_toughness": "4/4",
         "effects": "ETB: DrawCards(amount=3); Mill(amount=3, target=Player(opponent))",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Master of entropy's weave."
     },
@@ -588,7 +628,9 @@
         "type": "Creature",
         "power_toughness": "1/3",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Hoots prophecies of doom."
     },
@@ -600,7 +642,9 @@
         "type": "Creature",
         "power_toughness": "2/3",
         "effects": "ETB: ForceDiscard(amount=1, target=Player(opponent))",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Glyphs ward against intrusion."
     },
@@ -636,7 +680,9 @@
         "type": "Creature",
         "power_toughness": "2/2",
         "effects": "",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Tusks rend the forest's foes."
     },
@@ -660,7 +706,9 @@
         "type": "Creature",
         "power_toughness": "3/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Pack hunter of the moonlit woods."
     },
@@ -672,7 +720,9 @@
         "type": "Creature",
         "power_toughness": "3/5",
         "effects": "ETB: CreateToken(power=1, toughness=1, count=1, subtype=Plant)",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Grows into ancient might."
     },
@@ -696,7 +746,9 @@
         "type": "Creature",
         "power_toughness": "6/6",
         "effects": "ETB: CreateToken(power=2, toughness=2, count=2, subtype=Beast); All your creatures: BuffPowerToughness(power=1, toughness=1)",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "King of the untamed realm."
     },
@@ -708,7 +760,9 @@
         "type": "Creature",
         "power_toughness": "1/4",
         "effects": "",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Shell armored by centuries of growth."
     },
@@ -732,7 +786,10 @@
         "type": "Creature",
         "power_toughness": "5/4",
         "effects": "ETB: DealDamage(amount=2, target=All opponent creatures)",
-        "keywords": ["Trample", "Haste"],
+        "keywords": [
+            "Trample",
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Charge shatters the earth."
     },
@@ -780,7 +837,9 @@
         "type": "Creature",
         "power_toughness": "1/2",
         "effects": "ETB: GainLife(amount=2); DealDamage(amount=1, target=Player(opponent))",
-        "keywords": ["Flying"],
+        "keywords": [
+            "Flying"
+        ],
         "waifu_tag": null,
         "flavor_text": "Wings whisper promises of thirst."
     },
@@ -816,7 +875,10 @@
         "type": "Creature",
         "power_toughness": "5/4",
         "effects": "ETB: DestroyTarget(target=Creature(opponent)); GainLife(amount=5)",
-        "keywords": ["Trample", "Ward 2"],
+        "keywords": [
+            "Trample",
+            "Ward 2"
+        ],
         "waifu_tag": null,
         "flavor_text": "From the depths, it claims all."
     },
@@ -852,7 +914,9 @@
         "type": "Creature",
         "power_toughness": "5/5",
         "effects": "ETB: All opponent creatures: ForceDiscard their controller (amount=1 per creature)",
-        "keywords": ["Menace"],
+        "keywords": [
+            "Menace"
+        ],
         "waifu_tag": null,
         "flavor_text": "Swallows light and will alike."
     },
@@ -864,7 +928,9 @@
         "type": "Creature",
         "power_toughness": "1/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "A fleeting spark, eager to ignite."
     },
@@ -876,7 +942,9 @@
         "type": "Creature",
         "power_toughness": "2/2",
         "effects": "",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Barks echo with the roar of infernos."
     },
@@ -900,7 +968,9 @@
         "type": "Creature",
         "power_toughness": "5/3",
         "effects": "ETB: DealDamage(amount=3, target=All opponent creatures)",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Mountains weep lava in its wake."
     },
@@ -912,7 +982,9 @@
         "type": "Creature",
         "power_toughness": "1/2",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "A gentle glow defies the encroaching dark."
     },
@@ -924,7 +996,9 @@
         "type": "Creature",
         "power_toughness": "2/3",
         "effects": "",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Faith-forged steel, unbreakable."
     },
@@ -948,7 +1022,9 @@
         "type": "Creature",
         "power_toughness": "4/4",
         "effects": "Tap: DestroyTarget(target=Creature(opponent))",
-        "keywords": ["Ward 2"],
+        "keywords": [
+            "Ward 2"
+        ],
         "waifu_tag": null,
         "flavor_text": "Judgment's hammer falls without mercy."
     },
@@ -972,7 +1048,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Phases through reality's fragile veil."
     },
@@ -984,7 +1062,9 @@
         "type": "Creature",
         "power_toughness": "3/3",
         "effects": "Tap: AddCascade(amount=1)",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Ancient glyphs hum with eldritch power."
     },
@@ -996,7 +1076,9 @@
         "type": "Creature",
         "power_toughness": "3/4",
         "effects": "Tap: DrawCards(amount=1); Mill(amount=1, target=Player(opponent))",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Threads fate into knots of chaos."
     },
@@ -1020,7 +1102,9 @@
         "type": "Creature",
         "power_toughness": "2/2",
         "effects": "",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Tusks churn earth and enemy alike."
     },
@@ -1044,7 +1128,9 @@
         "type": "Creature",
         "power_toughness": "4/6",
         "effects": "Tap: CreateToken(power=1, toughness=1, count=1, subtype=Plant)",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Roots delve deep into forgotten ages."
     },
@@ -1068,7 +1154,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Whispers of the unquiet dead."
     },
@@ -1092,7 +1180,10 @@
         "type": "Creature",
         "power_toughness": "5/4",
         "effects": "ETB: ForceDiscard(amount=2, target=Player(opponent)); Consume 4 Shadow: DestroyTarget(target=Creature(opponent))",
-        "keywords": ["Trample", "Ward 2"],
+        "keywords": [
+            "Trample",
+            "Ward 2"
+        ],
         "waifu_tag": null,
         "flavor_text": "From the void, it hungers eternally."
     },
@@ -1344,7 +1435,9 @@
         "type": "Creature",
         "power_toughness": "1/1",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "A mischievous flicker born from dying coals."
     },
@@ -1380,7 +1473,9 @@
         "type": "Creature",
         "power_toughness": "3/2",
         "effects": "",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Manifests from pyres of the fallen."
     },
@@ -1392,7 +1487,9 @@
         "type": "Creature",
         "power_toughness": "1/2",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Carries the first spark of divine grace."
     },
@@ -1428,7 +1525,9 @@
         "type": "Creature",
         "power_toughness": "3/3",
         "effects": "",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Stands eternal against profane hordes."
     },
@@ -1452,7 +1551,9 @@
         "type": "Creature",
         "power_toughness": "1/2",
         "effects": "",
-        "keywords": ["Vigilance"],
+        "keywords": [
+            "Vigilance"
+        ],
         "waifu_tag": null,
         "flavor_text": "Whispers secrets from the ether."
     },
@@ -1476,7 +1577,9 @@
         "type": "Creature",
         "power_toughness": "3/2",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Glides on winds of pure magic."
     },
@@ -1500,7 +1603,9 @@
         "type": "Creature",
         "power_toughness": "2/1",
         "effects": "",
-        "keywords": ["Trample"],
+        "keywords": [
+            "Trample"
+        ],
         "waifu_tag": null,
         "flavor_text": "Swift through underbrush, fierce in charge."
     },
@@ -1524,7 +1629,9 @@
         "type": "Creature",
         "power_toughness": "3/2",
         "effects": "",
-        "keywords": ["Haste"],
+        "keywords": [
+            "Haste"
+        ],
         "waifu_tag": null,
         "flavor_text": "Antlers crowned by the forest's fury."
     },
@@ -1572,7 +1679,9 @@
         "type": "Creature",
         "power_toughness": "2/3",
         "effects": "",
-        "keywords": ["Endure"],
+        "keywords": [
+            "Endure"
+        ],
         "waifu_tag": null,
         "flavor_text": "Eternal echo of forgotten screams."
     },
@@ -1815,304 +1924,1069 @@
         "keywords": [],
         "waifu_tag": null,
         "flavor_text": "Summons oblivion's cold embrace."
+    },
+    {
+        "name": "Clara's Purification Rite",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(opponent)); GainLife(amount=4)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Her sacred duty cleanses the darkness, at great personal cost."
+    },
+    {
+        "name": "Saintess's Veil",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 3,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: BuffPowerToughness(power=0, toughness=2, target=All your creatures); GainLife(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Concealing her curse marks, she endures in serene silence."
+    },
+    {
+        "name": "Clara's Hidden Spirit",
+        "rarity": "M",
+        "element": "Shadow",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "3/4",
+        "effects": "ETB: GainLife(amount=5); Consume 4 Shadow: DestroyTarget(target=Creature(opponent))",
+        "keywords": [
+            "Vigilance"
+        ],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Beneath her duty lies a tomboyish heart yearning for freedom."
+    },
+    {
+        "name": "Blessing of the Saintess",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "GainLife(amount=3); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Her gentle compassion restores both body and soul."
+    },
+    {
+        "name": "Curse Mark Surge",
+        "rarity": "R",
+        "element": "Shadow",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ReducePowerToughness(power=-2, toughness=-2, target=All opponent creatures); GainLife(amount=6)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "The spreading marks weaken her, yet fuel her resolve."
+    },
+    {
+        "name": "Lyra's Alchemical Vial",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DrawCards(amount=1); AddCascade(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "A tsundere concoction—potent, but don't say you like it!"
+    },
+    {
+        "name": "Mana Extraction Revelation",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Mill(amount=3, target=Player(opponent)); GainLife(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Uncovering dark truths shatters her worldview."
+    },
+    {
+        "name": "Lyra's Rebel Surge",
+        "rarity": "M",
+        "element": "Arcane",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "3/3",
+        "effects": "ETB: DrawCards(amount=2); Consume 5 Arcane: DestroyTarget(target=Creature(opponent))",
+        "keywords": [
+            "Ward 1"
+        ],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "From elite to rebel, her intellect fuels the fight."
+    },
+    {
+        "name": "Elven Alchemist's Brew",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "GainLife(amount=4)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "A healing elixir, brewed with sarcastic flair."
+    },
+    {
+        "name": "Survivor's Guilt Potion",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "AddCascade(amount=3); ForceDiscard(amount=1, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Haunted by what could have been, she presses on."
+    },
+    {
+        "name": "Nyxelle's Illusion Weave",
+        "rarity": "U",
+        "element": "Fire",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DealDamage(amount=3, target=Creature(opponent)); AddCascade(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Twisty magics sparkle with deceptive love."
+    },
+    {
+        "name": "Demon's Loving Embrace",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "2/3",
+        "effects": "Tap: CreateToken(power=1, toughness=1, count=1, subtype=Demon)",
+        "keywords": [
+            "Haste"
+        ],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Everyone loves everyone—hug the shadows!"
+    },
+    {
+        "name": "Nyxelle's Whimsical Bind",
+        "rarity": "M",
+        "element": "Fire",
+        "mana_cost": 4,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ETB: DealDamage(amount=5, target=All opponent creatures); Consume 4 Fire: DestroyAll(target=All opponent creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Bad shadows get pretty dreams to play nice."
+    },
+    {
+        "name": "Magic Thread Untangler",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 1,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: AddCascade(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Grumpy knots? Nyxelle fixes with sparkles!"
+    },
+    {
+        "name": "Loyal Demon's Guard",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "3/2",
+        "effects": "Tap: DealDamage(amount=2, target=Player(opponent))",
+        "keywords": [
+            "Trample"
+        ],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Master is sparkly—protect with love bites!"
+    },
+    {
+        "name": "Chesy's Tribal Rally",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "CreateToken(power=2, toughness=2, count=2, subtype=Beast)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Unite the pack or perish in the wild."
+    },
+    {
+        "name": "Beastkin Protector",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "3/4",
+        "effects": "Tap: DrawCards(amount=1); BuffPowerToughness(power=1, toughness=1, target=Creature(yours))",
+        "keywords": [
+            "Vigilance"
+        ],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Fierce guardian of kin and territory."
+    },
+    {
+        "name": "Feral Instinct Surge",
+        "rarity": "M",
+        "element": "Nature",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ETB: DealDamage(amount=4, target=All opponent creatures); Consume 5 Nature: CreateToken(power=3, toughness=3, count=3, subtype=Beast)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Strike first, protect the tribe eternally."
+    },
+    {
+        "name": "Warrior's Growl",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ForceDiscard(amount=1, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "A roar that shakes enemies to their core."
+    },
+    {
+        "name": "Tribal Tattoo Ward",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 4,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: AddKeyword(keyword=Endure, target=All your creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Red marks of strength and survival."
+    },
+    {
+        "name": "Miri's Shadow Dagger",
+        "rarity": "U",
+        "element": "Shadow",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DealDamage(amount=2, target=Creature(opponent)); GainLife(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "A hidden blade from childhood shadows."
+    },
+    {
+        "name": "Yandere's Obsession",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(opponent)); DirectDamagePlayer(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "No one will take you away again."
+    },
+    {
+        "name": "Spy's Infiltration",
+        "rarity": "M",
+        "element": "Shadow",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "2/3",
+        "effects": "ETB: Mill(amount=4, target=Player(opponent)); Consume 3 Shadow: ForceDiscard(amount=2)",
+        "keywords": [
+            "Haste"
+        ],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Stealthy return of the lost friend."
+    },
+    {
+        "name": "Childhood Memento",
+        "rarity": "U",
+        "element": "Fire",
+        "mana_cost": 1,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DealDamage(amount=1, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "A necklace holding possessive memories."
+    },
+    {
+        "name": "Protective Surge",
+        "rarity": "R",
+        "element": "Shadow",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(opponent)); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Fierce defense born from deep obsession."
+    },
+    {
+        "name": "Clara's Sacred Purification",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(opponent)); GainLife(amount=5)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Her touch converts darkness to light, at hidden cost."
+    },
+    {
+        "name": "Curse Mark Veil",
+        "rarity": "R",
+        "element": "Shadow",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: All your creatures gain Ward 1; GainLife(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Concealing layers shield her fragile form."
+    },
+    {
+        "name": "Saintess's Selfless Rite",
+        "rarity": "M",
+        "element": "Holy",
+        "mana_cost": 0,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 5 Holy: DestroyAll(target=All opponent creatures); GainLife(amount=15)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Sacrifice renews the world's magic."
+    },
+    {
+        "name": "Tomboyish Resolve",
+        "rarity": "U",
+        "element": "Shadow",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "BuffPowerToughness(power=1, toughness=1, target=All your creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Hidden spirit breaks free in private defiance."
+    },
+    {
+        "name": "Clara's Gentle Embrace",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "3/5",
+        "effects": "ETB: GainLife(amount=6); Tap: GainLife(amount=2)",
+        "keywords": [
+            "Vigilance"
+        ],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Compassion flows softly, easing all burdens."
+    },
+    {
+        "name": "Spreading Curse Renewal",
+        "rarity": "U",
+        "element": "Shadow",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ReducePowerToughness(power=-2, toughness=-2, target=All opponent creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Pain manifests as unholy debility."
+    },
+    {
+        "name": "Faith's Hidden Longing",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "GainLife(amount=10); DrawCards(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "A selfish wish for life, whispered in vulnerability."
+    },
+    {
+        "name": "Purified Essence Orb",
+        "rarity": "M",
+        "element": "Shadow",
+        "mana_cost": 0,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Consume 6 Shadow: GainLife(amount=12); AddCascade(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Demon souls yield pure magic through her trial."
+    },
+    {
+        "name": "Serene Facade Shield",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: All your creatures gain Endure",
+        "keywords": [],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Grace hides the tomboy within."
+    },
+    {
+        "name": "Clara's Final Benediction",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 6,
+        "type": "Creature",
+        "power_toughness": "4/6",
+        "effects": "ETB: DestroyAll(target=All opponent creatures)",
+        "keywords": [
+            "Ward 2"
+        ],
+        "waifu_tag": "waifu:Clara",
+        "flavor_text": "Her destined end brings ultimate salvation."
+    },
+    {
+        "name": "Lyra's Mana Elixir",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "AddCascade(amount=2); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Not that I care if it helps you, baka!"
+    },
+    {
+        "name": "Tsundere Potion Throw",
+        "rarity": "R",
+        "element": "Holy",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DealDamage(amount=4, target=Creature(opponent)); GainLife(amount=4)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Take this—it's practical, not affection!"
+    },
+    {
+        "name": "Alchemist's Revelation",
+        "rarity": "M",
+        "element": "Arcane",
+        "mana_cost": 0,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 6 Arcane: DrawCards(amount=4); Mill(amount=4, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Truths uncovered shatter illusions of loyalty."
+    },
+    {
+        "name": "High Mana Surge",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 1,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: GainLife(amount=3); AddCascade(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Her gifted essence overflows with potential."
+    },
+    {
+        "name": "Rebel Saboteur Vial",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "2/4",
+        "effects": "ETB: ForceDiscard(amount=2, target=Player(opponent))",
+        "keywords": [
+            "Endure"
+        ],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "From denial to defiance, her brews destroy."
+    },
+    {
+        "name": "Adopted Heirloom Choker",
+        "rarity": "U",
+        "element": "Holy",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: BuffPowerToughness(power=1, toughness=1, target=Creature(yours))",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Spared by favoritism, worn with guilt."
+    },
+    {
+        "name": "Analytical Flare",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=3); ForceDiscard(amount=1, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Logic pierces through deception."
+    },
+    {
+        "name": "Victim's Justice Brew",
+        "rarity": "M",
+        "element": "Holy",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyAll(target=All opponent creatures); GainLife(amount=10)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "For the children lost to extraction."
+    },
+    {
+        "name": "Lyra's Growth Elixirs",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 4,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: AddCascade(amount=2); CreateToken(power=1, toughness=1, count=1, subtype=Elf)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Adventurous heart brews for a better world."
+    },
+    {
+        "name": "Elven Tsundere Glasses",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 1,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Sharp eyes see through illusions—and emotions."
+    },
+    {
+        "name": "Nyxelle's Sparkly Hug",
+        "rarity": "U",
+        "element": "Fire",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DealDamage(amount=2, target=Player(opponent)); CreateToken(power=1, toughness=1, count=1, subtype=Demon)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Love fixes grumpy magics!"
+    },
+    {
+        "name": "Illusion Thread Dance",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "2/3",
+        "effects": "Tap: CreateToken(power=1, toughness=1, count=2, subtype=Illusion)",
+        "keywords": [
+            "Flying"
+        ],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Twirling wings untangle sad threads."
+    },
+    {
+        "name": "Master's Loyal Spark",
+        "rarity": "M",
+        "element": "Fire",
+        "mana_cost": 0,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 5 Fire: DealDamage(amount=10, target=Player(opponent)); AddCascade(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Demon Lord is sparkly forever!"
+    },
+    {
+        "name": "Whimsical Magic Free",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: AddCascade(amount=1); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Sad magics want to play!"
+    },
+    {
+        "name": "Loyal Demon's Guard",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "3/2",
+        "effects": "Tap: DealDamage(amount=2, target=Player(opponent))",
+        "keywords": [
+            "Trample"
+        ],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Master is sparkly—protect with love bites!"
+    },
+    {
+        "name": "Love Bite Illusion",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "CreateToken(power=2, toughness=2, count=1, subtype=Beast); DealDamage(amount=2, target=Creature(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Bite with kisses, not teeth!"
+    },
+    {
+        "name": "Eccentric Harmony Weave",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DealDamage(amount=4, target=All opponent creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Everyone plays nice in pretty dreams."
+    },
+    {
+        "name": "Demon Sight Prism",
+        "rarity": "M",
+        "element": "Nature",
+        "mana_cost": 0,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Consume 6 Nature: CreateToken(power=3, toughness=3, count=3, subtype=Demon)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Horns glint, seeing twisty truths."
+    },
+    {
+        "name": "Nyxelle's Forever Devotion",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 5,
+        "type": "Creature",
+        "power_toughness": "4/4",
+        "effects": "ETB: All your creatures gain Haste",
+        "keywords": [
+            "Trample"
+        ],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Master is always sparkly!"
+    },
+    {
+        "name": "Nyxelle's Confused Loyalty",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "3/3",
+        "effects": "Tap: AddCascade(amount=1); GainLife(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Nyxella",
+        "flavor_text": "Why bite the good light? Love all!"
+    },
+    {
+        "name": "Chesy's Feral Charge",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "CreateToken(power=3, toughness=2, count=1, subtype=Beast); AddKeyword(keyword=Haste)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Strike first, question later."
+    },
+    {
+        "name": "Tribal Warcry",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=2); BuffPowerToughness(power=1, toughness=1, target=All your creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Pack unites under her decisive roar."
+    },
+    {
+        "name": "Beastkin Heir's Fury",
+        "rarity": "M",
+        "element": "Nature",
+        "mana_cost": 0,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 7 Nature: CreateToken(power=5, toughness=5, count=1, subtype=Beast); All your creatures gain Trample",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Warrior princess leads the charge."
+    },
+    {
+        "name": "Warrior's Growl",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ForceDiscard(amount=1, target=Player(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "A roar that shakes enemies to their core."
+    },
+    {
+        "name": "Tribal Tattoo Ward",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 4,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: AddKeyword(keyword=Endure, target=All your creatures)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Red marks of strength and survival."
+    },
+    {
+        "name": "Impulsive Claw Strike",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Creature",
+        "power_toughness": "3/2",
+        "effects": "Tap: DealDamage(amount=2, target=Creature(opponent))",
+        "keywords": [
+            "Haste"
+        ],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Youthful rage fuels swift justice."
+    },
+    {
+        "name": "Pack Leader's Command",
+        "rarity": "M",
+        "element": "Arcane",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=3); CreateToken(power=4, toughness=4, count=1, subtype=Beast)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Tribe first—rally or die."
+    },
+    {
+        "name": "Chesy's Border Patrol",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "3/5",
+        "effects": "ETB: All opponent creatures get -1/-1",
+        "keywords": [
+            "Vigilance"
+        ],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Ears perk at demon scents."
+    },
+    {
+        "name": "Chesy's Pack Ambush",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "CreateToken(power=2, toughness=2, count=2, subtype=Beast)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Sudden strike from the borders."
+    },
+    {
+        "name": "Beastkin Survival Instinct",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=2); GainLife(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Instincts honed by constant threats."
+    },
+    {
+        "name": "Miri's Stealth Cloak",
+        "rarity": "U",
+        "element": "Shadow",
+        "mana_cost": 2,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Equipped creature gains Haste and Ward 1; Equip: Tap",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Invisible in the night, always watching."
+    },
+    {
+        "name": "Yandere Poison Dart",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DealDamage(amount=5, target=Player(opponent)); DealDamage(amount=2, target=Player(opponent)) next turn",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Threats vanish quietly."
+    },
+    {
+        "name": "Childhood Anchor Blade",
+        "rarity": "M",
+        "element": "Shadow",
+        "mana_cost": 0,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 6 Shadow: DestroyTarget(target=Creature(any)); GainLife(amount=8)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Her anchor against abandonment."
+    },
+    {
+        "name": "Spy's Nostalgic Trap",
+        "rarity": "U",
+        "element": "Fire",
+        "mana_cost": 1,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DealDamage(amount=2, target=Creature(opponent))",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Old games, deadly now."
+    },
+    {
+        "name": "Possessive Shadow Bind",
+        "rarity": "R",
+        "element": "Shadow",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "2/4",
+        "effects": "ETB: ReducePowerToughness(power=-3, toughness=-3, target=Creature(opponent))",
+        "keywords": [
+            "Endure"
+        ],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "You're mine to protect."
+    },
+    {
+        "name": "Royal Infiltration Dagger",
+        "rarity": "U",
+        "element": "Fire",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(opponent)); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Trained for the shadows."
+    },
+    {
+        "name": "Endured Hell's Vengeance",
+        "rarity": "R",
+        "element": "Shadow",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Mill(amount=5, target=Player(opponent)); GainLife(amount=5)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Hell forged unbreakable obsession."
+    },
+    {
+        "name": "Miri's Clingy Surge",
+        "rarity": "M",
+        "element": "Fire",
+        "mana_cost": 5,
+        "type": "Creature",
+        "power_toughness": "4/3",
+        "effects": "ETB: DirectDamagePlayer(amount=6)",
+        "keywords": [
+            "Trample"
+        ],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Never lose you again."
+    },
+    {
+        "name": "Yandere's Clingy Whisper",
+        "rarity": "U",
+        "element": "Shadow",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "ForceDiscard(amount=1, target=Player(opponent)); GainLife(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Soft words hide desperate need."
+    },
+    {
+        "name": "Trauma-Forged Blade",
+        "rarity": "R",
+        "element": "Fire",
+        "mana_cost": 4,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: DealDamage(amount=3, target=Creature(opponent)); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Miri",
+        "flavor_text": "Brutal training shapes deadly skill."
+    },
+    {
+        "name": "Chesy's Pack Ambush",
+        "rarity": "U",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "CreateToken(power=2, toughness=2, count=2, subtype=Beast)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Sudden strike from the borders."
+    },
+    {
+        "name": "Beastkin Survival Instinct",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=2); GainLife(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Instincts honed by constant threats."
+    },
+    {
+        "name": "Feral Pack Howl",
+        "rarity": "M",
+        "element": "Nature",
+        "mana_cost": 4,
+        "type": "Creature",
+        "power_toughness": "4/4",
+        "effects": "ETB: CreateToken(power=2, toughness=2, count=3, subtype=Beast)",
+        "keywords": ["Trample"],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Howl rallies the kin for war."
+    },
+    {
+        "name": "Tribal Infighting Purge",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DestroyTarget(target=Creature(any)); DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Root out betrayal swiftly."
+    },
+    {
+        "name": "Wolf Ears Vigil",
+        "rarity": "R",
+        "element": "Nature",
+        "mana_cost": 3,
+        "type": "Artifact",
+        "power_toughness": null,
+        "effects": "Tap: All your creatures gain Vigilance; AddCascade(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Chesy",
+        "flavor_text": "Perked ears detect every threat."
+    },
+    {
+        "name": "Elven Alchemist's Brew",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 1,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "DrawCards(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Elven precision in every vial."
+    },
+    {
+        "name": "Oakheart Dryad",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "2/4",
+        "effects": "Tap: DrawCards(amount=1); AddCascade(amount=1)",
+        "keywords": ["Vigilance"],
+        "waifu_tag": null,
+        "flavor_text": "Elven guardian of ancient woods."
+    },
+    {
+        "name": "Crimson Hair Cascade",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 4,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "AddCascade(amount=4); DrawCards(amount=2)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Flowing locks channel mana surges."
+    },
+    {
+        "name": "Pointed Ear Insight",
+        "rarity": "U",
+        "element": "Arcane",
+        "mana_cost": 2,
+        "type": "Creature",
+        "power_toughness": "2/2",
+        "effects": "Tap: DrawCards(amount=1)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Elven ears hear whispers of magic."
+    },
+    {
+        "name": "Mana Affinity Bloom",
+        "rarity": "M",
+        "element": "Arcane",
+        "mana_cost": 5,
+        "type": "Spell",
+        "power_toughness": null,
+        "effects": "Consume 6 Arcane: DrawCards(amount=5); AddCascade(amount=3)",
+        "keywords": [],
+        "waifu_tag": "waifu:Lyra",
+        "flavor_text": "Elven gift blooms in endless power."
+    },
+    {
+        "name": "Crimson Elf Saboteur",
+        "rarity": "R",
+        "element": "Arcane",
+        "mana_cost": 3,
+        "type": "Creature",
+        "power_toughness": "3/2",
+        "effects": "ETB: Mill(amount=3, target=Player(opponent))",
+        "keywords": ["Haste"],
+        "waifu_tag": null,
+        "flavor_text": "Elven rebel strikes from shadows."
     }
-]{
-"name": "Clara's Purification Rite",
-"rarity": "U",
-"element": "Holy",
-"mana_cost": 2,
-"type": "Spell",
-"power_toughness": null,
-"effects": "DestroyTarget(target=Creature(opponent)); GainLife(amount=4)",
-"keywords": [],
-"waifu_tag": "waifu:Clara",
-"flavor_text": "Her sacred duty cleanses the darkness, at great personal cost."
-},
-{
-"name": "Saintess's Veil",
-"rarity": "R",
-"element": "Holy",
-"mana_cost": 3,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: BuffPowerToughness(power=0, toughness=2, target=All your creatures); GainLife(amount=2)",
-"keywords": [],
-"waifu_tag": "waifu:Clara",
-"flavor_text": "Concealing her curse marks, she endures in serene silence."
-},
-{
-"name": "Clara's Hidden Spirit",
-"rarity": "M",
-"element": "Shadow",
-"mana_cost": 4,
-"type": "Creature",
-"power_toughness": "3/4",
-"effects": "ETB: GainLife(amount=5); Consume 4 Shadow: DestroyTarget(target=Creature(opponent))",
-"keywords": ["Vigilance"],
-"waifu_tag": "waifu:Clara",
-"flavor_text": "Beneath her duty lies a tomboyish heart yearning for freedom."
-},
-{
-"name": "Blessing of the Saintess",
-"rarity": "U",
-"element": "Holy",
-"mana_cost": 1,
-"type": "Spell",
-"power_toughness": null,
-"effects": "GainLife(amount=3); DrawCards(amount=1)",
-"keywords": [],
-"waifu_tag": "waifu:Clara",
-"flavor_text": "Her gentle compassion restores both body and soul."
-},
-{
-"name": "Curse Mark Surge",
-"rarity": "R",
-"element": "Shadow",
-"mana_cost": 5,
-"type": "Spell",
-"power_toughness": null,
-"effects": "ReducePowerToughness(power=-2, toughness=-2, target=All opponent creatures); GainLife(amount=6)",
-"keywords": [],
-"waifu_tag": "waifu:Clara",
-"flavor_text": "The spreading marks weaken her, yet fuel her resolve."
-},
-{
-"name": "Lyra's Alchemical Vial",
-"rarity": "U",
-"element": "Arcane",
-"mana_cost": 2,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: DrawCards(amount=1); AddCascade(amount=1)",
-"keywords": [],
-"waifu_tag": "waifu:Lyra",
-"flavor_text": "A tsundere concoction—potent, but don't say you like it!"
-},
-{
-"name": "Mana Extraction Revelation",
-"rarity": "R",
-"element": "Holy",
-"mana_cost": 3,
-"type": "Spell",
-"power_toughness": null,
-"effects": "Mill(amount=3, target=Player(opponent)); GainLife(amount=3)",
-"keywords": [],
-"waifu_tag": "waifu:Lyra",
-"flavor_text": "Uncovering dark truths shatters her loyalty."
-},
-{
-"name": "Lyra's Rebel Surge",
-"rarity": "M",
-"element": "Arcane",
-"mana_cost": 4,
-"type": "Creature",
-"power_toughness": "3/3",
-"effects": "ETB: DrawCards(amount=2); Consume 5 Arcane: DestroyTarget(target=Creature(opponent))",
-"keywords": ["Ward 1"],
-"waifu_tag": "waifu:Lyra",
-"flavor_text": "From elite to rebel, her intellect fuels the fight."
-},
-{
-"name": "Elven Alchemist's Brew",
-"rarity": "U",
-"element": "Holy",
-"mana_cost": 1,
-"type": "Spell",
-"power_toughness": null,
-"effects": "GainLife(amount=4)",
-"keywords": [],
-"waifu_tag": "waifu:Lyra",
-"flavor_text": "A healing elixir, brewed with sarcastic flair."
-},
-{
-"name": "Survivor's Guilt Potion",
-"rarity": "R",
-"element": "Arcane",
-"mana_cost": 3,
-"type": "Spell",
-"power_toughness": null,
-"effects": "AddCascade(amount=3); ForceDiscard(amount=1, target=Player(opponent))",
-"keywords": [],
-"waifu_tag": "waifu:Lyra",
-"flavor_text": "Haunted by what could have been, she presses on."
-},
-{
-"name": "Nyxelle's Illusion Weave",
-"rarity": "U",
-"element": "Fire",
-"mana_cost": 2,
-"type": "Spell",
-"power_toughness": null,
-"effects": "DealDamage(amount=3, target=Creature(opponent)); AddCascade(amount=1)",
-"keywords": [],
-"waifu_tag": "waifu:Nyxella",
-"flavor_text": "Twisty magics sparkle with deceptive love."
-},
-{
-"name": "Demon's Loving Embrace",
-"rarity": "R",
-"element": "Nature",
-"mana_cost": 3,
-"type": "Creature",
-"power_toughness": "2/3",
-"effects": "Tap: CreateToken(power=1, toughness=1, count=1, subtype=Demon)",
-"keywords": ["Haste"],
-"waifu_tag": "waifu:Nyxella",
-"flavor_text": "Everyone loves everyone—hug the shadows!"
-},
-{
-"name": "Nyxelle's Whimsical Bind",
-"rarity": "M",
-"element": "Fire",
-"mana_cost": 4,
-"type": "Spell",
-"power_toughness": null,
-"effects": "ETB: DealDamage(amount=5, target=All opponent creatures); Consume 4 Fire: DestroyAll(target=All opponent creatures)",
-"keywords": [],
-"waifu_tag": "waifu:Nyxella",
-"flavor_text": "Bad shadows get pretty dreams to play nice."
-},
-{
-"name": "Magic Thread Untangler",
-"rarity": "U",
-"element": "Nature",
-"mana_cost": 1,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: AddCascade(amount=2)",
-"keywords": [],
-"waifu_tag": "waifu:Nyxella",
-"flavor_text": "Grumpy knots? Nyxelle fixes with sparkles!"
-},
-{
-"name": "Loyal Demon's Guard",
-"rarity": "R",
-"element": "Fire",
-"mana_cost": 3,
-"type": "Creature",
-"power_toughness": "3/2",
-"effects": "Tap: DealDamage(amount=2, target=Player(opponent))",
-"keywords": ["Trample"],
-"waifu_tag": "waifu:Nyxella",
-"flavor_text": "Master is sparkly—protect with love bites!"
-},
-{
-"name": "Chesy's Tribal Rally",
-"rarity": "U",
-"element": "Nature",
-"mana_cost": 2,
-"type": "Spell",
-"power_toughness": null,
-"effects": "CreateToken(power=2, toughness=2, count=2, subtype=Beast)",
-"keywords": [],
-"waifu_tag": "waifu:Chesy",
-"flavor_text": "Unite the pack or perish in the wild."
-},
-{
-"name": "Beastkin Protector",
-"rarity": "R",
-"element": "Arcane",
-"mana_cost": 3,
-"type": "Creature",
-"power_toughness": "3/4",
-"effects": "Tap: DrawCards(amount=1); BuffPowerToughness(power=1, toughness=1, target=Creature(yours))",
-"keywords": ["Vigilance"],
-"waifu_tag": "waifu:Chesy",
-"flavor_text": "Fierce guardian of kin and territory."
-},
-{
-"name": "Feral Instinct Surge",
-"rarity": "M",
-"element": "Nature",
-"mana_cost": 5,
-"type": "Spell",
-"power_toughness": null,
-"effects": "ETB: DealDamage(amount=4, target=All opponent creatures); Consume 5 Nature: CreateToken(power=3, toughness=3, count=3, subtype=Beast)",
-"keywords": [],
-"waifu_tag": "waifu:Chesy",
-"flavor_text": "Strike first, protect the tribe eternally."
-},
-{
-"name": "Warrior's Growl",
-"rarity": "U",
-"element": "Arcane",
-"mana_cost": 1,
-"type": "Spell",
-"power_toughness": null,
-"effects": "ForceDiscard(amount=1, target=Player(opponent))",
-"keywords": [],
-"waifu_tag": "waifu:Chesy",
-"flavor_text": "A roar that shakes enemies to their core."
-},
-{
-"name": "Tribal Tattoo Ward",
-"rarity": "R",
-"element": "Nature",
-"mana_cost": 4,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: AddKeyword(keyword=Endure, target=All your creatures)",
-"keywords": [],
-"waifu_tag": "waifu:Chesy",
-"flavor_text": "Red marks of strength and survival."
-},
-{
-"name": "Miri's Shadow Dagger",
-"rarity": "U",
-"element": "Shadow",
-"mana_cost": 2,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: DealDamage(amount=2, target=Creature(opponent)); GainLife(amount=2)",
-"keywords": [],
-"waifu_tag": "waifu:Miri",
-"flavor_text": "A hidden blade from childhood shadows."
-},
-{
-"name": "Yandere's Obsession",
-"rarity": "R",
-"element": "Fire",
-"mana_cost": 3,
-"type": "Spell",
-"power_toughness": null,
-"effects": "DestroyTarget(target=Creature(opponent)); DirectDamagePlayer(amount=3)",
-"keywords": [],
-"waifu_tag": "waifu:Miri",
-"flavor_text": "No one will take you away again."
-},
-{
-"name": "Spy's Infiltration",
-"rarity": "M",
-"element": "Shadow",
-"mana_cost": 4,
-"type": "Creature",
-"power_toughness": "2/3",
-"effects": "ETB: Mill(amount=4, target=Player(opponent)); Consume 3 Shadow: ForceDiscard(amount=2)",
-"keywords": ["Haste"],
-"waifu_tag": "waifu:Miri",
-"flavor_text": "Stealthy return of the lost friend."
-},
-{
-"name": "Childhood Memento",
-"rarity": "U",
-"element": "Fire",
-"mana_cost": 1,
-"type": "Artifact",
-"power_toughness": null,
-"effects": "Tap: DealDamage(amount=1, target=Player(opponent))",
-"keywords": [],
-"waifu_tag": "waifu:Miri",
-"flavor_text": "A necklace holding possessive memories."
-},
-{
-"name": "Protective Surge Strike",
-"rarity": "R",
-"element": "Shadow",
-"mana_cost": 3,
-"type": "Spell",
-"power_toughness": null,
-"effects": "DestroyTarget(target=Creature(opponent)); DrawCards(amount=1)",
-"keywords": [],
-"waifu_tag": "waifu:Miri",
-"flavor_text": "Fierce defense born from deep obsession."
-}
+]
