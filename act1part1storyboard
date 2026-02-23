@@ -1,0 +1,104 @@
+digraph StoryWebAct1Part1 {
+    node [shape=box, style=filled, fillcolor=lightblue];
+    edge [arrowhead=normal];
+
+    Start [label="Act 1 Part 1: Post-Prologue Town Entry (Market & Bar Hub)\nScene Beats: MC arrives as Hunter; no possession mentions yet. Free roam setup; init var_quest_progress=0.\nReminders: Build dark fantasy tone with NPC gossip on demon escalation; adult teases via Elara/Aria flirts. Godot: Hub.tscn with clickable NPCs -> Dialogic timelines.", fillcolor=lightgreen];
+
+    Market [label="Market: Elara & Aria (Quest Chain Start)\nScene Beats: Warm maternal greets from Elara ('honey'); Aria's bored seductive pouts/teases. Choices: Flirt/Start Chain?\nVars: +var_aria_intimacy (adult risks, e.g., 'storeroom thrill' setup).\nReminders: Tie to adult arcs (threesome potential); chain builds immersion. Dialogic: Flirt branches for intimacy flags."];
+    Bar [label="Bar: Steve (Multiple Quests)\nScene Beats: Jovial gossip on beastkin/alchemists; player picks quests. Raid Clue #1 tease.\nChoices: Clear Boars (combat tut, loss=game over), Investigate Rumors (lore/clue), Deliver Message (dark/corruption tease).\nVars: +1 var_quest_progress per; +var_raid_knowledge (rumors).\nReminders: World-building (faction tensions); Godot signal from battles to progress."];
+
+    MarketChain1 [label="Market Chain Step 1: Gather Herbs\nScene Beats: Fetch from outskirts; return to Elara for flirty 'thanks'. Aria whines for 'fun'.\nVars: +1 var_quest_progress.\nReminders: Subtle adult hints; return unlocks Step 2. Godot: Item system test."];
+    MarketChain2 [label="Market Chain Step 2: Deliver to Contact\nScene Beats: Escort delivery; Aria's bratty seduction ('Shh, make it exciting!'). Return to market.\nVars: +1 var_quest_progress.\nReminders: Build rebellion/jealousy; unlocks Step 3. Dialogic: Risky choice branches."];
+    MarketChain3 [label="Market Chain Step 3: Investigate Carriage\nScene Beats: Track missing goods; card battle vs. bandits (loss = game over, restart last save); recover items, find vague raid note ('Strike beasts soon w/ shadows').\nVars: +1 var_quest_progress; +var_raid_knowledge (note found); unlock Warn Chesy (post-Chesy meet).\nReminders: Dark bandit gore; note hints alchemist invis magic. Godot: Battle signal sets var_raid_note_found."];
+
+    Market -> MarketChain1 [label="Accept Chain (Step 1)"];
+    MarketChain1 -> Market [label="Return & Unlock Step 2"];
+    Market -> MarketChain2 [label="Step 2 (After 1)"];
+    MarketChain2 -> Market [label="Return & Unlock Step 3"];
+    Market -> MarketChain3 [label="Step 3 (After 2)"];
+    MarketChain3 -> HubLoop [label="Complete Chain (Goods Back, Note Found)"];
+
+    BarQuests [label="Bar Quests (Player Choice)\nScene Beats: Steve's whispers tie to factions; complete 1-2 per loop w/ VN branches or mini-battles (loss=game over).\nVars: +1 progress per; +raid_knowledge/ corruption teases.\nReminders: Vary tone—boars action, message shady morals. Godot: QuestManager.gd tracks states."];
+    Bar -> BarQuests [label="Pick Quests"];
+    BarQuests -> HubLoop [label="Complete & Return"];
+
+    MiriMeet [label="Miri Meet at Market (Pre-Raid Waifu #1)\nScene Beats: Nostalgic reunion; subtle yandere ('Stay close... I won't lose you again'). Unlock Miri commander card (control synergies intro via quick demo).\nVars: waifu_axes['miri']['nostalgia'] +10.\nReminders: Obsessive glances/mannerisms; unlocks quest. CG: Blue-haired yandere intensity."];
+    MiriQuest [label="Miri Quest: 'Assist Work' (Unknowing Spy Aid + Card Tutorial)\nScene Beats: Gather 'rumors' via eavesdrop; MC thinks innocent errand, but aids subversion. Includes mini-card battle with Miri as commander by MC's side, explaining control synergies/strategy (e.g., draw/possess effects).\nChoices: Target guild/church for info.\nVars: +1 progress; miri['obsession'] +5-10; +minor guild clue.\nReminders: Dark hints (church corruption whisper); yandere 'thanks' tease; natural tutorial feel. Dialogic: Stealth choices + battle signal."];
+
+    Market -> MiriMeet [label="Automatic (Pre-Raid Meet)"];
+    MiriMeet -> MiriQuest [label="Accept"];
+    MiriQuest -> HubLoop [label="Complete"];
+
+    LyraMeet [label="Lyra Meet via Errand (Pre-Raid Waifu #2)\nScene Beats: Tsundere banter ('Hmph, outsider—don't mess up!'); glasses push while analyzing MC aura (mana detection). Unlock Lyra commander card (curiosity/loyalty synergies intro via quick demo).\nVars: lyra['curiosity'] +10.\nReminders: Defend alchemists vehemently; no corruption knowledge. CG: Crimson hair/elven poise."];
+    LyraQuest [label="Lyra Quest: 'Assist Herbs' (Gather + Card Tutorial)\nScene Beats: Fetch herbs for guild; includes small card encounter with Lyra as commander by MC's side, teaching quest-sharing synergies/strategy (e.g., buff on info reveals).\nVars: +1 progress; lyra['loyalty'] +5.\nReminders: Tsundere encouragement during tutorial; builds immersion. Godot: Item + battle integration."];
+
+    HubLoop -> LyraMeet [label="Errand (Pre-Raid Meet)"];
+    Bar -> LyraMeet [label="Rumor Lead"];
+    LyraMeet -> LyraQuest [label="Accept Quest"];
+    LyraQuest -> HubLoop [label="Complete"];
+
+    ChesyMeet [label="Chesy Meet in Woods Explore (Pre-Raid Waifu #3)\nScene Beats: Initial wary encounter; Chesy recruits MC to prove honor by fighting minor threats together; shares tribe woes after. Unlock Chesy commander card (honor/growth synergies intro via quick demo).\nVars: chesy['honor'] +10.\nReminders: Warrior pride; beastkin scars/fur accents in CGs; unlocks Warn Chesy if note found."];
+    ChesyQuest [label="Chesy Quest: 'Scout Borders' (Explore + Card Tutorial)\nScene Beats: Scout beastkin borders; mini-card battle vs. minor threats with Chesy as commander by MC's side, explaining breakthrough/endure strategies (e.g., trample/vigilance keywords).\nVars: +1 progress; chesy['respect'] +5.\nReminders: Honorable acts emphasized; natural tutorial. Dialogic: Choice branches + battle."];
+
+    WoodsEntry -> ChesyMeet [label="If <5: Explore (Pre-Raid Meet)"];
+    ChesyMeet -> ChesyQuest [label="Accept Quest"];
+    ChesyQuest -> HubLoop [label="Complete & Return (Build More)"];
+
+    HubLoop [label="Town Hub Loop\nScene Beats: Repeat visits build immersion; NPC updates (e.g., Steve on rising tensions).\nTeases: Adult (Aria risks), Dark (faction corruption hints), Harem (jealousy from waifu favors).\nVars: Accumulate ~5 progress/clues.\nReminders: Loop until ready; free roam in Godot scene w/ clickable map. var_quest_progress gates woods.", shape=ellipse, fillcolor=lightyellow];
+    Market -> HubLoop [label="Return to Hub"];
+    Bar -> HubLoop [label="Return to Hub"];
+    MiriQuest -> HubLoop;
+    LyraQuest -> HubLoop;
+    ChesyQuest -> HubLoop;
+    HubLoop -> Market [label="Loop: Revisit"];
+    HubLoop -> Bar [label="Loop: Revisit"];
+    HubLoop -> WoodsEntry [label="Choose Woods"];
+
+    WoodsEntry [label="Woods Entry (Gate Check)\nScene Beats: Atmospheric dark forest; minor demon tease if corruption high.\n<5 Progress: Explore (Chesy meet/quest).\n>=5: Raid Mode.\nReminders: Godot: Ambient audio/CGs; var check in entry script."];
+
+    WarnChesy [label="Warn Chesy (Post-Note & Post-Chesy Meet Unlock)\nScene Beats: MC shares vague note; Chesy growls thanks ('We'll prepare... honor your warning').\nVars: chesy['honor/loyalty'] +10-15; flag tribe_prepped (eases raid).\nReminders: Impulsive mannerisms; raid still happens (note not specific); Dialogic gate: if var_chesy_met && var_raid_note_found."];
+
+    MarketChain3 -> WarnChesy [label="Optional (After Note & Chesy Met)"];
+    WarnChesy -> HubLoop [label="Return"];
+    WoodsEntry -> WarnChesy [label="If Note & Chesy Met & <5: Warn in Explore"];
+    ChesyMeet -> WarnChesy [label="If Note Found: Unlock Warn Branch"];
+
+    RaidTrigger [label="Raid Climax: Trigger at >=5 Progress in Woods\nScene Beats: Chaos—bandits frontal assault; invisible alchemists sneak for kids (mana extraction hint).\nNyxelle Debut: Whimsically intervenes ('Naughty shadows! No stealing fluffies!'), saves kids by seeing magic, gets injured ('Owie!'). Unlock Nyxelle commander card during intervention (whimsical cascade synergies intro via quick demo).\nMC Arrives: Meets Nyxelle post-save; helps her (devoted 'Master!' bond starts).\nChoices: Defend? (Yes -> battles; No -> failure).\nVars: raid_knowledge/clues ease (note reveals mage tactics).\nReminders: Dark gore (kid threats); adult 'healing' tease potential. Godot: Signal to battles.", fillcolor=lightgrey];
+
+    Battle1 [label="Battle 1: Vs. Easier Bandits\nScene Beats: Frontal fight; card duel tutorial (singleton deck basics).\nVars: If tribe_prepped: Buffs (beastkin allies).\nLoss: Game Over (restart last save; Demon Lord surge tease).\nReminders: Godot card framework; win unlocks mage reveal."];
+    Battle2 [label="Battle 2: Vs. Alchemist Mages\nScene Beats: Invis mechanics (card 'reveal' effects); Nyxelle temp commander by MC's side (whimsical buffs, chain reactions—serves as her strategy tutorial).\nVars: corruption >50 amps negatives.\nLoss: Game Over (restart last save).\nReminders: Guild corruption loot (mana tools/clues). Godot: Nyxelle card prototype unlock."];
+
+    WoodsEntry -> RaidTrigger [label="If >=5: Raid Mode"];
+    RaidTrigger -> Battle1 [label="Defend Yes: Start Battle 1"];
+    Battle1 -> Battle2 [label="Win Battle 1: Mage Reveal"];
+    Battle2 -> Success [label="Win Battle 2"];
+
+    Success [label="Raid Success (Leads to Meetup)\nScene Beats: Tribe saved; guild inference (Thorne flees).\nVars: chesy['honor'] +15; nyxelle['wonder/master_bond'] +12-15; cross-jealousy +8.\nPost-Soul Choice (demon summoned): Purify/consume.\nReminders: Adult 'rewards' from Elara if chain done. Godot: Victory CG."];
+
+    WaifuMeetup [label="Post-Raid Waifu Meetup\nScene Beats: Tribe gratitude; initial harem interactions (jealousy teases: Miri glares, Lyra tsundere, Chesy honorable nod, Nyxelle whimsy).\nVars: Minor axes swings (+5-10 base); cross-jealousy if favoritism.\nReminders: Godot: Signal to card inventory (JSON load waifu decks if not already); adult harem tension CGs. Ties to card system docs."];
+
+    VictoryParty [label="Post-Raid: Beastfolk Victory Party (That Night)\nScene Beats: Fun celebration—fires, ale, dances, rowdy toasts (dark fantasy revelry w/ adult undertones: Flirty dances, Nyxelle chaos, Chesy arm-wrestles).\nChoices: Talk Order (pick first waifu: Miri/Lyra/Chesy/Nyxelle; no Clara).\nVars: First Choice: +15 bonus axis (e.g., nyxelle['wonder'] +15, or miri['obsession'] +15).\nIf Not Miri First: Miri jealousy dialogue ('Hmph, her first? You're mine...') + miri['jealousy'] +10.\nSubsequent Talks: +5-10 axes (fun/flirty dialogues).\nReminders: Light-hearted amid dark (gore flashbacks); adult teases (e.g., Lyra tipsy tsundere). Dialogic: Choice timeline loops talks; Godot party scene w/ music/CGs."];
+
+    ChesyGratitude [label="Chesy Gratitude Scene (Morning After Party, If tribe_prepped)\nScene Beats: Chesy sneaks into MC's room at dawn, wakes him with playful growl, drags him into the woods for private 'tribal ritual' bonding (fun, energetic, adult-tease heavy — roughhousing, ritual marks, possible intimate moment).\nVars: chesy['honor'] +15; chesy['intimacy'] +10-15; flag_chesy_bonding=true.\nReminders: Impulsive warrior energy; beastkin physicality (dragging, pinning); dark fantasy ritual vibe with adult undertones. Godot: Conditional branch after VictoryParty timeline ends; possible adult CG / scene trigger; set var after dialogue."];
+
+    Success -> WaifuMeetup [label="Raid Success"];
+    WaifuMeetup -> VictoryParty [label="Transition: Night Falls, Party Starts"];
+    VictoryParty -> ChesyGratitude [label="If tribe_prepped"];
+    VictoryParty -> HouseConvergence [label="Else / No tribe_prepped"];
+    ChesyGratitude -> HouseConvergence [label="After Woods Ritual"];
+
+    Failure [label="Raid Failure/No Defend\nScene Beats: Partial kid losses; Chesy wounded/distrust.\nVars: Chesy lockout flag; corruption +20 (cowardice); beastkin penalty.\nReminders: Dark bad end tease (humanity path hook). Game Over if battled & lost."];
+
+    RaidTrigger -> Failure [label="No Defend or Lose Battles"];
+    Failure -> HouseConvergence [label="Direct to Hero's House (No Party)"];
+
+    HouseConvergence [label="True Act 1 Convergence: Hero's House\nScene Beats: Morning after party (or direct if failure); Demon Lord makes comments on choices (e.g., whispers on corruption, waifu favors, raid outcomes).\nVars: Final corruption/jealousy swings based on Act choices; overall harem dynamics solidify.\nReminders: Possession tease; fixed reorientation; Godot: Private scene, voiceover or text for Demon Lord; save point. Unlock Church access/Act 1 Part 2."];
+
+    {rank=same; Market Bar}
+    {rank=same; MarketChain1 MarketChain2 MarketChain3 BarQuests}
+    {rank=same; MiriMeet LyraMeet ChesyMeet}
+    {rank=same; MiriQuest LyraQuest ChesyQuest}
+    {rank=same; WarnChesy WoodsEntry}
+    {rank=same; Battle1 Battle2}
+    {rank=same; WaifuMeetup VictoryParty}
+}
