@@ -1,5 +1,5 @@
 # Demon Lord's Beloved Commander - Card Game Mechanics
-**Version:** v1.17 – **Restructured Waifu Elements**  
+**Version:** v1.20 – **Soft Cascade Switching (Half Momentum on Element Change, Round Up)**  
 **Format Inspiration:** Slay the Spire (full refresh mana, no lands) + Commander singleton hybrid.  
 **Deck Size:** 60 cards total (commander separate in command zone; editable in deckbuilder menu when not in combat). Snappy 5-10 min duels.  
 **Deckbuilding:** Up to **2 copies** of any non-commander card (Echo Crystals max 3 total in deck for ramp reliability). **Subject to rarity limits below.**  
@@ -24,19 +24,23 @@ Cards (except Commanders) have 4 rarity tiers, affecting pack drops (post-duel r
 - **Starting Life:** **35** each.
 - **Starting Hand:** 7 cards.
 - **Mulligan:** Once only — shuffle deck, draw 6 cards (no further).
-- **Hand Size Limit:** Max 13 cards.
-  - **Draw Resolution (Turn Draw or Effects):** Temporarily allow up to **15 cards**. Immediately discard down to 13 if exceeded (player chooses which).
-  - **End Step Cleanup:** Discard to 13 if >13 from effects (player chooses).
-- **Draw:** 1 card/turn (**skipped if at 13 pre-draw**).
+- **Hand Size Limit:** Max **11** cards.
+  - **Draw Resolution (Turn Draw or Effects):** Temporarily allow up to **13** cards. Immediately discard down to **11** if exceeded (player chooses which).
+  - **End Step Cleanup:** Discard to **11** if >11 from effects (player chooses).
+- **Draw:** Draw cards until you have **7** cards in hand, but **minimum 1 card**.  
+  `draw_amount = max(1, 7 - current_hand_size)`.  
+  Apply hand-limit resolution immediately after drawing.
+- **Creature Attack Timing:** Every creature may attack the turn it enters the battlefield (built-in haste — no Haste keyword needed).
+- **First Turn Rule:** The starting player’s first turn has no Combat phase. The second player performs the first combat phase of the game.
 - **Commander Rules:** Waifu in command zone (1-of singleton Legendary). Recast tax: +2 mana per prior cast (cast to battlefield like creature). **Unique abilities possible.**
 - **Sorcery-Speed Only:** All cards/abilities activate in *your* main phase (no interrupts/counters/stacks).
 - **Turn Structure:** 
   1. **Untap** (untap tapped cards/abilities).
   2. **Upkeep** (full mana refresh; cascade triggers).
-  3. **Draw** (1 card; temp to 15, discard excess to 13 immediately if needed).
+  3. **Draw** (draw until 7, min 1 card; temp to 13, discard excess to 11 immediately if needed).
   4. **Main Phase** (play cards from hand, activate abilities/commander).
-  5. **Combat** (targeted blocking).
-  6. **End Step** (cleanup; final discard to 13).
+  5. **Combat** (targeted blocking — skipped on starting player’s first turn).
+  6. **End Step** (cleanup; final discard to 11).
 
 ## Mana System (Full Refresh – Explosive Starts, Starts at 3)
 - **Every Turn:** Refreshes to full current max_mana (UI: orbs fill instantly). **Starts at 3 max.**
@@ -44,40 +48,29 @@ Cards (except Commanders) have 4 rarity tiers, affecting pack drops (post-duel r
 - **Max 10:** Ramp cards/upgrades add +1 permanent (e.g., story romance, duel wins).
 - **Echo Crystals** (0-cost artifacts, **max 3 in deck**, Common): Play to battlefield (neutral, no cascade change). **Tap: Add 1 mana** (usable in main phase). **Untaps in upkeep.** **When played: If cascade >=3, permanently +1 max_mana.**
 
-## Core Target Modes (used by most effects)
-| Target Mode              | Description                                      | Common Effects That Use It                     |
-|--------------------------|--------------------------------------------------|------------------------------------------------|
-| Player (self)            | Affects the owner                                | DrawCards, GainLife, AddCascade (positive)     |
-| Player (opponent)        | Affects the enemy player                         | DealDamage (direct), ForceDiscard, Mill, LoseLife |
-| Creature (any)           | Target one creature (yours or opponent's)        | DealDamage, DestroyTarget, BuffPowerToughness  |
-| Creature (yours)         | Target one of your creatures                     | Equip, AuraAttach, AddKeyword                  |
-| Creature (opponent)      | Target one enemy creature                        | DestroyTarget, ReducePowerToughness, ForceDiscard |
-| All creatures            | Affects every creature on board                  | DestroyAll, BuffPowerToughness (mass)          |
-| All your creatures       | Mass effect on your side                         | Mass buff, AddKeyword (all yours)              |
-| All opponent creatures   | Mass effect on enemy side                        | Mass debuff, DestroyAll (opponent only)        |
-| Random opponent creature | Hits one random enemy creature                   | Chaos/ping effects                             |
-
 ## Elemental Cascade Meter (Single Chaining Momentum – Mana Cost Adds)
-**Each player has one cascade meter:** Single value (0-10) + current Element (Fire/Holy/Arcane/Nature/Shadow/None). Builds by chaining; switches less punishing via mana cost scaling.
+**Each player has one cascade meter:** Single value (0-10) + current Element (Fire/Holy/Arcane/Nature/Shadow/None). Builds by chaining; switches keep half momentum (rounded up) + new cost.
 
-- **Elements (5 Total – Balanced Coverage):**
-  | Element  | Vibe                  | Primary Waifu     | Secondary Waifu   |
-  |----------|-----------------------|-------------------|-------------------|
-  | **Fire** | Damage/sabotage      | **Nyxella**      | **Miri**         |
-  | **Holy** | Heal/removal         | **Clara**        | **Lyra**         |
-  | **Arcane**| Draw/control        | **Lyra**         | **Chesy**        |
-  | **Nature**| Ramp/creatures      | **Chesy**        | **Nyxella**      |
-  | **Shadow**| Sac/drain           | **Miri**         | **Clara**        |
+- **Elements (5 Total – Balanced Coverage):**  
+  Cards use standard MTG colors for visual clarity (mana orbs, borders, etc.).
+
+| Color | Element  | Vibe                  | Primary Waifu     | Secondary Waifu   |
+|-------|----------|-----------------------|-------------------|-------------------|
+| Red   | **Fire** | Damage/sabotage      | **Nyxella**      | **Miri**         |
+| White | **Holy** | Heal/removal         | **Clara**        | **Lyra**         |
+| Blue  | **Arcane**| Draw/control        | **Lyra**         | **Chesy**        |
+| Green | **Nature**| Ramp/creatures      | **Chesy**        | **Nyxella**      |
+| Black | **Shadow**| Sac/drain           | **Miri**         | **Clara**        |
 
 - **Building Cascade (On Play Any Non-Neutral Card):**
   - If card's element **matches current** → cascade += **card's mana cost** (cap at 10).
-  - Else → **reset cascade = card's mana cost**, set current = card's element (cheap switches lose less).
-  - **0-cost Cascade Cards:** +0 to cascade (payoff only).
+  - Else → cascade = **ceil(current cascade / 2) + card's mana cost** (round up for odd numbers), set current element to the card's element.
+  - **0-cost cards:** Add 0 after the half-loss (still switch element).
   - Neutral (Echo Crystals): No cascade change.
-  - **UI:** Single ProgressBar (0-10) + glowing element icon/color.
+  - Special cards may exist that switch element **without any cascade loss**.
 
 - **Upkeep Triggers** (Auto-resolve flavor bonuses, tied to current element; **converts cost 1 mana**):
-  - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = current/2 (rounded down)" **(costs 1 mana)**.
+  - E.g., "If current=Nature and cascade >=5, +1 mana." "Convert: Switch to Holy, cascade = ceil(current/2) (rounded up)" **(costs 1 mana)**.
 
 - **Spending (Main Phase Only):**
   - **Cascade Cards** (0-mana payoffs): Consume X from *current element* → effect + optional *convert* (e.g., "Consume 5 Fire: Deal 10 damage. Convert: Set current=Holy, cascade=3").
@@ -97,7 +90,7 @@ Cards (except Commanders) have 4 rarity tiers, affecting pack drops (post-duel r
 | Mill                     | amount (int)                            | Exile top X cards from opponent's library.                                              | Player (opponent)                    |
 | DestroyTarget            | -                                       | Destroy target creature.                                                                | Creature (any/opponent)              |
 | BuffPowerToughness       | power (int), toughness (int), duration  | +X/+Y (EOT or permanent).                                                              | Creature (yours/any), All            |
-| AddKeyword               | keyword (string), duration              | Add keyword (e.g., "Trample", "Ward 2").                                                | Creature (yours), All your           |
+| AddKeyword               | keyword (string), duration              | Add keyword (e.g., "Trample", "Endure").                                                | Creature (yours), All your           |
 | CreateToken              | power/toughness (int,int), count (int), subtype | Summon X P/T tokens (e.g., "2/2 Elf").                                                  | Player (self)                        |
 | AddCascade               | amount (int)                            | +X cascade (no element switch).                                                         | Player (self)                        |
 | ForceDiscard             | amount (int)                            | Opponent discards X cards (random or choose).                                           | Player (opponent)                    |
@@ -114,15 +107,12 @@ Cards (except Commanders) have 4 rarity tiers, affecting pack drops (post-duel r
   - Blocked: Attacker vs. blocker power/toughness (lethal destroys immediately).
 - **Multi-block:** Optional; assign 1 damage per blocker sequentially.
 - **Trample:** Excess damage after lethal to blocker spills to player.
-- **No First Strike/Double Strike:** Simultaneous.
 
 - **Keywords** (Simple icons):
   | Keyword      | Effect                                      |
   |--------------|---------------------------------------------|
   | **Trample**  | Excess damage after blocker dies → player.  |
   | **Endure**   | Can't be destroyed by damage < power.       |
-  | **Ward X**   | Attacker pays X or can't target.            |
-  | **Haste**    | Attacks untapped turn played.               |
   | **Vigilance**| Attacks without tapping.                    |
 
 ## Waifu-Tagged Cards (Player-Exclusive Power)
@@ -159,28 +149,27 @@ Cards can have a **waifu** tag (format: "waifu:[WaifuName]", e.g., "waifu:Miri")
 | **Nyxella (L)** | Fire/Nature    | Damage swarm + creature overwhelm       | Burn pings, fast boards/ramp      |
 
 ## Example Duel: 2 Full Turns (Player: Miri Shadow/Fire vs. Opponent: Clara Holy/Shadow)
-**Turn 1 Player (Miri L, start cascade=None, mana=3):**
-- Upkeep: Refresh mana=3.
-- Draw: 1 card (hand=8).
-- Main: Play Echo Crystal C (0 mana). Play 3-mana Fire spell U → cascade=3 Fire.
-- Combat: No creatures.
+**Turn 1 Player (Miri L, start cascade=None, mana=3):**  
+- Upkeep: Refresh mana=3.  
+- Draw: draw until 7.  
+- Main: Play Echo Crystal C (0 mana). Play 3-mana Fire spell U → cascade=3 Fire.  
+- Combat: Skipped (first turn rule).  
 - End: Hand cleanup if needed.
 
-**Turn 1 Opponent (Clara L):** Similar: Builds Holy cascade=4.
+**Turn 1 Opponent (Clara L):** Full turn including first combat phase of the game.
 
-**Turn 2 Player:**
-- Upkeep: Refresh mana=3.
-- Draw: 1.
-- Main: Play waifu:Miri Fire R (matches → cascade=6 Fire). Spend 4 Fire: Deal 8 (Clara=27). Play Echo (cascade>=3: +1 max_mana=4).
-- Combat: Attack with tokens if any.
+**Turn 2 Player:**  
+- Upkeep: Refresh mana=3.  
+- Draw: until 7.  
+- Main: Play waifu:Miri Fire R (matches → cascade=7 Fire). Spend 5 Fire on payoff.  
+- Combat: Full combat.  
 - End.
 
 ## Godot Implementation Notes
 - **Rarity:** Card.rarity enum/string. Deck editor: `sum(rarity_counts[R]) <=12`. Packs: Weighted random.
 - **Commanders:** `card.is_commander` flag; parse unique abilities via script nodes/custom dicts.
 - **Waifu Tags:** `if "waifu:" + commander in card.tags`. AI: `!tags.has("waifu:") && rarity <= R`.
-- **Cascade/UI:** Waifu cards glow; rarity icons in hand/deck view.
+- **Cascade:** On element switch use `ceil(current / 2) + new_cost`. Special no-loss swap cards bypass the half-loss. Upkeep converts also use ceil.
+- **Combat:** Skip combat phase on starting player’s Turn 1. All creatures have built-in attack-on-play (no Haste keyword).
 - **Elements:** Updated pri/sec mappings; alignment checks use new table.
-- **Balance:** Rarity gates power; Commanders ~20% power from uniques.
-
-**Balance Notes:** Rarity gates power; test pack economy, AI vs. max Mythic decks. New elements balance dual coverage.
+- **Balance:** Rarity gates power; test pack economy, AI vs. max Mythic decks. Hand size now 11 (max temp 13).

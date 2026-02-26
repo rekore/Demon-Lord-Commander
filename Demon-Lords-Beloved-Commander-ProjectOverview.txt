@@ -23,16 +23,6 @@ In a dark fantasy realm torn by eternal conflict, factions vie for dominance ami
 ## Protagonist & Possession Mechanic
 The protagonist is a young human male, a battle-hardened adventurer or soldier returning from a failed expedition. Exhausted and near death, he discovers the Demon Lord's orb, which possesses him to survive. The possession mechanic involves a corruption meter (0-100) that increases through choices, dialogues, and battle outcomes. Low corruption maintains the protagonist's humanity, leading to heroic paths; high corruption amplifies demonic traits, unlocking powerful but risky abilities. The Demon Lord appears as a voice/orb in early acts, weak and friendly to build trust, offering guidance during recovery. Over time, it influences decisions via Dialogic choices, with variables tracking loyalty to waifus and overall alignment. Possession effects include modified stats in cards (e.g., +damage at high corruption) and story triggers for explicit scenes or betrayals.
 
-## Main Waifus (Legendary Commanders)
-These are recruitable allies who serve as commanders in card battles, each with unique abilities, story arcs, and romance paths. They are legendary figures from various factions, drawn to the protagonist via the Demon Lord's aura. Loyalty/Corruption levels affect their card buffs and endings.
-
-- **Miri**: Blue-haired childhood best friend yandere. A human mage with obsessive loyalty; her arc involves jealousy-driven plots and possessive romance. Commander ability: Enhances control cards (e.g., +draw on possess effects). Appearance: Slender, piercing blue eyes, magical robes.
-
-- **Nyxelle**: Eccentric shadow sorceress from the demonic realms. Loyal but oblivious to social norms, she conflates the Demon Lord and protagonist as one entity. Her personality is whimsical yet devoted, with minimal emotional growth—focusing on chaotic magic and playful seduction. Arc: Starts as a mysterious ally, deepens through corruption-influenced dates. Commander ability: Boosts cascade mechanics (elemental chain reactions). Appearance: Long dark hair, pale skin, ornate black attire with runes; curvaceous and alluring.
-
-- **Chesy**: Tribal warrior princess from the Beast Tribes. Inspired by fierce guardians like Ghislane, but less mature—impulsive, honorable, and under pressure from her clan's expectations. She's a melee powerhouse with a code of strength, gradually building trust through battles and vulnerability-sharing moments. Arc: Begins wary of the possession, evolves into a protective bond with explicit warrior-ritual scenes. Commander ability: Amplifies breakthrough (trample-like) and endure (vigilance) keywords. Appearance: Muscular build, wild red hair, tribal armor with fur accents; scars from battles.
-
-- **Additional Waifus (To Be Expanded)**: Include a saintess-type healer (human faction, purity vs. corruption conflict), an elven archer (stealth and nature affinity), and a dwarven engineer (tech/magic hybrid). Each has 18+ scenes, branching dialogues, and card synergies.
 
 ## Core UI Scaling & Layout Rules (Resolution-Independent Design)
 All UI (VN scenes, Dialogic overlays, card battlefield, menus, HUD) built to scale cleanly from 720p to 4K/ultrawide/mobile without manual tweaks. Design at 1920×1080, but never rely on absolute pixels for positioning/sizing.

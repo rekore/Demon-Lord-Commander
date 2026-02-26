@@ -136,6 +136,80 @@
         "flavor_text": "",
         "primary_secondary": "Fire/Nature"
     },
+
+
+    
+  {
+    "name": "Nyxella B",
+    "rarity": "L",
+    "element": "Fire",
+    "mana_cost": 6,
+    "type": "Commander",
+    "power": 5,
+    "toughness": 5,
+    "effects": ["Unique: Fire damage effects also gain life equal to half the damage dealt (Holy embrace). Holy card plays create a 1/1 Sparkly Demon token with Haste if current cascade is Fire."],
+    "keywords": [],
+    "waifu_tag": "waifu:Nyxella",
+    "flavor_text": "Wings and flames tangle after our first night.",
+    "notes": "Primary Element: Fire, Secondary Element: Holy, Unique Ability: Fire damage heals half, Holy creates hasty Sparkly Demon tokens on Fire cascade"
+  },
+  {
+    "name": "Miri B",
+    "rarity": "L",
+    "element": "Arcane",
+    "mana_cost": 5,
+    "type": "Commander",
+    "power": 4,
+    "toughness": 5,
+    "effects": ["Unique: Arcane draw or control effects ForceDiscard 1 from opponent (yandere insight). Shadow cards gain Drain (gain life equal to damage dealt) if current cascade is Arcane."],
+    "keywords": [],
+    "waifu_tag": "waifu:Miri",
+    "flavor_text": "Still marked by you in the shadows.",
+    "notes": "Primary Element: Arcane, Secondary Element: Shadow, Unique Ability: Arcane draw discards opponent, Shadow gains drain on Arcane cascade"
+  },
+  {
+    "name": "Clara B",
+    "rarity": "L",
+    "element": "Fire",
+    "mana_cost": 6,
+    "type": "Commander",
+    "power": 6,
+    "toughness": 6,
+    "effects": ["Unique: Holy lifegain effects also DealDamage 3 to opponent (fiery zeal). Fire damage effects GainLife equal to half the damage and apply Bleed 1 if current cascade is Holy."],
+    "keywords": [],
+    "waifu_tag": "waifu:Clara",
+    "flavor_text": "Purity burns away in your fire.",
+    "notes": "Primary Element: Fire, Secondary Element: Holy, Unique Ability: Holy lifegain burns opponent, Fire damage heals and bleeds on Holy cascade"
+  },
+  {
+    "name": "Lyra B",
+    "rarity": "L",
+    "element": "Fire",
+    "mana_cost": 5,
+    "type": "Commander",
+    "power": 4,
+    "toughness": 4,
+    "effects": ["Unique: Fire damage effects DrawCards 1 (explosive revelation). Arcane control or draw effects DealDamage 2 to random opponent creature if current cascade is Fire."],
+    "keywords": [],
+    "waifu_tag": "waifu:Lyra",
+    "flavor_text": "Don’t you dare stop now.",
+    "notes": "Primary Element: Fire, Secondary Element: Arcane, Unique Ability: Fire damage draws, Arcane control pings on Fire cascade"
+  },
+  {
+    "name": "Chesy B",
+    "rarity": "L",
+    "element": "Holy",
+    "mana_cost": 5,
+    "type": "Commander",
+    "power": 5,
+    "toughness": 6,
+    "effects": ["Unique: Holy lifegain effects create a 1/1 Beast token (blessed kin). Nature ramp or token summons GainLife 2 and grant Endure to all your creatures if current cascade is Holy."],
+    "keywords": [],
+    "waifu_tag": "waifu:Chesy",
+    "flavor_text": "Holy heat claims his mate.",
+    "notes": "Primary Element: Holy, Secondary Element: Nature, Unique Ability: Holy lifegain spawns Beasts, Nature ramp gains life + Endure on Holy cascade"
+  }
+
     {
         "name": "Imp Scorcher",
         "rarity": "C",
