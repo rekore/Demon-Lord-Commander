@@ -15,13 +15,13 @@
   - Tools: Sorting/filtering by type, cost, archetype, keyword; favorites; templates for quick swaps.
 - **Deck Usage**: Select one deck per mission. Can't change mid-mission (encourages planning around mission effects/length).
 - **Card Acquisition/Removal**:
-  - Add cards via rewards (common after short/medium, rarer/epic bosses).
+  - Add cards via rewards (common after short/medium, rarer/epic bosses), including **Card Packs** (see Progression & Economy).
   - Removal/Upgrades: Available in hub (smithy, shrine, etc.)—costs gold, favors, or waifu-specific resources.
   - **Duplicate Handling (Post-Collection)**: Once the player has collected **4 copies** of any card in their Library, any additional copies of that card received as rewards are automatically converted into **Waifu Skin Currency** instead of being added to the Library:
     - Common card duplicate → 1 Skin Currency
     - Mythic card duplicate → 20 Skin Currency
     - (Rarities in between and exact skin costs to be determined later)
-  - **Note**: *Add systems to prevent extreme bloat (e.g., "retire for relic" mechanic, archetype-locked upgrades).*
+  - **Note**: *Add systems to prevent extreme bloat (e.g., "retire for gift" mechanic, archetype-locked upgrades).*
 
 ## 3. Combat Mechanics (Core Loop)
 - Turn-based, mana-based card play (inspired by Slay the Spire).
@@ -37,42 +37,55 @@
   - Incoming damage first depletes player's current **Block** (temporary shield that resets to 0 at start of player turn unless modified).
   - After Block is depleted, damage hits player's **HP**.
   - **Summons** (if active) take damage **only after** player Block is gone and before player HP is hit (they act as an additional damage buffer layer).
-- Keywords/mechanics to include (**expandable list**—core effects on cards, relics, waifus, mission modifiers):
-  - **Buffs (Player-scaling positives, usually stackable)**:
-    - Strength: +X damage on all Attacks this combat (or next few turns).
-    - Dexterity: +X Block on all Skills this combat.
-    - Vigor / Focus / archetype scalers (e.g., +X Bleed/Poison applied).
-    - Artifact: Immune to debuffs for X turns.
-  - **Debuffs (Enemy-scaling negatives, visible on intents)**:
-    - Vulnerable: Enemy takes +50% damage.
-    - Weak: Enemy deals -25–40% damage.
-    - Poison / Bleed: DoT stacks, damage at start/end of enemy turn.
-    - Frail: Reduced Block gain.
-  - **Card Flow & Economy Manipulation**:
-    - Draw +X cards (immediate or end-of-turn).
-    - Discard X cards (from hand; can be targeted or random).
-    - Exhaust: Card removed from combat (to Exhaust pile; can't be redrawn this fight).
-    - Retain: Card stays in hand instead of discarding at end of turn.
-    - Copy: Create a temporary duplicate of a card in hand/discard/draw pile (often Exhausts after play).
-    - Scry X: Look at top X cards, discard/keep/rearrange some.
+- **Core Card Effects & Keywords** (comprehensive expandable foundation – designed to support hundreds of unique card designs):
+  - Most cards combine **1–3 effects** from different categories below + archetype flavor (bleed, fire, summon, shadow, etc.).
+  - **Mana Generation & Manipulation** (mana-gain cards):
+    - Gain +X Mana this turn (or next turn).
+    - Permanent +1 Mana for the combat.
+    - Mana Ramp (gain +1 Mana each turn, stacking).
+    - Refund Mana on conditions (e.g., “If this kills an enemy, refund 2 Mana”).
+    - Mana Drain (steal mana from enemy intents or convert enemy buffs into your mana).
+    - Conditional mana burst (e.g., “Gain 3 Mana if you have a summon alive”).
+  - **Sacrifice & Self-Harm Effects** (dark fantasy “blood pact” cards – hurt yourself for huge enemy debuffs/power):
+    - Pay HP to apply strong debuffs (e.g., “Lose 8 HP: Apply 4 Vulnerable and 3 Weak to all enemies”).
+    - Self-damage for massive damage spikes or status (e.g., “Lose 10 HP: Deal 25 damage to all enemies”).
+    - Sacrifice cards from hand/discard to trigger effects.
+    - Convert HP into Mana, Block, or extra draws (“Lose 5 HP: Gain 2 Mana and draw 2 cards”).
+    - Blood Magic triggers (“Whenever you lose HP this turn, apply +1 Bleed to all enemies”).
+  - **Buffs (Player-scaling positives)**:
+    - Strength, Dexterity, Vigor, Focus, archetype scalers.
+    - Temporary or permanent stacking buffs.
+  - **Debuffs & Status Effects**:
+    - Vulnerable, Weak, Frail.
+    - Poison, Bleed, Corruption, Decay, Curse stacks.
+    - Stun, Freeze, Taunt, Mark (sets up follow-up damage).
+    - Haunted / Possessed (negative triggers on enemy).
+  - **Card Flow & Manipulation**:
+    - Draw +X, Discard X, Exhaust, Retain, Copy, Scry X.
+    - Mill (force discard on self or enemy effects).
+    - Recycle from Exhaust or Discard pile.
   - **Turn & Action Economy**:
-    - Extra Turn: Immediately take another full turn (very high-power, rare; often costs big resources or has backlash).
-    - Gain Mana: +X Mana this turn or permanent in combat.
-    - Lose Mana: Penalty (mission modifiers or curses).
-  - **Persistent / Power Effects**:
-    - Power cards grant ongoing effects (e.g., at start of turn: draw 1, gain 1 Strength).
-    - **Summons / Minions**:
-      - Summon cards create temporary creatures on the field (max **3 summons** active at once; new summons beyond limit replace oldest or fail).
-      - Summons have their own HP and take damage **after player Block is depleted** but **before player HP** is hit.
-      - Summons can have:
-        - On-summon effects (immediate trigger).
-        - While-alive field effects (e.g., "While this summon is alive, your Block does not reset at the start of your turn", "Enemies deal -X damage", "Gain +1 Mana at start of turn").
-        - On-death effects (trigger when killed).
-      - Summons usually Exhaust or auto-remove at end of combat.
-  - **Special / Waifu-Synergy Triggers**:
-    - On Play / On Exhaust / On Discard triggers (e.g., "Whenever you Exhaust a card, gain 3 Block").
-    - Archetype bonuses (e.g., "Bleed cards gain +1 if a bonded waifu is active").
-    - Curse / Backlash: Powerful effects that add negative cards to deck or reduce max HP.
+    - Extra Turn (rare, high-risk).
+    - Extra card plays per turn.
+    - Skip enemy turn (very rare).
+  - **Persistent / Power Effects & Summons**:
+    - Power cards grant ongoing effects (e.g., “At start of turn: draw 1, gain 1 Strength”).
+    - **Summons / Minions** (max 3 active):
+      - On-summon, While-alive field effects, On-death effects.
+      - Can be sacrificed for big payoffs.
+  - **Healing & Life Manipulation**:
+    - Direct healing.
+    - Lifesteal (damage = heal).
+    - Max HP increases (temporary or permanent).
+    - Damage transfer (player → summon or enemy).
+  - **Reaction & Trigger Effects**:
+    - On Play / On Exhaust / On Discard / On Summon / When taking damage / When enemy attacks.
+  - **Multi-Target, Area & Special**:
+    - Hit all enemies.
+    - Chain / random target effects.
+    - Transform card types temporarily.
+    - Generate curses or negative cards.
+- **Design Note**: Powerful effects (extra turn, big self-damage, massive mana ramps) must carry meaningful risk or cost to preserve the dark fantasy tone and tight decision-making. Effects scale with waifus, summons, and mission modifiers for extra depth.
 - Enemy intents visible (damage preview, buffs, etc.).
 - Win condition: Reduce all enemies to 0 HP.
 - Player HP: Persistent max HP (increases via story/gifts); current HP carries between battles in a mission unless rested/healed.
@@ -86,17 +99,17 @@ Four styles by length/difficulty:
 - **Long**: 9 battles, 2 rests. Endurance test.
 - **Epic**: 12 battles, 2 rests. Saga-level, high stakes/rewards.
 - **Rest Sites**: Between battles—options like:
-  - Heal HP: Base recovery of 25% of max HP (can be buffed by outside sources such as waifus, gifts, or modifiers).
+  - Heal HP (base 25% of max HP; can be increased via gifts, cards, waifu effects, or other sources).
   - Remove curse card.
   - Minor upgrade/draw cards.
 - **Mission-Specific Effects/Modifiers**:
   - Environmental (e.g., "Cursed Forest: All cards cost +1 if not shadow-typed").
-  - Waifu-tied (e.g., with bonded waifu: Bleed deals extra, but rests empower enemies).
+  - Waifu-tied (e.g., with selected waifu: Certain archetype deals extra, but rests empower enemies).
   - Scaling (longer missions = tougher enemy buffs per battle).
   - **Note**: *Each mission has 1-3 modifiers chosen based on story/waifu/region. Effects encourage deck swaps.*
 
 ## 5. Waifu System (Passive & Synergy Layer)
-- 5 recruitable waifus, each with unique archetype/effect (as previously defined).
+- 5 recruitable waifus, each with unique archetype/effect.
 - **Bond Level**: Increases via rests, gifts, choices—scales effect strength (low = neutral/weak; high = powerful + risks).
 - **Mission Waifu Selection**:
   - Before starting a mission, the player selects **one Main Waifu** whose full passive/synergy effects are active throughout the mission.
@@ -104,15 +117,19 @@ Four styles by length/difficulty:
   - Backup Waifus provide **weaker/secondary synergy effects** (exact mechanics TBD), adding another layer of strategic depth and encouraging consideration of waifu combinations.
   - Main Waifu determines the primary thematic/strength direction of the run; Backups offer complementary bonuses or situational triggers.
   - (Potential future: rivalries, exclusions, or bond penalties for certain combinations to be decided later.)
-- **Activation**: Waifus provide global passives/gift-like effects during missions they're selected for (Main + Backups).
+- **Activation**: Waifus provide global passives/relic-like effects during missions they're selected for (Main + Backups).
 - **Dark Fantasy Twist**: Low bond = drawbacks (curse cards, mana penalties, betrayal events).
-- **Synergies**: Certain cards trigger extra effects if the Main Waifu (or potentially Backups) is bonded/high bond (e.g., bleed cards with bonded waifu = lifesteal; summon cards gain bonus HP or effects with certain waifus).
+- **Synergies**: Certain cards trigger extra effects if the Main Waifu (or potentially Backups) is bonded/high bond (e.g., archetype cards gain bonuses; summon cards gain bonus HP or effects with certain waifus).
 - **Note**: *Decide exact strength difference between Main and Backup effects, and whether Backups can trigger at reduced potency or only under specific conditions.*
 
 ## 6. Progression & Economy
-- **Rewards**: Cards (to library), gifts (permanent passives), **card packs** (multiple colors/tiers – higher-tier colors increase the chance of rare cards), waifu gifts, story unlocks, **Waifu Skin Currency** (from duplicate cards beyond 4 copies).
+- **Rewards**: Cards (to library), **Gifts** (permanent passives, gained from mission completions, NPC quests, treasure finds, events), gold, waifu gifts, story unlocks, **Waifu Skin Currency** (from duplicate cards beyond 4 copies), **Card Packs**.
+- **Card Packs**:
+  - Mission rewards can include packs of various color/tier levels.
+  - Higher color scale = increased chance of rare, epic, mythic, or special cards.
+  - Opening packs adds cards directly to the Library (with duplicate conversion rules applying).
 - **Hub Town/Camp**: Deck editing, shop, upgrades, waifu interactions (including skin equipping), mission board.
-- **Gifts**: Permanent bonuses (e.g., +1 mana, artifact draw, archetype boosts, summon HP bonuses). Obtained from completing missions via NPCs or found in treasure.
+- **Gifts**: Permanent passive bonuses (e.g., +1 mana, improved draw, archetype boosts, summon HP bonuses) replacing previous relic system.
 - **Archetypes/Keywords**: Encourage specialization (bleed, fire, summon, control, etc.) with cross-synergies via waifus.
 - **Waifu Skins**: Cosmetic customization for waifus unlocked/purchased with Skin Currency (costs and exact currency values per rarity TBD).
 
@@ -121,6 +138,7 @@ Four styles by length/difficulty:
 - Persistent library = long-term identity; deck caps + 4-copy limit force curation.
 - Mission variety + modifiers + waifu selection (Main + Backups) + summon management = reason to maintain multiple decks and strategies.
 - Dark tone: Risk/reward in everything—powerful cards/waifus/summons often have curses/backlash.
+- Who doesn’t love opening card packs? — Use pack excitement to reward progression while keeping core deck identity through curation.
 - **Expansion Points**:
   - *Full card type/keyword list refinements.*
   - *Mana & scaling details.*
@@ -129,5 +147,4 @@ Four styles by length/difficulty:
   - *Exact Backup Waifu synergy mechanics and potency.*
   - *Waifu skin costs and currency economy tuning.*
   - *Summon balance: HP values, typical durations, archetype fit.*
-  - *Card pack tier/color probabilities and contents.*
-  
+  - *Pack tier/color details, drop rates, and rarity probabilities.*
