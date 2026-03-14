@@ -1,0 +1,253 @@
+{
+  "version": "1.4",
+  "lastUpdated": "2026-03-14",
+  "cards": [
+    {
+      "id": 1,
+      "name": "Shadow Strike",
+      "type": "Attack",
+      "cost": 2,
+      "rarity": "Common",
+      "archetype": ["shadow", "bleed"],
+      "flavorText": "The blade whispers promises of pain.",
+      "artPath": "art/shadow_strike.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "DealDamage", "target": "SingleEnemy", "value": 8 },
+        { "type": "ApplyDebuff", "debuff": "Bleed", "stacks": 2, "target": "SameAsPrevious" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Blood Pact",
+      "type": "Special",
+      "cost": 1,
+      "rarity": "Rare",
+      "archetype": ["sacrifice", "mana"],
+      "flavorText": "Power demands a price in flesh.",
+      "artPath": "art/blood_pact.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "LoseHP", "value": 10, "target": "Player" },
+        { "type": "GainMana", "value": 3, "target": "Player" },
+        { "type": "ApplyDebuff", "debuff": "Vulnerable", "stacks": 3, "target": "AllEnemies" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Spectral Guardian",
+      "type": "Summon",
+      "cost": 3,
+      "rarity": "Epic",
+      "archetype": ["summon"],
+      "flavorText": "A silent watcher forged from the veil.",
+      "artPath": "art/spectral_guardian.png",
+      "playConditions": [],
+      "effects": [
+        {
+          "type": "Summon",
+          "summonName": "Spectral Guardian",
+          "summonHP": 18,
+          "summonEffects": [
+            { "type": "WhileAlive", "effect": { "type": "PreventBlockReset", "target": "Player" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Eternal Draw",
+      "type": "Skill",
+      "cost": 0,
+      "rarity": "Mythic",
+      "archetype": ["control"],
+      "flavorText": "The threads of fate unravel in your favor.",
+      "artPath": "art/eternal_draw.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "DrawCards", "value": 3 },
+        { "type": "ExtraTurn", "condition": "IfHandEmptyAfterPlay", "risk": "AddCurseCardToDeck" }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Desperate Ritual",
+      "type": "Skill",
+      "cost": 0,
+      "rarity": "Epic",
+      "archetype": ["sacrifice", "mana"],
+      "flavorText": "When all else fails, the blood answers.",
+      "artPath": "art/desperate_ritual.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "LoseHP", "value": 15, "target": "Player" },
+        { "type": "GainMana", "value": 4, "target": "Player" },
+        { "type": "DrawCards", "value": 4 }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Flame Lash",
+      "type": "Attack",
+      "cost": 2,
+      "rarity": "Common",
+      "archetype": ["fire"],
+      "flavorText": "A whip of pure inferno.",
+      "artPath": "art/flame_lash.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "DealDamage", "target": "AllEnemies", "value": 6 },
+        { "type": "ApplyDebuff", "debuff": "Burn", "stacks": 2, "target": "AllEnemies" }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Last Breath Ritual",
+      "type": "Skill",
+      "cost": 0,
+      "rarity": "Mythic",
+      "archetype": ["sacrifice", "control"],
+      "flavorText": "Only in death can true power bloom.",
+      "artPath": "art/last_breath_ritual.png",
+      "playConditions": [
+        { "type": "PlayerHPBelow", "value": 15 },
+        { "type": "HasSummonAlive", "minCount": 1 }
+      ],
+      "effects": [
+        { "type": "SacrificeAllSummons" },
+        { "type": "ApplyDebuff", "debuff": "Stun", "duration": 1, "target": "AllEnemies" },
+        { "type": "GainBlock", "value": 30 }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Cursed Offering",
+      "type": "Power",
+      "cost": 3,
+      "rarity": "Epic",
+      "archetype": ["curse", "power"],
+      "flavorText": "The dark gods always collect.",
+      "artPath": "art/cursed_offering.png",
+      "playConditions": [
+        { "type": "NoCursesInDeck" }
+      ],
+      "effects": [
+        { "type": "AddCurseToDeck", "curseId": 999, "count": 2 },
+        { "type": "PermanentBuff", "buff": "Strength", "value": 2 }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Wraith Copy",
+      "type": "Skill",
+      "cost": 1,
+      "rarity": "Rare",
+      "archetype": ["shadow", "copy"],
+      "flavorText": "What was once one now walks twice.",
+      "artPath": "art/wraith_copy.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "CopyCard", "target": "Hand", "copies": 1, "exhaustAfter": true },
+        { "type": "Exhaust" }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Mana Surge",
+      "type": "Power",
+      "cost": 2,
+      "rarity": "Common",
+      "archetype": ["mana"],
+      "flavorText": "The veil thins and power flows.",
+      "artPath": "art/mana_surge.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "GainMana", "value": 2, "target": "Player", "permanent": true }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Bleed Cascade",
+      "type": "Attack",
+      "cost": 3,
+      "rarity": "Rare",
+      "archetype": ["bleed"],
+      "flavorText": "One cut becomes a river.",
+      "artPath": "art/bleed_cascade.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "DealDamage", "target": "SingleEnemy", "value": 12 },
+        { "type": "ApplyDebuff", "debuff": "Bleed", "stacks": 4, "target": "AllEnemies" }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Sacrificial Summons",
+      "type": "Summon",
+      "cost": 4,
+      "rarity": "Epic",
+      "archetype": ["summon", "sacrifice"],
+      "flavorText": "Born to die for their master.",
+      "artPath": "art/sacrificial_summons.png",
+      "playConditions": [],
+      "effects": [
+        {
+          "type": "Summon",
+          "summonName": "Blood Wraith",
+          "summonHP": 12,
+          "summonEffects": [
+            { "type": "OnDeath", "effect": { "type": "DealDamage", "target": "AllEnemies", "value": 8 } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Scry the Void",
+      "type": "Skill",
+      "cost": 1,
+      "rarity": "Common",
+      "archetype": ["control"],
+      "flavorText": "Gaze into the abyss… it gazes back.",
+      "artPath": "art/scry_the_void.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "Scry", "value": 5 },
+        { "type": "Discard", "value": 2, "target": "Chosen" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Vampiric Embrace",
+      "type": "Attack",
+      "cost": 2,
+      "rarity": "Rare",
+      "archetype": ["bleed", "heal"],
+      "flavorText": "Take their life. Make it yours.",
+      "artPath": "art/vampiric_embrace.png",
+      "playConditions": [],
+      "effects": [
+        { "type": "DealDamage", "target": "SingleEnemy", "value": 10 },
+        { "type": "Lifesteal", "percent": 50 }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Forbidden Extra Turn",
+      "type": "Skill",
+      "cost": 4,
+      "rarity": "Mythic",
+      "archetype": ["power"],
+      "flavorText": "Time bends… but the price is eternal.",
+      "artPath": "art/forbidden_extra_turn.png",
+      "playConditions": [
+        { "type": "PlayerHPBelow", "value": 30 }
+      ],
+      "effects": [
+        { "type": "ExtraTurn" },
+        { "type": "LoseHP", "value": 20, "target": "Player" },
+        { "type": "AddCurseToDeck", "curseId": 999, "count": 3 }
+      ]
+    }
+  ]
+}

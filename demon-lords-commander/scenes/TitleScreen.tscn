@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://vgmxgsd0hx3p"]
+
+[ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="1_b5l2e"]
+[ext_resource type="Texture2D" uid="uid://bcbsooc0lq17m" path="res://assets/art/ui/title_background.png" id="1_gll47"]
+
+[node name="TitleScreen" type="Control" unique_id=1711761782]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_b5l2e")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1165691632]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_gll47")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="OverallVerticalContainer" type="VBoxContainer" parent="." unique_id=2053514023]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleHBox" type="HBoxContainer" parent="OverallVerticalContainer" unique_id=847840330]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.65
+
+[node name="Control" type="Control" parent="OverallVerticalContainer/TitleHBox" unique_id=143783681]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="OverallVerticalContainer/TitleHBox" unique_id=1723787554]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_type_variation = &"Largest"
+text = "I like big butts"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Control2" type="Control" parent="OverallVerticalContainer/TitleHBox" unique_id=524719979]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="OverallVerticalContainer" unique_id=349870777]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="OverallVerticalContainer" unique_id=1184825545]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=1516928063]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OverallVerticalContainer/ButtonsHBox" unique_id=111849327]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1605107299]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "New Game"
+
+[node name="Button2" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1425443255]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "Continue"
+
+[node name="Button3" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1033358432]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "Options"
+
+[node name="Button4" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534294]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "Quit"
+
+[node name="Control2" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=151602524]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control3" type="Control" parent="OverallVerticalContainer" unique_id=2113021936]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25

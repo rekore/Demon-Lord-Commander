@@ -1,0 +1,84 @@
+[gd_resource type="Theme" format=3 uid="uid://o7few53j10fu"]
+
+[ext_resource type="Texture2D" uid="uid://d36kwpqnthemn" path="res://assets/art/ui/buttons/button_disable.png" id="1_kdwps"]
+[ext_resource type="FontFile" uid="uid://chmakjbmt6dls" path="res://assets/fonts/Merriweather_48pt_SemiCondensed-Bold.ttf" id="1_nw6dm"]
+[ext_resource type="Texture2D" uid="uid://cp17b8e8ta16b" path="res://assets/art/ui/buttons/button_normal.png" id="2_823g4"]
+[ext_resource type="Texture2D" uid="uid://ciqluxe8a85ov" path="res://assets/art/ui/buttons/Button_Hover.png" id="3_gsf2l"]
+[ext_resource type="Texture2D" uid="uid://bfovmjyrcva2g" path="res://assets/art/ui/buttons/button_pressed.png" id="4_6qb25"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o3ya3"]
+texture = ExtResource("1_kdwps")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+expand_margin_left = 16.0
+expand_margin_right = 16.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pibni"]
+texture = ExtResource("2_823g4")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+expand_margin_left = 16.0
+expand_margin_right = 16.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xtaq"]
+texture = ExtResource("3_gsf2l")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+expand_margin_left = 16.0
+expand_margin_right = 16.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t5vw3"]
+texture = ExtResource("2_823g4")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+expand_margin_left = 16.0
+expand_margin_right = 16.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ivq4r"]
+texture = ExtResource("4_6qb25")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+expand_margin_left = 16.0
+expand_margin_right = 16.0
+
+[resource]
+default_font = ExtResource("1_nw6dm")
+default_font_size = 48
+Button/font_sizes/font_size = 48
+Button/styles/disabled = SubResource("StyleBoxTexture_o3ya3")
+Button/styles/focus = SubResource("StyleBoxTexture_pibni")
+Button/styles/hover = SubResource("StyleBoxTexture_5xtaq")
+Button/styles/normal = SubResource("StyleBoxTexture_t5vw3")
+Button/styles/pressed = SubResource("StyleBoxTexture_ivq4r")
+Buttonlarge/base_type = &"Button"
+Buttonlarge/font_sizes/font_size = 72
+Buttonlarge/fonts/font = ExtResource("1_nw6dm")
+Buttonsmall/base_type = &"Button"
+Buttonsmall/font_sizes/font_size = 32
+Buttonsmall/fonts/font = ExtResource("1_nw6dm")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Large/base_type = &"Label"
+Large/font_sizes/font_size = 84
+Large/fonts/font = ExtResource("1_nw6dm")
+Largest/base_type = &"Label"
+Largest/font_sizes/font_size = 140
+Largest/fonts/font = ExtResource("1_nw6dm")
+Medium/base_type = &"Label"
+Medium/font_sizes/font_size = 48
+Medium/fonts/font = ExtResource("1_nw6dm")
+Small/base_type = &"Label"
+Small/font_sizes/font_size = 32
+Small/fonts/font = ExtResource("1_nw6dm")
+Smallest/base_type = &"Label"
+Smallest/font_sizes/font_size = 24
+Smallest/fonts/font = ExtResource("1_nw6dm")
