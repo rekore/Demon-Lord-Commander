@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="Demon-Lords-Commander"
+run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+BattleSetupService="*res://scripts/core/battle_setup_service.gd"
+ContentDB="*res://scripts/core/content_db.gd"
+GameState="*res://scripts/core/game_state.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
+SignalBus="*res://scripts/core/signal_bus.gd"
 
 [display]
 

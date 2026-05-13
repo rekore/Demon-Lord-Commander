@@ -1,0 +1,557 @@
+[gd_scene format=3 uid="uid://dhw6hrpxp8mru"]
+
+[ext_resource type="Script" uid="uid://b77klu1nb48do" path="res://scripts/battle/battle_controller.gd" id="1_b8jqp"]
+[ext_resource type="Texture2D" uid="uid://bifuinnibgncm" path="res://assets/art/characters/femaleidlepink.png" id="2_28s16"]
+[ext_resource type="Texture2D" uid="uid://h2j384nnku1i" path="res://assets/art/characters/WaifuTest.png" id="2_rqht0"]
+[ext_resource type="Texture2D" uid="uid://dqift1ykd3udf" path="res://assets/art/cards/cardarttest.png" id="3_2i4wd"]
+[ext_resource type="Script" uid="uid://4mwcard001ab" path="res://scripts/battle/main_waifu_sprites.gd" id="4_mwcard"]
+[ext_resource type="Texture2D" uid="uid://fcn37n3eop3b" path="res://assets/art/Enemies/Test_Goblin.png" id="5_0yex5"]
+[ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="6_mtres"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ftvu5"]
+atlas = ExtResource("2_28s16")
+region = Rect2(0, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0yex5"]
+atlas = ExtResource("2_28s16")
+region = Rect2(64, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bsu3s"]
+atlas = ExtResource("2_28s16")
+region = Rect2(128, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdfhe"]
+atlas = ExtResource("2_28s16")
+region = Rect2(192, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hrc4b"]
+atlas = ExtResource("2_28s16")
+region = Rect2(256, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sgm0l"]
+atlas = ExtResource("2_28s16")
+region = Rect2(320, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a4ns4"]
+atlas = ExtResource("2_28s16")
+region = Rect2(384, 256, 64, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7acxt"]
+atlas = ExtResource("2_28s16")
+region = Rect2(448, 256, 64, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_irk3j"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_ftvu5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0yex5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bsu3s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdfhe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hrc4b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sgm0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a4ns4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7acxt")
+}],
+"loop": true,
+"name": &"Face_Left",
+"speed": 8.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_irk3j"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l1ooa"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vtyuj"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lyay3"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ikhwg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_irk3j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l1ooa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vtyuj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lyay3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="BattleScene" type="Control" unique_id=1139968580]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("6_mtres")
+script = ExtResource("1_b8jqp")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1873075791]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RootVBox" type="VBoxContainer" parent="Margin" unique_id=434828316]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="PersistentHeaderRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1941091500]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.15
+theme_override_constants/separation = 10
+
+[node name="PersistentBox1" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1902721425]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PersistentBox1Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox1" unique_id=1339330027]
+layout_mode = 2
+text = "Main Waifu Buffs"
+autowrap_mode = 3
+
+[node name="PersistentBox2" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1224308053]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PersistentBox2Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox2" unique_id=634816637]
+layout_mode = 2
+text = "Sub Waifu Theme"
+autowrap_mode = 3
+
+[node name="PersistentBox3" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1134990133]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PersistentBox3Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox3" unique_id=968231628]
+layout_mode = 2
+text = "Relics / Mission Modifiers"
+autowrap_mode = 3
+
+[node name="CombatRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1678497399]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.6
+theme_override_constants/separation = 8
+
+[node name="PlayerGroupPanel" type="PanelContainer" parent="Margin/RootVBox/CombatRow" unique_id=1407942923]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerGroupVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel" unique_id=757667519]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayerGroupHeader" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox" unique_id=2011322741]
+layout_mode = 2
+text = "Main Waifu + Summons"
+horizontal_alignment = 1
+
+[node name="PlayerCardsRow" type="HBoxContainer" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox" unique_id=1516411697]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="LeftSpacer" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=2081145537]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainWaifuCard" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=1623467849]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_mwcard")
+
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/MainWaifuCard" unique_id=2107622765]
+sprite_frames = SubResource("SpriteFrames_irk3j")
+animation = &"Face_Left"
+autoplay = "Face_Left"
+frame_progress = 0.23326762
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/MainWaifuCard" unique_id=326094890]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_type_variation = &"BattleMedium"
+text = "HP 0/0 | Block 0"
+
+[node name="Summon1Card" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=722634057]
+custom_minimum_size = Vector2(140, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon1Card" unique_id=832153979]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_2i4wd")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon1Card" unique_id=733606921]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_type_variation = &"BattleSmall"
+text = "Summon 1: Empty"
+
+[node name="Summon2Card" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=1231086605]
+custom_minimum_size = Vector2(140, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon2Card" unique_id=911409771]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_2i4wd")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon2Card" unique_id=1037794171]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_type_variation = &"BattleSmall"
+text = "Summon 2: Empty"
+
+[node name="Summon3Card" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=1823010336]
+custom_minimum_size = Vector2(140, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon3Card" unique_id=1732964868]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_2i4wd")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon3Card" unique_id=619694458]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_type_variation = &"BattleSmall"
+text = "Summon 3: Empty"
+
+[node name="RightSpacer" type="Control" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow" unique_id=673210130]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Separator" type="VSeparator" parent="Margin/RootVBox/CombatRow" unique_id=630849449]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EnemyGroupPanel" type="PanelContainer" parent="Margin/RootVBox/CombatRow" unique_id=610680207]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyGroupVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel" unique_id=181395840]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnemyGroupHeader" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox" unique_id=307829125]
+layout_mode = 2
+text = "Enemies"
+horizontal_alignment = 1
+
+[node name="EnemyCardsRow" type="HBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox" unique_id=1757267208]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="LeftSpacer" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=900000001]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyCard" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=745626231]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_mwcard")
+
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard" unique_id=1789624874]
+sprite_frames = SubResource("SpriteFrames_ikhwg")
+autoplay = "default"
+frame_progress = 0.069906525
+
+[node name="InfoVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard" unique_id=1178026732]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("6_mtres")
+
+[node name="IntentLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard/InfoVBox" unique_id=495157209]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Intent: None"
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard/InfoVBox" unique_id=1881606865]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Enemy HP 0/0 | Block 0"
+
+[node name="EnemyCard2" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=900000002]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_mwcard")
+
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard2" unique_id=900000003]
+sprite_frames = SubResource("SpriteFrames_ikhwg")
+
+[node name="InfoVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard2" unique_id=2093080243]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("6_mtres")
+
+[node name="IntentLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard2/InfoVBox" unique_id=900000005]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Intent: None"
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard2/InfoVBox" unique_id=900000004]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Enemy HP 0/0 | Block 0"
+
+[node name="EnemyCard3" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=900000006]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_mwcard")
+
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard3" unique_id=900000007]
+sprite_frames = SubResource("SpriteFrames_ikhwg")
+
+[node name="InfoVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard3" unique_id=2007432837]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("6_mtres")
+
+[node name="IntentLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard3/InfoVBox" unique_id=900000009]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Intent: None"
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard3/InfoVBox" unique_id=900000008]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Enemy HP 0/0 | Block 0"
+
+[node name="EnemyCard4" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=900000010]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_mwcard")
+
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard4" unique_id=900000011]
+sprite_frames = SubResource("SpriteFrames_ikhwg")
+
+[node name="InfoVBox" type="VBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard4" unique_id=116478255]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme = ExtResource("6_mtres")
+
+[node name="IntentLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard4/InfoVBox" unique_id=900000013]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Intent: None"
+
+[node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/EnemyCard4/InfoVBox" unique_id=900000012]
+layout_mode = 2
+theme_type_variation = &"BattleSmallest"
+text = "Enemy HP 0/0 | Block 0"
+
+[node name="RightSpacer" type="Control" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow" unique_id=900000014]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HandHudRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1129171716]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+theme_override_constants/separation = 8
+
+[node name="DrawPilePanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1766756793]
+custom_minimum_size = Vector2(110, 120)
+layout_mode = 2
+
+[node name="DrawPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DrawPilePanel" unique_id=2074469409]
+layout_mode = 2
+
+[node name="DrawPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox" unique_id=1297635307]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+texture = ExtResource("2_rqht0")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DrawPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox" unique_id=496460836]
+layout_mode = 2
+theme_type_variation = &"BattleSmall"
+text = "Draw: 0"
+horizontal_alignment = 1
+
+[node name="ManaPanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=108323673]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+
+[node name="ManaLabel" type="Label" parent="Margin/RootVBox/HandHudRow/ManaPanel" unique_id=1240327797]
+layout_mode = 2
+theme_type_variation = &"BattleSmall"
+text = "Mana: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HandPanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1324237555]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HandCards" type="HBoxContainer" parent="Margin/RootVBox/HandHudRow/HandPanel" unique_id=1054873596]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="PlayerHPPanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1180381104]
+custom_minimum_size = Vector2(130, 120)
+layout_mode = 2
+
+[node name="PlayerHPLabel" type="Label" parent="Margin/RootVBox/HandHudRow/PlayerHPPanel" unique_id=1687994754]
+layout_mode = 2
+theme_type_variation = &"BattleSmall"
+text = "HP: 0/0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscardPilePanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1401000863]
+custom_minimum_size = Vector2(110, 120)
+layout_mode = 2
+
+[node name="DiscardPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel" unique_id=1844752671]
+layout_mode = 2
+
+[node name="DiscardPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox" unique_id=867115424]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+texture = ExtResource("2_rqht0")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DiscardPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox" unique_id=85227028]
+layout_mode = 2
+theme_type_variation = &"BattleSmall"
+text = "Discard: 0"
+horizontal_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="Margin/RootVBox/HandHudRow" unique_id=1522602948]
+custom_minimum_size = Vector2(130, 120)
+layout_mode = 2
+theme_type_variation = &"BattleButton"
+text = "End Turn"

@@ -1,0 +1,47 @@
+{
+	"version": "1.0.0",
+	"waifus": [
+		{
+			"id": "waifu_chesy",
+			"display_name": "Chesy",
+			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"effects": [
+				{
+					"id": "chesy_guarding_heart",
+					"description": "Gain bonus block each turn.",
+					"type": "passive_block_per_turn",
+					"base_value": 1,
+					"per_bond": 1
+				}
+			]
+		},
+		{
+			"id": "waifu_nyx",
+			"display_name": "Nyx",
+			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"effects": [
+				{
+					"id": "nyx_shadow_fury",
+					"description": "Attack cards gain bonus damage.",
+					"type": "passive_attack_damage",
+					"base_value": 1,
+					"per_bond": 1
+				}
+			]
+		},
+		{
+			"id": "waifu_lyra",
+			"display_name": "Lyra",
+			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"effects": [
+				{
+					"id": "lyra_arcane_focus",
+					"description": "Start each turn with bonus mana.",
+					"type": "passive_start_turn_mana",
+					"base_value": 0,
+					"per_bond": 1
+				}
+			]
+		}
+	]
+}

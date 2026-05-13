@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="1_b5l2e"]
 [ext_resource type="Texture2D" uid="uid://bcbsooc0lq17m" path="res://assets/art/ui/title_background.png" id="1_gll47"]
+[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="3_eo536"]
 
 [node name="TitleScreen" type="Control" unique_id=1711761782]
 layout_mode = 3
@@ -11,6 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_b5l2e")
+script = ExtResource("3_eo536")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1165691632]
 layout_mode = 1
@@ -94,6 +96,12 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
 text = "Quit"
+
+[node name="Button5" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534295]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "Reset Save"
 
 [node name="Control2" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=151602524]
 layout_mode = 2

@@ -1,0 +1,18 @@
+{
+	"save_version": "0.1.0",
+	"selected_waifu_id": "waifu_nyx",
+	"selected_sub_waifu_id": "waifu_lyra",
+	"selected_enemy_id": "enemy_test_goblin",
+	"selected_deck_card_ids": [
+		"1", "1", "1", "1",
+		"4", "4", "7", "7",
+		"5", "5", "2", "2",
+		"10", "10", "11", "11",
+		"13", "14", "6", "8"
+	],
+	"waifu_bond_levels": {
+		"waifu_chesy": 2,
+		"waifu_nyx": 3,
+		"waifu_lyra": 1
+	}
+}

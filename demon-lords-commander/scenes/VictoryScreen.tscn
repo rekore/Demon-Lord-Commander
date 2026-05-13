@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://bgmxgsd0hx3p"]
+
+[ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="1_b5l2e"]
+[ext_resource type="Script" path="res://scripts/ui/victory_screen.gd" id="2_eo536"]
+
+[node name="VictoryScreen" type="Control" unique_id=1711761783]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_b5l2e")
+script = ExtResource("2_eo536")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1165691633]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.3, 0.1, 1)
+
+[node name="OverallVerticalContainer" type="VBoxContainer" parent="." unique_id=2053514024]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleHBox" type="HBoxContainer" parent="OverallVerticalContainer" unique_id=847840331]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Control" type="Control" parent="OverallVerticalContainer/TitleHBox" unique_id=143783682]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="OverallVerticalContainer/TitleHBox" unique_id=1723787555]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_type_variation = &"Largest"
+text = "YOU WIN"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Control2" type="Control" parent="OverallVerticalContainer/TitleHBox" unique_id=524719980]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="OverallVerticalContainer" unique_id=349870778]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="OverallVerticalContainer" unique_id=1184825546]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=1516928064]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="OverallVerticalContainer/ButtonsHBox" unique_id=1605107300]
+layout_mode = 2
+theme_type_variation = &"Buttonlarge"
+text = "Return to Title"
+
+[node name="Control2" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=151602525]
+layout_mode = 2
+size_flags_horizontal = 3

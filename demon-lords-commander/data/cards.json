@@ -1,0 +1,231 @@
+{
+	"version": "1.0.0",
+	"cards": [
+		{
+			"id": "1",
+			"name": "Shadow Strike",
+			"type": "Attack",
+			"cost": 2,
+			"rarity": "Common",
+			"archetype": ["shadow", "bleed"],
+			"associatedWaifu": "Nyx",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DealDamage", "target": "SingleEnemy", "value": 8 },
+				{ "type": "ApplyDebuff", "debuff": "Bleed", "stacks": 2, "target": "SameAsPrevious" }
+			]
+		},
+		{
+			"id": "2",
+			"name": "Blood Pact",
+			"type": "Special",
+			"cost": 1,
+			"rarity": "Rare",
+			"archetype": ["sacrifice", "mana"],
+			"associatedWaifu": "Nyx",
+			"playConditions": [],
+			"effects": [
+				{ "type": "LoseHP", "value": 10, "target": "Player" },
+				{ "type": "GainMana", "value": 3, "target": "Player" },
+				{ "type": "ApplyDebuff", "debuff": "Vulnerable", "stacks": 3, "target": "AllEnemies" }
+			]
+		},
+		{
+			"id": "3",
+			"name": "Spectral Guardian",
+			"type": "Summon",
+			"cost": 4,
+			"rarity": "Epic",
+			"archetype": ["summon"],
+			"associatedWaifu": "Miri",
+			"playConditions": [],
+			"effects": [
+				{
+					"type": "Summon",
+					"summonName": "Spectral Guardian",
+					"summonHP": 18
+				}
+			]
+		},
+		{
+			"id": "4",
+			"name": "Desperate Draw",
+			"type": "Skill",
+			"cost": 0,
+			"rarity": "Rare",
+			"archetype": ["draw", "sacrifice"],
+			"associatedWaifu": null,
+			"playConditions": [],
+			"effects": [
+				{ "type": "DrawCards", "value": 4 },
+				{ "type": "LoseHP", "value": 6, "target": "Player" }
+			]
+		},
+		{
+			"id": "5",
+			"name": "Crimson Overflow",
+			"type": "Attack",
+			"cost": 3,
+			"rarity": "Uncommon",
+			"archetype": ["bleed", "lifesteal"],
+			"associatedWaifu": "Nyx",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DealDamage", "target": "SingleEnemy", "value": 12 },
+				{ "type": "ApplyDebuff", "debuff": "Bleed", "stacks": 4, "target": "SameAsPrevious" },
+				{ "type": "Lifesteal", "percentage": 50 }
+			]
+		},
+		{
+			"id": "6",
+			"name": "Last Breath Ritual",
+			"type": "Skill",
+			"cost": 0,
+			"rarity": "Mythic",
+			"archetype": ["sacrifice", "control"],
+			"associatedWaifu": "Miri",
+			"playConditions": [
+				{ "type": "PlayerHPBelow", "value": 15 },
+				{ "type": "HasSummonAlive", "minCount": 1 }
+			],
+			"effects": [
+				{ "type": "SacrificeAllSummons" },
+				{ "type": "ApplyDebuff", "debuff": "Stun", "duration": 1, "target": "AllEnemies" },
+				{ "type": "GainBlock", "value": 30 }
+			]
+		},
+		{
+			"id": "7",
+			"name": "Mana Leech",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["mana", "debuff"],
+			"associatedWaifu": null,
+			"playConditions": [],
+			"effects": [
+				{ "type": "GainMana", "value": 2 },
+				{ "type": "ApplyDebuff", "debuff": "Weak", "stacks": 2, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "8",
+			"name": "Exhausting Curse",
+			"type": "Power",
+			"cost": 2,
+			"rarity": "Rare",
+			"archetype": ["exhaust", "control"],
+			"associatedWaifu": "Lyra",
+			"playConditions": [],
+			"effects": [
+				{ "type": "ExhaustRandomCard", "count": 1, "target": "PlayerHand" },
+				{ "type": "ApplyDebuff", "debuff": "Frail", "stacks": 3, "target": "AllEnemies" }
+			]
+		},
+		{
+			"id": "9",
+			"name": "Soulbound Wraith",
+			"type": "Summon",
+			"cost": 5,
+			"rarity": "Epic",
+			"archetype": ["summon", "sacrifice"],
+			"associatedWaifu": "Miri",
+			"playConditions": [],
+			"effects": [
+				{
+					"type": "Summon",
+					"summonName": "Soulbound Wraith",
+					"summonHP": 25
+				}
+			]
+		},
+		{
+			"id": "10",
+			"name": "Forbidden Knowledge",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Uncommon",
+			"archetype": ["draw", "curse"],
+			"associatedWaifu": "Lyra",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DrawCards", "value": 5 },
+				{ "type": "AddCurseToDeck", "curseId": "999", "count": 1 }
+			]
+		},
+		{
+			"id": "11",
+			"name": "Vitality Siphon",
+			"type": "Attack",
+			"cost": 3,
+			"rarity": "Rare",
+			"archetype": ["lifesteal", "debuff"],
+			"associatedWaifu": "Nyx",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DealDamage", "target": "SingleEnemy", "value": 15 },
+				{ "type": "Lifesteal", "percentage": 100 },
+				{ "type": "ApplyDebuff", "debuff": "Poison", "stacks": 3, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "12",
+			"name": "Eternal Vigil",
+			"type": "Power",
+			"cost": 4,
+			"rarity": "Mythic",
+			"archetype": ["persistent", "block"],
+			"associatedWaifu": "Chesy",
+			"playConditions": [],
+			"effects": [
+				{ "type": "PermanentBuff", "buff": "Dexterity", "value": 2 },
+				{ "type": "AtStartOfTurn", "effect": { "type": "GainBlock", "value": 8 } }
+			]
+		},
+		{
+			"id": "13",
+			"name": "Self-Immolation",
+			"type": "Special",
+			"cost": 2,
+			"rarity": "Epic",
+			"archetype": ["sacrifice", "aoe"],
+			"associatedWaifu": "Clara",
+			"playConditions": [],
+			"effects": [
+				{ "type": "LoseHP", "value": 20, "target": "Player" },
+				{ "type": "DealDamage", "target": "AllEnemies", "value": 18 }
+			]
+		},
+		{
+			"id": "14",
+			"name": "Echo of the Void",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["copy", "exhaust"],
+			"associatedWaifu": null,
+			"playConditions": [],
+			"effects": [
+				{ "type": "CopyCard", "target": "PlayerHand", "count": 1, "exhaustCopy": true },
+				{ "type": "Exhaust", "target": "ThisCard" }
+			]
+		},
+		{
+			"id": "15",
+			"name": "Abyssal Overload",
+			"type": "Attack",
+			"cost": 5,
+			"rarity": "Mythic",
+			"archetype": ["extra-turn", "high-risk"],
+			"associatedWaifu": "Clara",
+			"playConditions": [
+				{ "type": "PlayerHPBelow", "value": 30 }
+			],
+			"effects": [
+				{ "type": "DealDamage", "target": "AllEnemies", "value": 25 },
+				{ "type": "ExtraTurn" },
+				{ "type": "AddCurseToDeck", "curseId": "999", "count": 2 }
+			]
+		}
+	]
+}

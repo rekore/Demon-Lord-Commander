@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"enemies": [
+		{
+			"id": "enemy_test_goblin",
+			"name": "Test Goblin",
+			"max_hp": 20,
+			"sprite_anchor": "bottom",
+			"intents": [
+				{ "pattern_id": "light_attack" }
+			]
+		},
+		{
+			"id": "enemy_rogue_knight",
+			"name": "Rogue Knight",
+			"max_hp": 48,
+			"sprite_anchor": "bottom",
+			"intents": [
+				{ "pattern_id": "heavy_attack" },
+				{ "pattern_id": "guard_up" },
+				{ "pattern_id": "double_attack" }
+			]
+		}
+	]
+}
