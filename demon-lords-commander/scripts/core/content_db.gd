@@ -153,6 +153,11 @@ func _validate_card_schema(card: Dictionary) -> PackedStringArray:
 		if not V1_SUPPORTED_EFFECTS.has(effect_type):
 			has_unsupported_effect = true
 
+	if card.has("art_path") and not (card["art_path"] is String):
+		errors.append("Field 'art_path' must be a string.")
+	if card.has("border_path") and not (card["border_path"] is String):
+		errors.append("Field 'border_path' must be a string.")
+
 	card["supported_in_v1"] = not has_unsupported_effect
 	return errors
 

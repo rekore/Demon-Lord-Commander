@@ -61,6 +61,7 @@ flowchart TD
 ### Battle Sub-Services (used by BattleController, not direct entry points)
 
 - `CardPlayService`: card play pipeline — mana cost, effect resolution, discard.
+- `CardUI` (`card_ui.gd` + `Card.tscn`): reusable card scene — border, art, name, mana cost, effect text, scaling presets.
 - `EffectResolver`: combat math (damage formulas, block, card attack bonuses).
 - `TurnManager`: draw/discard pile utilities (shuffling, hand limits).
 - `BattleStateMachine`: explicit battle phase enforcement (round_start → player_turn → enemy_turn → end_check).
@@ -90,33 +91,35 @@ flowchart TD
 
 8. `demon-lords-commander/scripts/battle/battle_controller.gd`
 9. `demon-lords-commander/scripts/battle/card_play_service.gd`
-10. `demon-lords-commander/scripts/battle/effect_resolver.gd`
-11. `demon-lords-commander/scripts/battle/turn_manager.gd`
-12. `demon-lords-commander/scripts/battle/battle_state_machine.gd`
-13. `demon-lords-commander/scripts/battle/enemy_ai.gd`
-14. `demon-lords-commander/scripts/battle/enemy_library.gd`
-15. `demon-lords-commander/scripts/battle/intent_library.gd`
+10. `demon-lords-commander/scripts/battle/card_ui.gd` + `scenes/Card.tscn`
+11. `demon-lords-commander/scripts/battle/effect_resolver.gd`
+12. `demon-lords-commander/scripts/battle/turn_manager.gd`
+13. `demon-lords-commander/scripts/battle/battle_state_machine.gd`
+14. `demon-lords-commander/scripts/battle/enemy_ai.gd`
+15. `demon-lords-commander/scripts/battle/enemy_library.gd`
+16. `demon-lords-commander/scripts/battle/intent_library.gd`
 
 ### UI / Presentation
 
-16. `demon-lords-commander/scripts/ui/title_screen.gd`
-17. `demon-lords-commander/scripts/ui/victory_screen.gd`
-18. `demon-lords-commander/scripts/battle/main_waifu_sprites.gd`
+17. `demon-lords-commander/scripts/ui/title_screen.gd`
+18. `demon-lords-commander/scripts/ui/victory_screen.gd`
+19. `demon-lords-commander/scripts/battle/main_waifu_sprites.gd`
 
 ### Scenes
 
-19. `demon-lords-commander/scenes/Main.tscn`
-20. `demon-lords-commander/scenes/TitleScreen.tscn`
-21. `demon-lords-commander/scenes/BattleScene.tscn`
-22. `demon-lords-commander/scenes/VictoryScreen.tscn`
+20. `demon-lords-commander/scenes/Main.tscn`
+21. `demon-lords-commander/scenes/TitleScreen.tscn`
+22. `demon-lords-commander/scenes/BattleScene.tscn`
+23. `demon-lords-commander/scenes/VictoryScreen.tscn`
+24. `demon-lords-commander/scenes/Card.tscn` — reusable card UI template (border, art, name, mana cost, effect text)
 
 ### Data / Content
 
-23. `demon-lords-commander/data/cards.json`
-24. `demon-lords-commander/data/waifus.json`
-25. `demon-lords-commander/data/enemies.json`
-26. `demon-lords-commander/data/save_template.json`
-27. `demon-lords-commander/assets/art/ui/MainTheme.tres`
+25. `demon-lords-commander/data/cards.json`
+26. `demon-lords-commander/data/waifus.json`
+27. `demon-lords-commander/data/enemies.json`
+28. `demon-lords-commander/data/save_template.json`
+29. `demon-lords-commander/assets/art/ui/MainTheme.tres`
 
 ## Edit Rules (Modular Workflow)
 
@@ -149,7 +152,7 @@ Before any substantive edit:
 1. Read `Demon-Lords-Beloved-Commander-ProjectOverview.txt`.
 2. Read `newcardrulesbeta.md`.
 3. Confirm the feature owner system from this map.
-4. Check the **File Priority** list above — all project `.gd`, `.tscn`, `.json`, and `.tres` files are documented there.
+4. Check the **File Priority** list above — all 29 project `.gd`, `.tscn`, `.json`, and `.tres` files are documented there.
 5. Add/adjust `SignalBus` contract before wiring downstream behavior.
 
 ## Session Continuity

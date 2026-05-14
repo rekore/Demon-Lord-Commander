@@ -134,6 +134,7 @@ func _to_runtime_card(source_card: Dictionary) -> Dictionary:
 	}
 
 	var effects: Array = source_card.get("effects", [])
+	runtime_card["effects"] = effects.duplicate(true)
 	for raw_effect: Variant in effects:
 		if not (raw_effect is Dictionary):
 			continue
@@ -159,7 +160,8 @@ func _fallback_deck() -> Array[Dictionary]:
 			"name": "Strike",
 			"cost": 1,
 			"type": "attack",
-			"damage": 6
+			"damage": 6,
+			"effects": [{"type": "DealDamage", "target": "SingleEnemy", "value": 6}]
 		})
 	for i: int in range(8):
 		deck.append({
@@ -167,6 +169,7 @@ func _fallback_deck() -> Array[Dictionary]:
 			"name": "Guard",
 			"cost": 1,
 			"type": "skill",
-			"block": 5
+			"block": 5,
+			"effects": [{"type": "GainBlock", "value": 5}]
 		})
 	return deck

@@ -8,6 +8,8 @@ const EffectResolverScript = preload("res://scripts/battle/effect_resolver.gd")
 const EnemyAIScript = preload("res://scripts/battle/enemy_ai.gd")
 const BattleStateMachineScript = preload("res://scripts/battle/battle_state_machine.gd")
 const CardPlayServiceScript = preload("res://scripts/battle/card_play_service.gd")
+const CardUIScript = preload("res://scripts/battle/card_ui.gd")
+const CardUIScene = preload("res://scenes/Card.tscn")
 
 @onready var _persistent_box_1_label: Label = $Margin/RootVBox/PersistentHeaderRow/PersistentBox1/PersistentBox1Label
 @onready var _persistent_box_2_label: Label = $Margin/RootVBox/PersistentHeaderRow/PersistentBox2/PersistentBox2Label
@@ -37,8 +39,7 @@ var _enemy_intent_labels: Array[Label] = []
 @onready var _draw_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox/DrawPileArt
 @onready var _draw_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox/DrawPileCountLabel
 @onready var _mana_label: Label = $Margin/RootVBox/HandHudRow/ManaPanel/ManaLabel
-@onready var _hand_container: HBoxContainer = $Margin/RootVBox/HandHudRow/HandPanel/HandCards
-@onready var _player_hp_label: Label = $Margin/RootVBox/HandHudRow/PlayerHPPanel/PlayerHPLabel
+@onready var _hand_container: Control = $Margin/RootVBox/HandHudRow/HandPanel/HandCards
 @onready var _discard_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox/DiscardPileArt
 @onready var _discard_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox/DiscardPileCountLabel
 @onready var _end_turn_button: Button = $Margin/RootVBox/HandHudRow/EndTurnButton
@@ -79,6 +80,7 @@ const DRAG_THRESHOLD_PX: float = 100.0
 
 func _ready() -> void:
 	_end_turn_button.pressed.connect(_on_end_turn_pressed)
+	_hand_container.resized.connect(_arrange_hand_cards)
 	_populate_enemy_ui_arrays()
 	_initialize_battle()
 
@@ -130,6 +132,7 @@ func _start_card_drag(card_ui: Control) -> void:
 	card_ui.global_position = global_pos
 	card_ui.z_index = 10
 	card_ui.scale = Vector2(DRAG_LIFT_SCALE, DRAG_LIFT_SCALE)
+	_arrange_hand_cards()
 
 
 func _end_card_drag() -> void:
@@ -215,6 +218,67 @@ func _snap_card_back() -> void:
 		_drag_original_parent.move_child(_drag_card_ui, _drag_original_index)
 	_drag_card_ui = null
 	_drag_active = false
+	_arrange_hand_cards()
+
+
+func _arrange_hand_cards() -> void:
+	var cards: Array[Node] = _hand_container.get_children()
+	var count: int = cards.size()
+	if count == 0:
+		return
+
+	var container_width: float = _hand_container.size.x
+	var container_height: float = _hand_container.size.y
+	if container_width <= 0 or container_height <= 0:
+		return
+
+	var card_width: float = CardUIScript.BASE_WIDTH * CardUIScript.SCALE_HAND
+	var card_height: float = CardUIScript.BASE_HEIGHT * CardUIScript.SCALE_HAND
+
+	var step: float
+	if count == 1:
+		step = 0.0
+	else:
+		# Evenly spread card left edges across the full container width
+		step = (container_width - card_width) / float(count - 1)
+		# Clamp minimum step so cards don't collapse entirely (keep at least 20% visible)
+		var min_step: float = card_width * 0.20
+		if step < min_step:
+			step = min_step
+			# Recenter the tighter fan
+
+	var total_width: float = card_width + (count - 1) * step
+	var start_x: float = (container_width - total_width) / 2.0
+	var center_index: float = (count - 1) / 2.0
+	var max_rotation: float = 12.0
+	var bottom_y: float = container_height
+
+	for i: int in range(count):
+		var card: Control = cards[i] as Control
+		if card == null:
+			continue
+
+		var dist_from_center: float = (i - center_index) / maxf(1.0, center_index)
+		if count == 1:
+			dist_from_center = 0.0
+
+		# Horizontal position
+		var x: float = start_x + i * step
+
+		# Vertical: bottom aligned, center higher than edges (natural hand curve)
+		var arc_lift: float = (1.0 - absf(dist_from_center)) * 35.0
+		var y: float = bottom_y - card_height - arc_lift
+
+		# Z-index: rightmost card on top, +5 per slot to prevent border-over-art bleed
+		var base_z: int = i * 5
+		card.z_index = base_z
+		card.set_meta("base_z", base_z)
+
+		card.position = Vector2(x, y)
+		card.pivot_offset = Vector2(card_width / 2.0, card_height)
+		card.rotation_degrees = dist_from_center * max_rotation
+		card.scale = Vector2.ONE
+		card.set_meta("base_pos", Vector2(x, y))
 
 
 func _initialize_battle() -> void:
@@ -506,7 +570,6 @@ func _refresh_ui(log_text: String = "") -> void:
 	_draw_pile_count_label.text = "Draw: %d" % _draw_pile.size()
 	_discard_pile_count_label.text = "Discard: %d" % _discard_pile.size()
 	_mana_label.text = "Mana: %d" % int(_player_state["mana"])
-	_player_hp_label.text = "HP: %d/%d" % [int(_player_state["hp"]), int(_player_state["max_hp"])]
 
 	_rebuild_hand_cards()
 
@@ -516,44 +579,21 @@ func _rebuild_hand_cards() -> void:
 		child.queue_free()
 
 	for card: Dictionary in _hand:
-		var card_ui: Control = Control.new()
-		card_ui.custom_minimum_size = Vector2(170, 110)
-		card_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var card_ui: Control = CardUIScene.instantiate()
+		card_ui.call("setup", card, 0)  # 0 = CardUI.CardSize.HAND
 		card_ui.mouse_filter = Control.MOUSE_FILTER_STOP
 		card_ui.set_meta("card_id", String(card["id"]))
 		card_ui.set_meta("card_data", card)
 		card_ui.gui_input.connect(_on_card_gui_input.bind(card_ui))
-
-		var bg: PanelContainer = PanelContainer.new()
-		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-		var vbox: VBoxContainer = VBoxContainer.new()
-		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-		vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-		var art: TextureRect = TextureRect.new()
-		art.texture = preload("res://assets/art/cards/cardarttest.png")
-		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		art.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-		var label: Label = Label.new()
-		label.theme_type_variation = &"BattleSmall"
-		label.text = "%s\nCost %d" % [String(card["name"]), int(card.get("cost", 0))]
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card_ui.mouse_entered.connect(_on_card_mouse_entered.bind(card_ui))
+		card_ui.mouse_exited.connect(_on_card_mouse_exited.bind(card_ui))
 
 		var can_play: bool = int(card.get("cost", 0)) <= int(_player_state["mana"]) and not _battle_over
-		if not can_play:
-			card_ui.modulate = Color(1, 1, 1, 0.4)
+		card_ui.call("set_unplayable_tint", not can_play)
 
-		vbox.add_child(art)
-		vbox.add_child(label)
-		bg.add_child(vbox)
-		card_ui.add_child(bg)
 		_hand_container.add_child(card_ui)
+
+	_arrange_hand_cards()
 
 
 func _on_card_gui_input(event: InputEvent, card_ui: Control) -> void:
@@ -562,6 +602,26 @@ func _on_card_gui_input(event: InputEvent, card_ui: Control) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_start_card_drag(card_ui)
+
+
+func _on_card_mouse_entered(card_ui: Control) -> void:
+	if _drag_active:
+		return
+	var base_z: int = int(card_ui.get_meta("base_z", 0))
+	card_ui.z_index = base_z + 50
+	var base_pos: Vector2 = card_ui.get_meta("base_pos", card_ui.position)
+	card_ui.position = Vector2(base_pos.x, base_pos.y - 15.0)
+	card_ui.scale = Vector2(1.06, 1.06)
+
+
+func _on_card_mouse_exited(card_ui: Control) -> void:
+	if _drag_active:
+		return
+	var base_z: int = int(card_ui.get_meta("base_z", 0))
+	card_ui.z_index = base_z
+	var base_pos: Vector2 = card_ui.get_meta("base_pos", card_ui.position)
+	card_ui.position = base_pos
+	card_ui.scale = Vector2.ONE
 
 
 func _update_player_board_layout() -> void:

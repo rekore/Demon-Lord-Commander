@@ -3,6 +3,152 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-05-13 - Card UI Polish & Effect Text Fix
+- Focus:
+  - Fix card scaling issues (cards not resizing properly)
+  - Fix missing effect text on cards
+  - Polish hand layout: size, z-index stacking, hover effects
+  - Update card art to Nyxcardsizetemplate.png
+- Completed:
+  - Fixed `demon-lords-commander/scripts/battle/card_ui.gd`:
+    - `size = Vector2(...)` instead of `custom_minimum_size` — actual fix for cards not scaling
+    - Removed `size_flags_*` from Card.tscn to allow free resizing
+    - Font scaling: CardName (64→24px), ManaCost (72→27px), EffectText (64→24px) at 0.324 scale
+  - Fixed `demon-lords-commander/scripts/core/battle_setup_service.gd`:
+    - Added `runtime_card["effects"] = effects.duplicate(true)` in `_to_runtime_card()`
+      - Root cause: runtime cards had no `effects` array → card_ui got empty array → no text
+    - Added `effects` arrays to fallback Strike/Guard cards too
+  - Hand layout polish in `demon-lords-commander/scripts/battle/battle_controller.gd`:
+    - Even spread: cards distributed evenly across container width (step = (width - card) / (count-1))
+    - Z-index stacking: each card slot gets `base_z = i * 5`, rightmost on top
+      - Prevents border-over-art bleed from left cards onto right cards
+      - Text z-index = 5 (internal) so it stays within its card but above its own border
+    - Natural hand curve: center cards lifted 35px higher than edge cards
+    - Hover effect: lift 15px + scale 1.06x + z-index boost of +50
+    - Snap back after drag re-arranges the hand
+    - Window resize auto-rearranges via `_hand_container.resized` signal
+  - Scene changes in `demon-lords-commander/scenes/BattleScene.tscn`:
+    - HandCards: HBoxContainer → Control (manual positioning for fan layout)
+    - Removed PlayerHPPanel + PlayerHPLabel (HP display removed from bottom row)
+    - DrawPilePanel & DiscardPilePanel: width 110 → 220 (doubled)
+    - DrawPileArt & DiscardPileArt: texture changed to discardpile.png (user edit)
+  - Card art: all cards now use `Nyxcardsizetemplate.png` (fallback + all JSON entries)
+  - SCALE_HAND values iterated: 0.23 → 0.46 → 0.37 → 0.324 (final: ~35% viewport = ~378px at 1080p)
+- Bugs Fixed:
+  - Parse error: `_hand_container` type mismatch HBoxContainer → Control
+  - Cards not scaling: `custom_minimum_size` blocked `size` from working (scene had 784×1168 min)
+  - No effect text: `_to_runtime_card()` never copied `effects` array to runtime cards
+  - Text buried under borders: internal text z-index too low, then too high, now balanced at 5
+- Architecture Notes:
+  - Card text z-index hierarchy: CardName/ManaCost/EffectText all at z=5 internal
+    - Effective z = base_z + 5, so right card text (e.g., 50) renders above left card border (7)
+    - But left card text (5) stays below right card border (7) — no forward bleed
+  - Hover temporarily boosts z-index by +50 for clear visibility
+  - `pivot_offset` at bottom-center makes rotation and scaling fan naturally from the bottom
+
+## 2026-05-12 - Card Hand Fan Layout (Slay the Spire Style)
+- Focus:
+  - Increase card size to ~25% of viewport height (~270px at 1080p)
+  - Implement Slay the Spire-style hand fan: overlapping cards with rotation arc
+  - Cards can extend above/below hand container, must stay within width
+- Completed:
+  - Updated `demon-lords-commander/scripts/battle/card_ui.gd`:
+    - `SCALE_HAND` increased from 0.15 to 0.23 (1168 * 0.23 = ~269px)
+  - Updated `demon-lords-commander/scenes/BattleScene.tscn`:
+    - Changed `HandCards` node type from `HBoxContainer` to `Control`
+    - Removed `theme_override_constants/separation` (not applicable to Control)
+    - Parent PanelContainer still fills the hand area as before
+  - Updated `demon-lords-commander/scripts/battle/battle_controller.gd`:
+    - Added `_arrange_hand_cards()` function:
+      - Calculates card overlap dynamically based on hand size and container width
+      - Default overlap: 55% (cards occupy 45% of their width each step)
+      - Tightens overlap down to 80% if hand is too wide for container
+      - Centers the entire fan horizontally in the hand area
+      - Applies rotation: up to +/- 12 degrees, linear from center to edges
+      - Applies arc vertical offset: center cards lower, edge cards ~20px higher
+      - Sets pivot to bottom-center of card so rotation fans naturally from the bottom
+      - Bottom edge of all cards aligns to bottom of hand container
+    - `_ready()`: connected `_hand_container.resized` signal to `_arrange_hand_cards()` for auto-relayout on window resize
+    - `_rebuild_hand_cards()`: calls `_arrange_hand_cards()` after all cards added
+    - `_start_card_drag()`: calls `_arrange_hand_cards()` after removing dragged card (closes the gap)
+    - `_snap_card_back()`: calls `_arrange_hand_cards()` after returning dragged card
+- Architecture Notes:
+  - HandCards is now a plain Control node — children are positioned manually, not by container layout
+  - Cards use `position` (not `layout_mode` anchors) since they're inside a non-container parent
+  - `pivot_offset = Vector2(card_width/2, card_height)` makes rotation happen around bottom-center
+  - `rotation_degrees` creates the fan effect; `arc_offset` adds subtle vertical curve
+  - Cards extend above the hand container (no clipping) into the combat area above
+  - No z-index changes needed: HandHudRow renders after CombatRow in tree order
+- Future Work:
+  - Hover effect: lift card straight up, remove rotation, slight scale increase
+  - Card play animation from hand position to target
+  - Hand shake / wobble when attempting to play an unplayable card
+
+## 2026-05-12 - CardUI Scene Implementation (Reusable Card Template)
+- Focus:
+  - Implement a reusable, scalable CardUI scene for displaying cards with proper art, borders, names, costs, and effects
+  - Replace hand card code-generation with scene instantiation
+  - Add art_path and border_path to cards.json for data-driven card visuals
+  - Ensure cards scale properly while maintaining aspect ratio (max 400px at 1920x1080)
+- Completed:
+  - Updated `demon-lords-commander/data/cards.json`:
+    - Added `"art_path"` and `"border_path"` fields to all 15 card entries
+    - Both fields point to temp assets (`cardarttest.png`, `cardbaseorange.png`) as placeholders
+    - Fields are optional — code falls back to defaults if missing
+  - Updated `demon-lords-commander/scripts/core/content_db.gd`:
+    - Added validation for optional `art_path` and `border_path` fields (must be strings if present)
+  - Created `demon-lords-commander/scripts/battle/card_ui.gd` (new file):
+    - `class_name CardUI` with `CardSize` enum: `HAND` (~175px), `PREVIEW` (~350px), `FULL` (~400px)
+    - `setup(card_data, size_preset)` API: configures border, art, name, mana cost, effect text
+    - Proportional font scaling: font sizes scale with card size preset
+    - `_safe_load_texture(path, fallback)`: loads textures with automatic fallback if missing/invalid
+    - `set_unplayable_tint(enabled)`: fades card to 40% opacity when unplayable
+    - `_format_effects(effects)`: human-readable effect text generator supporting all current effect types
+      - DealDamage, GainBlock, DrawCards, GainMana, LoseHP, Lifesteal, ApplyDebuff, Summon, etc.
+    - `get_card_id()` / `get_card_data()` accessors
+  - Redesigned `demon-lords-commander/scenes/Card.tscn`:
+    - Replaced absolute pixel offsets with anchor-based layout (proportional 0.0-1.0 anchors)
+    - Root Control: `custom_minimum_size = Vector2(784, 1168)` (base design size)
+    - `CardBorder` (TextureRect): `anchors_preset = FULL_RECT`, `expand_mode = FIT_WIDTH`, `stretch_mode = KEEP_ASPECT`
+    - `CardArt` (TextureRect): proportional anchors for art area, keeps aspect ratio
+    - `CardName` (Label): top area with proportional anchors, black font with outline
+    - `ManaCost` (Label): top-center area, white font with outline
+    - `EffectText` (Label): bottom area with autowrap, smaller font (40px base)
+    - Attached `card_ui.gd` script with exported node references
+  - Updated `demon-lords-commander/scripts/battle/battle_controller.gd`:
+    - Added `CardUIScene = preload("res://scenes/Card.tscn")` constant
+    - Refactored `_rebuild_hand_cards()`: now instantiates `Card.tscn` instead of building from code
+    - Calls `card_ui.call("setup", card, 0)` and `card_ui.call("set_unplayable_tint", not can_play)` via dynamic calls
+    - Drag-and-drop metadata and signal connections remain unchanged
+  - Updated `demon-lords-commander/GAME_SYSTEM_MAP.md`:
+    - Added `CardUI` (`card_ui.gd` + `Card.tscn`) to Battle Sub-Services section
+    - Added to File Priority list as item #10
+    - Renumbered subsequent sections (29 total files)
+- Architecture Notes:
+  - CardUI uses `custom_minimum_size` + anchor layout for proportional scaling (no `scale` property)
+  - Font sizes are dynamically adjusted via `add_theme_font_size_override()` based on size preset
+  - `size_flags_horizontal = SIZE_SHRINK_CENTER` prevents HBoxContainer from stretching cards
+  - All temp assets used as placeholders; swapping art/border is just a JSON path change
+- Future Work:
+  - Unique border art per card type (currently all use `cardbaseorange.png`)
+  - Unique card art per card (currently all use `cardarttest.png`)
+  - Border color tinting by card type (field reserved in JSON, not yet implemented)
+  - Hover preview showing FULL-size card above the hand
+
+## 2026-05-12 - Card Scene Added to Game Systems Map
+- Focus:
+  - Review game systems map for completeness
+  - Note the new `Card.tscn` reusable card UI template
+- Map Changes (`GAME_SYSTEM_MAP.md`):
+  - Added `scenes/Card.tscn` to Scenes section (file #23)
+    - Description: reusable card UI template (border, art, name, mana cost, effect text)
+    - Uses MainTheme.tres
+    - Contains CardBorder, CardArt, CardName, ManaCost, EffectText nodes
+  - Updated Data/Content section numbering (24-28 instead of 23-27)
+  - Updated Pre-Edit Checklist step 4 to reflect "all 28 project files"
+- Current File Count: 28 total (7 Core, 8 Battle System, 3 UI/Presentation, 5 Scenes, 5 Data/Content)
+- Note: `Card.tscn` is currently unused — BattleController dynamically creates card UIs via code in `_rebuild_hand_cards()`. This scene could be used as a template for future card instantiation.
+
 ## 2026-05-10 - Game Systems Map Update (Critical)
 - Focus:
   - Future AI sessions must be able to discover all project files from the map alone

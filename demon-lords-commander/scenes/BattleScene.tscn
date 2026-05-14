@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://b77klu1nb48do" path="res://scripts/battle/battle_controller.gd" id="1_b8jqp"]
 [ext_resource type="Texture2D" uid="uid://bifuinnibgncm" path="res://assets/art/characters/femaleidlepink.png" id="2_28s16"]
-[ext_resource type="Texture2D" uid="uid://h2j384nnku1i" path="res://assets/art/characters/WaifuTest.png" id="2_rqht0"]
 [ext_resource type="Texture2D" uid="uid://dqift1ykd3udf" path="res://assets/art/cards/cardarttest.png" id="3_2i4wd"]
 [ext_resource type="Script" uid="uid://4mwcard001ab" path="res://scripts/battle/main_waifu_sprites.gd" id="4_mwcard"]
 [ext_resource type="Texture2D" uid="uid://fcn37n3eop3b" path="res://assets/art/Enemies/Test_Goblin.png" id="5_0yex5"]
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="6_mtres"]
+[ext_resource type="Texture2D" uid="uid://bq26b6gi62spc" path="res://assets/art/cards/discardpile.png" id="7_bsu3s"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ftvu5"]
 atlas = ExtResource("2_28s16")
@@ -479,7 +479,7 @@ size_flags_stretch_ratio = 0.25
 theme_override_constants/separation = 8
 
 [node name="DrawPilePanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1766756793]
-custom_minimum_size = Vector2(110, 120)
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
 
 [node name="DrawPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DrawPilePanel" unique_id=2074469409]
@@ -488,7 +488,7 @@ layout_mode = 2
 [node name="DrawPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox" unique_id=1297635307]
 custom_minimum_size = Vector2(80, 70)
 layout_mode = 2
-texture = ExtResource("2_rqht0")
+texture = ExtResource("7_bsu3s")
 expand_mode = 1
 stretch_mode = 6
 
@@ -513,25 +513,13 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HandCards" type="HBoxContainer" parent="Margin/RootVBox/HandHudRow/HandPanel" unique_id=1054873596]
+[node name="HandCards" type="Control" parent="Margin/RootVBox/HandHudRow/HandPanel" unique_id=1054873596]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 8
-
-[node name="PlayerHPPanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1180381104]
-custom_minimum_size = Vector2(130, 120)
-layout_mode = 2
-
-[node name="PlayerHPLabel" type="Label" parent="Margin/RootVBox/HandHudRow/PlayerHPPanel" unique_id=1687994754]
-layout_mode = 2
-theme_type_variation = &"BattleSmall"
-text = "HP: 0/0"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="DiscardPilePanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1401000863]
-custom_minimum_size = Vector2(110, 120)
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
 
 [node name="DiscardPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel" unique_id=1844752671]
@@ -540,7 +528,7 @@ layout_mode = 2
 [node name="DiscardPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox" unique_id=867115424]
 custom_minimum_size = Vector2(80, 70)
 layout_mode = 2
-texture = ExtResource("2_rqht0")
+texture = ExtResource("7_bsu3s")
 expand_mode = 1
 stretch_mode = 6
 
