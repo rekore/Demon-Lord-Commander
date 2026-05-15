@@ -36,12 +36,12 @@ var _enemy_intent_labels: Array[Label] = []
 @onready var _enemy_left_spacer: Control = $Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/LeftSpacer
 @onready var _enemy_right_spacer: Control = $Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox/EnemyCardsRow/RightSpacer
 
-@onready var _draw_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox/DrawPileArt
-@onready var _draw_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox/DrawPileCountLabel
+@onready var _draw_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileArt
+@onready var _draw_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileCountLabel
 @onready var _mana_label: Label = $Margin/RootVBox/HandHudRow/ManaPanel/ManaLabel
 @onready var _hand_container: Control = $Margin/RootVBox/HandHudRow/HandPanel/HandCards
-@onready var _discard_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox/DiscardPileArt
-@onready var _discard_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox/DiscardPileCountLabel
+@onready var _discard_pile_art: TextureRect = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileArt
+@onready var _discard_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileCountLabel
 @onready var _end_turn_button: Button = $Margin/RootVBox/HandHudRow/EndTurnButton
 
 var _battle_over: bool = false
@@ -146,10 +146,10 @@ func _end_card_drag() -> void:
 		target_index = _find_enemy_drop_target()
 		should_play = target_index >= 0
 	else:
-		# Non-target card: play if dragged out of hand area
+		# Non-target card: play when card center clears the top of the hand container
 		var hand_top: float = _hand_container.global_position.y
 		var card_bottom: float = _drag_card_ui.global_position.y + _drag_card_ui.size.y
-		var threshold: float = hand_top - _drag_card_ui.size.y * 0.8
+		var threshold: float = hand_top + _drag_card_ui.size.y * 0.5
 		should_play = card_bottom < threshold
 
 	if should_play:
@@ -235,22 +235,32 @@ func _arrange_hand_cards() -> void:
 	var card_width: float = CardUIScript.BASE_WIDTH * CardUIScript.SCALE_HAND
 	var card_height: float = CardUIScript.BASE_HEIGHT * CardUIScript.SCALE_HAND
 
+	var max_rotation: float = 7.0
+	# Inset the spread by the horizontal distance a card top travels when tilted,
+	# so edge cards never spill over the adjacent mana/discard panels.
+	var tilt_overhang: float = card_height * sin(deg_to_rad(max_rotation))
+	var h_padding: float = tilt_overhang + 8.0
+	var usable_width: float = container_width - h_padding * 2.0
+	if usable_width <= card_width:
+		usable_width = card_width
+
 	var step: float
 	if count == 1:
 		step = 0.0
 	else:
-		# Evenly spread card left edges across the full container width
-		step = (container_width - card_width) / float(count - 1)
+		step = (usable_width - card_width) / float(count - 1)
+		# Cap maximum step so cards always overlap (hand always looks "held together")
+		var max_step: float = card_width * 0.65
+		if step > max_step:
+			step = max_step
 		# Clamp minimum step so cards don't collapse entirely (keep at least 20% visible)
 		var min_step: float = card_width * 0.20
 		if step < min_step:
 			step = min_step
-			# Recenter the tighter fan
 
 	var total_width: float = card_width + (count - 1) * step
-	var start_x: float = (container_width - total_width) / 2.0
+	var start_x: float = h_padding + (usable_width - total_width) / 2.0
 	var center_index: float = (count - 1) / 2.0
-	var max_rotation: float = 12.0
 	var bottom_y: float = container_height
 
 	for i: int in range(count):
@@ -265,8 +275,8 @@ func _arrange_hand_cards() -> void:
 		# Horizontal position
 		var x: float = start_x + i * step
 
-		# Vertical: bottom aligned, center higher than edges (natural hand curve)
-		var arc_lift: float = (1.0 - absf(dist_from_center)) * 35.0
+		# Vertical: bottom aligned, center cards arc higher for natural hand curve
+		var arc_lift: float = (1.0 - absf(dist_from_center)) * 70.0
 		var y: float = bottom_y - card_height - arc_lift
 
 		# Z-index: rightmost card on top, +5 per slot to prevent border-over-art bleed
@@ -322,8 +332,10 @@ func _apply_waifu_art(setup: Dictionary) -> void:
 
 	# Main portrait is an AnimatedSprite2D with SpriteFrames configured in the scene;
 	# skip dynamic texture assignment here.
-	_set_texture_if_valid(_draw_pile_art, sub_portrait_path if sub_portrait_path != "" else DEFAULT_PILE_ART_PATH)
-	_set_texture_if_valid(_discard_pile_art, sub_portrait_path if sub_portrait_path != "" else DEFAULT_PILE_ART_PATH)
+	# Pile art uses sub-waifu portrait when available; falls back to scene default (discardpile.png).
+	if sub_portrait_path != "":
+		_set_texture_if_valid(_draw_pile_art, sub_portrait_path)
+		_set_texture_if_valid(_discard_pile_art, sub_portrait_path)
 
 
 func _set_texture_if_valid(target: TextureRect, texture_path: String) -> void:
@@ -567,8 +579,8 @@ func _refresh_ui(log_text: String = "") -> void:
 
 	_update_enemy_board_layout()
 
-	_draw_pile_count_label.text = "Draw: %d" % _draw_pile.size()
-	_discard_pile_count_label.text = "Discard: %d" % _discard_pile.size()
+	_draw_pile_count_label.text = str(_draw_pile.size())
+	_discard_pile_count_label.text = str(_discard_pile.size())
 	_mana_label.text = "Mana: %d" % int(_player_state["mana"])
 
 	_rebuild_hand_cards()
@@ -576,6 +588,7 @@ func _refresh_ui(log_text: String = "") -> void:
 
 func _rebuild_hand_cards() -> void:
 	for child: Node in _hand_container.get_children():
+		_hand_container.remove_child(child)
 		child.queue_free()
 
 	for card: Dictionary in _hand:

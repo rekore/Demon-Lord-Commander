@@ -67,7 +67,7 @@ func _build_setup_payload(payload: Dictionary) -> Dictionary:
 		"waifu_effects": ContentDB.get_bond_scaled_waifu_effects(waifu_id, bond_level),
 		"sub_waifu_id": sub_waifu_id,
 		"sub_waifu_name": String(sub_waifu_data.get("display_name", sub_waifu_id)),
-		"sub_waifu_portrait_path": String(sub_waifu_data.get("portrait_path", "")),
+		"sub_waifu_portrait_path": String(sub_waifu_data.get("pile_art_path", sub_waifu_data.get("portrait_path", ""))),
 		"enemies": enemies,
 		"deck": runtime_deck
 	}

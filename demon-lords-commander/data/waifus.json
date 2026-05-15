@@ -5,6 +5,7 @@
 			"id": "waifu_chesy",
 			"display_name": "Chesy",
 			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"pile_art_path": "res://assets/art/cards/discardpile.png",
 			"effects": [
 				{
 					"id": "chesy_guarding_heart",
@@ -19,6 +20,7 @@
 			"id": "waifu_nyx",
 			"display_name": "Nyx",
 			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"pile_art_path": "res://assets/art/cards/discardpile.png",
 			"effects": [
 				{
 					"id": "nyx_shadow_fury",
@@ -33,6 +35,7 @@
 			"id": "waifu_lyra",
 			"display_name": "Lyra",
 			"portrait_path": "res://assets/art/characters/WaifuTest.png",
+			"pile_art_path": "res://assets/art/cards/discardpile.png",
 			"effects": [
 				{
 					"id": "lyra_arcane_focus",

@@ -139,7 +139,7 @@ theme_override_constants/separation = 10
 [node name="PersistentHeaderRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1941091500]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.15
+size_flags_stretch_ratio = 0.07
 theme_override_constants/separation = 10
 
 [node name="PersistentBox1" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1902721425]
@@ -482,21 +482,21 @@ theme_override_constants/separation = 8
 custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
 
-[node name="DrawPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DrawPilePanel" unique_id=2074469409]
-layout_mode = 2
-
-[node name="DrawPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox" unique_id=1297635307]
-custom_minimum_size = Vector2(80, 70)
+[node name="DrawPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DrawPilePanel" unique_id=1297635307]
 layout_mode = 2
 texture = ExtResource("7_bsu3s")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="DrawPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DrawPilePanel/DrawPileVBox" unique_id=496460836]
+[node name="DrawPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DrawPilePanel" unique_id=496460836]
 layout_mode = 2
-theme_type_variation = &"BattleSmall"
-text = "Draw: 0"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ManaPanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=108323673]
 custom_minimum_size = Vector2(120, 120)
@@ -522,21 +522,21 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
 
-[node name="DiscardPileVBox" type="VBoxContainer" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel" unique_id=1844752671]
-layout_mode = 2
-
-[node name="DiscardPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox" unique_id=867115424]
-custom_minimum_size = Vector2(80, 70)
+[node name="DiscardPileArt" type="TextureRect" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel" unique_id=867115424]
 layout_mode = 2
 texture = ExtResource("7_bsu3s")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="DiscardPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileVBox" unique_id=85227028]
+[node name="DiscardPileCountLabel" type="Label" parent="Margin/RootVBox/HandHudRow/DiscardPilePanel" unique_id=85227028]
 layout_mode = 2
-theme_type_variation = &"BattleSmall"
-text = "Discard: 0"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EndTurnButton" type="Button" parent="Margin/RootVBox/HandHudRow" unique_id=1522602948]
 custom_minimum_size = Vector2(130, 120)

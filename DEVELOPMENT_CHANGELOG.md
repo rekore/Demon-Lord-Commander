@@ -3,6 +3,58 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-05-14 - Hand Layout Polish, Drag Threshold, Pile UI Overhaul
+
+- Focus:
+  - Fix hand cards clustering to right half on round 2+
+  - Tighten hand layout: reduce tilt spillage, increase arc, enforce overlap
+  - Fix non-targeted card drag distance being far too long
+  - Overhaul draw/discard pile UI: overlaid centered number on image
+  - Fix pile art being overridden at runtime by wrong asset
+  - Add per-waifu pile art system via `pile_art_path` field
+  - Shrink persistent header bar
+
+- Completed:
+  - Fixed `battle_controller.gd` — `_rebuild_hand_cards()` root cause fix:
+    - `queue_free()` does not remove nodes from the scene tree immediately
+    - Old cards were still children when `_arrange_hand_cards()` counted them
+    - New cards were placed in the right-half slots of the combined old+new set
+    - Fix: call `_hand_container.remove_child(child)` before `child.queue_free()`
+  - Hand layout polish in `_arrange_hand_cards()`:
+    - Reduced `max_rotation` from `12.0°` to `7.0°` — less aggressive tilt
+    - Added dynamic `h_padding = card_height * sin(7°) + 8px ≈ 54px` on each side
+      - Edge card tops guaranteed to stay within hand panel bounds at any count
+    - Increased arc lift from `35px` to `70px` — more pronounced natural hand curve
+    - Added `max_step = card_width * 0.65` cap — cards always overlap regardless of hand size
+      - Small hands (2–3 cards) now fan together in the center instead of spreading apart
+  - Drag threshold for non-targeted cards (block etc.):
+    - Old: `hand_top - card_height * 0.8` — required dragging ~680px above resting position
+    - New: `hand_top + card_height * 0.5` — plays when card center clears hand container top
+    - Much shorter intentional drag; snap-back still reliable for accidental lifts
+  - Draw/Discard pile UI overhaul in `BattleScene.tscn`:
+    - Removed `DrawPileVBox` and `DiscardPileVBox` — label now direct child of PanelContainer
+    - PanelContainer stacks all children at same rect — label overlays image automatically
+    - Label: 48px white font, black outline (size 6), centered horizontally and vertically
+    - Label text changed from `"Draw: N"` / `"Discard: N"` to just the number `"N"`
+    - Updated `@onready` paths in `battle_controller.gd` (removed VBox segment)
+    - Updated `_refresh_ui` to assign `str(pile.size())` directly
+  - Fixed pile art being overridden at runtime in `_apply_waifu_art()`:
+    - Was calling `_set_texture_if_valid` with `DEFAULT_PILE_ART_PATH` (cascade_orb.png) as fallback
+    - Now only overrides pile textures when `sub_portrait_path != ""` — scene default preserved
+  - Added `pile_art_path` field to all waifus in `waifus.json` (currently all `discardpile.png`)
+  - Updated `battle_setup_service.gd` — `sub_waifu_portrait_path` now reads `pile_art_path` first,
+    falls back to `portrait_path` — future waifus can have unique pile art per waifu
+  - Reduced `PersistentHeaderRow` stretch ratio: `0.15 → 0.07` (thin info strip at top)
+
+- Bugs Fixed:
+  - Hand right-half bug: `queue_free()` timing — nodes stayed in children array until end of frame
+  - Pile art always showing `cascade_orb.png`: `_apply_waifu_art()` overrode scene texture unconditionally
+
+- Architecture Notes:
+  - Pile art is now data-driven per waifu via `pile_art_path` in `waifus.json`
+  - Scene sets the safe default; runtime only overrides when a valid path is provided
+  - Hand fan padding scales automatically with rotation angle — no magic numbers
+
 ## 2026-05-13 - Card UI Polish & Effect Text Fix
 - Focus:
   - Fix card scaling issues (cards not resizing properly)
