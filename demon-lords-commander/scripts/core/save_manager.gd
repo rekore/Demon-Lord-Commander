@@ -78,11 +78,18 @@ func _default_profile() -> Dictionary:
 		"selected_sub_waifu_id": "waifu_lyra",
 		"selected_enemy_id": "enemy_test_goblin",
 		"selected_deck_card_ids": [
-			"1", "1", "1", "1",
-			"4", "4", "7", "7",
-			"5", "5", "2", "2",
-			"10", "10", "11", "11",
-			"13", "14", "6", "8"
+			"S1", "S1", "S1", "S1",
+			"S1", "S1", "S1", "S1",
+			"S1", "S1", "S1", "S1",
+			"D1", "D1", "D1", "D1",
+			"D1", "D1", "D1", "D1",
+			"16", "16",
+			"17", "17",
+			"18", "18",
+			"19", "19",
+			"20", "20",
+			"21", "21",
+			"22", "22"
 		],
 		"waifu_bond_levels": {
 			"waifu_chesy": 2,

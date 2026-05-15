@@ -91,6 +91,13 @@ var _drag_active: bool = false
 const DRAG_LIFT_SCALE: float = 1.1
 const DRAG_THRESHOLD_PX: float = 100.0
 
+# Search overlay state
+var _search_overlay: Control = null
+var _search_confirm_button: Button = null
+var _search_selected_card_ui: Control = null
+var _search_selected_list_index: int = -1
+var _search_draw_pile_indices: Array = []
+
 func _ready() -> void:
 	_end_turn_button.pressed.connect(_on_end_turn_pressed)
 	_hand_container.resized.connect(_arrange_hand_cards)
@@ -122,7 +129,7 @@ func _populate_enemy_ui_arrays() -> void:
 
 
 func _is_card_targeted(card_data: Dictionary) -> bool:
-	return String(card_data.get("type", "")) == "attack" or int(card_data.get("damage", 0)) > 0
+	return String(card_data.get("type", "")) == "attack" or int(card_data.get("damage", 0)) > 0 or bool(card_data.get("targeted", false))
 
 
 func _start_card_drag(card_ui: Control) -> void:
@@ -197,6 +204,7 @@ func _highlight_hovered_enemy() -> void:
 	if not _is_card_targeted(_drag_card_data):
 		return
 	var mouse_pos: Vector2 = get_global_mouse_position()
+	var hovered_frail: bool = false
 	for i: int in range(_enemy_cards.size()):
 		var enemy_card: Control = _enemy_cards[i]
 		if not enemy_card.visible:
@@ -208,8 +216,12 @@ func _highlight_hovered_enemy() -> void:
 		var rect: Rect2 = Rect2(enemy_card.global_position, enemy_card.size)
 		if rect.has_point(mouse_pos):
 			enemy_card.modulate = Color.YELLOW
+			if i < _enemy_states.size():
+				hovered_frail = int(_enemy_states[i].get("frail", 0)) > 0
 		else:
 			enemy_card.modulate = Color.WHITE
+	if _drag_card_ui != null:
+		_drag_card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)), hovered_frail)
 
 
 func _play_dragged_card(target_enemy_index: int = -1) -> void:
@@ -331,7 +343,11 @@ func _initialize_battle() -> void:
 		"hp": int(GameState.player["current_hp"]),
 		"base_mana": int(GameState.player["base_mana"]),
 		"mana": int(GameState.player["base_mana"]),
-		"block": 0
+		"block": 0,
+		"strength": 0,
+		"strength_round": 0,
+		"rage": 0,
+		"frail": 0,
 	}
 
 	_enemy_states = _build_enemy_states(setup)
@@ -405,8 +421,12 @@ func _build_enemy_states(setup: Dictionary) -> Array[Dictionary]:
 			"max_hp": int(enemy_data.get("max_hp", 40)),
 			"hp": int(enemy_data.get("max_hp", 40)),
 			"block": 0,
+			"poison": 0,
+			"burn": 0,
+			"frail": 0,
 			"intents": enemy_data.get("intents", []),
-			"intent_index": 0
+			"intent_index": 0,
+			"selection_mode": String(enemy_data.get("selection_mode", "sequential"))
 		})
 	return states
 
@@ -446,6 +466,11 @@ func _create_fallback_deck() -> Array[Dictionary]:
 
 
 func _start_player_round() -> void:
+	if _battle_over:
+		return
+
+	_turn_manager.tick_enemy_status_effects(_enemy_states, _effect_resolver)
+	_check_battle_end()
 	if _battle_over:
 		return
 
@@ -493,6 +518,12 @@ func _run_enemy_turn() -> void:
 	if _battle_over:
 		return
 
+	_turn_manager.tick_enemy_burn(_enemy_states, _effect_resolver)
+	_check_battle_end()
+
+	if _battle_over:
+		return
+
 	_round_number += 1
 	_start_player_round()
 
@@ -520,6 +551,10 @@ func _play_card_by_id(card_id: String, target_enemy_index: int = -1) -> void:
 
 	_check_battle_end()
 	_refresh_ui(String(play_result.get("message", "Card played.")))
+	if not _battle_over:
+		var _search_filter: String = String(play_result.get("search_filter", ""))
+		if _search_filter != "":
+			_open_search_overlay(_search_filter)
 
 
 func _all_enemies_dead() -> bool:
@@ -585,11 +620,20 @@ func _close_deck_overlay() -> void:
 
 func _refresh_ui(_log_text: String = "") -> void:
 	_battle_info_label.text = "Floor 1  •  Turn %d  •  %s" % [_round_number, _format_battle_time(_battle_elapsed_time)]
-	_main_waifu_stats_label.text = "%s\nHP %d/%d | Block %d" % [
+	var _str_val: int = int(_player_state.get("strength", 0)) + int(_player_state.get("strength_round", 0))
+	var _rage_val: int = int(_player_state.get("rage", 0))
+	var _p_frail_val: int = int(_player_state.get("frail", 0))
+	var _str_text: String = " | STR %d" % _str_val if _str_val > 0 else ""
+	var _rage_text: String = " | RAGE %d" % _rage_val if _rage_val > 0 else ""
+	var _p_frail_text: String = " | FRL %d" % _p_frail_val if _p_frail_val > 0 else ""
+	_main_waifu_stats_label.text = "%s\nHP %d/%d | Block %d%s%s%s" % [
 		_selected_waifu_name,
 		int(_player_state["hp"]),
 		int(_player_state["max_hp"]),
-		int(_player_state["block"])
+		int(_player_state["block"]),
+		_str_text,
+		_rage_text,
+		_p_frail_text
 	]
 
 	_update_player_board_layout()
@@ -616,11 +660,22 @@ func _refresh_ui(_log_text: String = "") -> void:
 			elif intent_block > 0:
 				intent_text += " (%d block)" % intent_block
 
-			_enemy_stats_labels[i].text = "%s\nHP %d/%d | Block %d" % [
+			var _poison_val: int = int(enemy_state.get("poison", 0))
+			var _burn_val: int = int(enemy_state.get("burn", 0))
+			var _frail_val: int = int(enemy_state.get("frail", 0))
+			var _status_text: String = ""
+			if _poison_val > 0:
+				_status_text += " | PSN %d" % _poison_val
+			if _burn_val > 0:
+				_status_text += " | BRN %d" % _burn_val
+			if _frail_val > 0:
+				_status_text += " | FRL %d" % _frail_val
+			_enemy_stats_labels[i].text = "%s\nHP %d/%d | Block %d%s" % [
 				String(enemy_state.get("name", "Enemy")),
 				int(enemy_state.get("hp", 0)),
 				int(enemy_state.get("max_hp", 0)),
-				int(enemy_state.get("block", 0))
+				int(enemy_state.get("block", 0)),
+				_status_text
 			]
 			_enemy_intent_labels[i].text = intent_text
 			_enemy_cards[i].sprite_anchor = String(enemy_state.get("sprite_anchor", "bottom"))
@@ -654,10 +709,19 @@ func _rebuild_hand_cards() -> void:
 
 		var can_play: bool = int(card.get("cost", 0)) <= int(_player_state["mana"]) and not _battle_over
 		card_ui.call("set_unplayable_tint", not can_play)
+		card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)))
 
 		_hand_container.add_child(card_ui)
 
 	_arrange_hand_cards()
+
+
+func _get_total_attack_bonus() -> int:
+	var bonus: int = int(_player_state.get("strength", 0)) + int(_player_state.get("strength_round", 0))
+	for effect: Dictionary in _waifu_scaled_effects:
+		if String(effect.get("type", "")) == "passive_attack_damage":
+			bonus += int(effect.get("value", 0))
+	return bonus
 
 
 func _on_card_gui_input(event: InputEvent, card_ui: Control) -> void:
@@ -715,6 +779,161 @@ func _update_player_board_layout() -> void:
 	if visible_units >= 3:
 		_left_spacer.size_flags_stretch_ratio = 0.6
 		_right_spacer.size_flags_stretch_ratio = 0.6
+
+
+func _open_search_overlay(filter_type: String) -> void:
+	_battle_state_machine.enter_searching()
+	_search_draw_pile_indices.clear()
+	var matching_cards: Array[Dictionary] = []
+	for i: int in range(_draw_pile.size()):
+		var c: Dictionary = _draw_pile[i]
+		if filter_type == "" or String(c.get("type", "")).to_lower() == filter_type:
+			matching_cards.append(c)
+			_search_draw_pile_indices.append(i)
+
+	_search_overlay = _build_search_overlay(filter_type, matching_cards)
+	add_child(_search_overlay)
+
+
+func _build_search_overlay(filter_type: String, cards: Array[Dictionary]) -> Control:
+	var root: Control = Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.z_index = 20
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var bg: ColorRect = ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.0, 0.0, 0.0, 0.78)
+	root.add_child(bg)
+
+	var center: CenterContainer = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.add_child(center)
+
+	var panel: PanelContainer = PanelContainer.new()
+	panel.custom_minimum_size = Vector2(980, 700)
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color(0.11, 0.09, 0.14, 1.0)
+	style.set_corner_radius_all(12)
+	style.set_border_width_all(2)
+	style.border_color = Color(0.55, 0.30, 0.75, 1.0)
+	panel.add_theme_stylebox_override("panel", style)
+	center.add_child(panel)
+
+	var margin: MarginContainer = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 22)
+	margin.add_theme_constant_override("margin_right", 22)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_bottom", 18)
+	panel.add_child(margin)
+
+	var vbox: VBoxContainer = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 14)
+	margin.add_child(vbox)
+
+	var title_label: Label = Label.new()
+	title_label.add_theme_font_size_override("font_size", 30)
+	if cards.is_empty():
+		title_label.text = "No %s cards in Draw Pile" % filter_type.capitalize()
+	else:
+		title_label.text = "Search Draw Pile — Select a %s" % filter_type.capitalize()
+	vbox.add_child(title_label)
+
+	var scroll: ScrollContainer = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(0, 500)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+
+	var grid: HFlowContainer = HFlowContainer.new()
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 14)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(grid)
+
+	if cards.is_empty():
+		var empty_label: Label = Label.new()
+		empty_label.text = "No matching cards found."
+		empty_label.add_theme_font_size_override("font_size", 22)
+		grid.add_child(empty_label)
+	else:
+		for i: int in range(cards.size()):
+			var card_ui: Control = CardUIScene.instantiate()
+			card_ui.call("setup", cards[i], CardUIScript.CardSize.PREVIEW)
+			card_ui.mouse_filter = Control.MOUSE_FILTER_STOP
+			card_ui.gui_input.connect(_on_search_card_input.bind(card_ui, i))
+			grid.add_child(card_ui)
+
+	var footer: HBoxContainer = HBoxContainer.new()
+	vbox.add_child(footer)
+
+	var spacer: Control = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(spacer)
+
+	var cancel_btn: Button = Button.new()
+	cancel_btn.text = "Cancel"
+	cancel_btn.custom_minimum_size = Vector2(140, 48)
+	cancel_btn.add_theme_font_size_override("font_size", 22)
+	cancel_btn.pressed.connect(_close_search_overlay.bind(false))
+	footer.add_child(cancel_btn)
+
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(14, 0)
+	footer.add_child(gap)
+
+	_search_confirm_button = Button.new()
+	_search_confirm_button.text = "Confirm"
+	_search_confirm_button.custom_minimum_size = Vector2(140, 48)
+	_search_confirm_button.add_theme_font_size_override("font_size", 22)
+	_search_confirm_button.disabled = true
+	_search_confirm_button.pressed.connect(_on_search_confirm_pressed)
+	footer.add_child(_search_confirm_button)
+
+	return root
+
+
+func _on_search_card_input(event: InputEvent, card_ui: Control, list_index: int) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mb: InputEventMouseButton = event as InputEventMouseButton
+	if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+		if _search_selected_card_ui != null and _search_selected_card_ui != card_ui:
+			_search_selected_card_ui.modulate = Color.WHITE
+		card_ui.modulate = Color(1.0, 0.85, 0.25, 1.0)
+		_search_selected_card_ui = card_ui
+		_search_selected_list_index = list_index
+		if _search_confirm_button != null:
+			_search_confirm_button.disabled = false
+
+
+func _on_search_confirm_pressed() -> void:
+	if _search_selected_list_index < 0 or _search_selected_list_index >= _search_draw_pile_indices.size():
+		return
+	var draw_idx: int = _search_draw_pile_indices[_search_selected_list_index]
+	if draw_idx >= _draw_pile.size():
+		return
+	var chosen: Dictionary = _draw_pile[draw_idx]
+	_draw_pile.remove_at(draw_idx)
+	if _hand.size() < MAX_HAND_SIZE:
+		_hand.append(chosen)
+	else:
+		_discard_pile.append(chosen)
+	_close_search_overlay(true)
+
+
+func _close_search_overlay(completed: bool) -> void:
+	if _search_overlay != null:
+		_search_overlay.queue_free()
+		_search_overlay = null
+	_search_confirm_button = null
+	_search_selected_card_ui = null
+	_search_selected_list_index = -1
+	_search_draw_pile_indices.clear()
+	_battle_state_machine.enter_player_turn()
+	var msg: String = "Added card to hand." if completed else "Search cancelled."
+	_refresh_ui(msg)
 
 
 func _update_enemy_board_layout() -> void:

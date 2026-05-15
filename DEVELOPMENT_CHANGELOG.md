@@ -3,6 +3,204 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-05-15 (Session 3) - Burn, Rage, Search, Frail, Enemy Random Intents
+
+- Focus:
+  - Implement Burn, Rage, Frail status effects and their card test cases
+  - Implement SearchDeck mechanic with interactive draw pile overlay
+  - Give the test goblin random intent selection with a Cripple intent
+
+- Completed:
+
+### Burn Status Effect
+  - `turn_manager.gd`: Added `tick_enemy_burn()` — deals Burn stacks as damage at **end of enemy turn**; stacks never decrement (persistent)
+  - `card_play_service.gd`: Added `"burn"` case to debuff match — stacks additive on target enemy
+  - `battle_controller.gd`: `burn: 0` initialized in enemy state; `tick_enemy_burn` called after enemy intent loop; `BRN X` shown in enemy stats label
+  - `cards.json`: Added card `"19"` — **Ignite**, Skill, 1 mana, targeted, Apply Burn 3 to SingleEnemy
+
+### Rage Player Buff
+  - `effect_resolver.gd`: Added rage consumption in `resolved_attack_damage()` — if `player_state["rage"] > 0`, applies `floor(total × 1.5)` then decrements rage by 1; applies after all additive bonuses
+  - `battle_setup_service.gd`: `GainRage` effect extracted to `runtime_card["rage_gain"]`
+  - `card_play_service.gd`: `rage_gain` applied to `player_state["rage"]` on card play
+  - `content_db.gd`: `"GainRage"` added to `V1_SUPPORTED_EFFECTS`
+  - `card_ui.gd`: `set_damage_preview` passes `rage_stacks` → `_format_effects` → `_format_single_effect`; DealDamage shows `floor(buffed × 1.5)` when rage > 0
+  - `battle_controller.gd`: `rage: 0` initialized in player state; `RAGE X` shown in waifu stats label; `_rebuild_hand_cards()` passes `rage_stacks` to `set_damage_preview`
+  - `cards.json`: Added card `"20"` — **Fury**, Skill, 1 mana, Gain 2 Rage
+
+### Search Card Mechanic
+  - `battle_state_machine.gd`: Added `PHASE_SEARCHING` state; `enter_searching()`, `is_searching()`; `can_play_cards()` and `can_end_turn()` both return false while searching
+  - `battle_setup_service.gd`: `SearchDeck` effect extracted to `runtime_card["search_filter"]` (lowercased filter string)
+  - `card_play_service.gd`: `search_filter` included in `play_card()` return dict so battle_controller can open overlay post-play
+  - `content_db.gd`: `"SearchDeck"` added to `V1_SUPPORTED_EFFECTS`
+  - `card_ui.gd`: `"SearchDeck"` case added to `_format_single_effect()` displaying "Search your Draw Pile for a X."
+  - `battle_controller.gd`:
+    - Added `_open_search_overlay(filter_type)` — filters `_draw_pile` by card type, enters searching state, builds and adds overlay node
+    - Added `_build_search_overlay(filter_type, cards)` — dynamically constructs `Control → CenterContainer → PanelContainer → VBox → ScrollContainer(SCROLL_MODE_DISABLED) → HFlowContainer` with title, card grid, Cancel button, and disabled Confirm button
+    - Added `_on_search_card_input()` — click highlights selected card (gold tint), enables Confirm
+    - Added `_on_search_confirm_pressed()` — removes chosen card from `_draw_pile` at correct index, adds to hand (or discard if full), closes overlay
+    - Added `_close_search_overlay(completed)` — frees overlay node, clears state, re-enters `PHASE_PLAYER_TURN`, refreshes UI
+    - `_play_card_by_id()` checks `search_filter` in result after normal refresh and opens overlay if non-empty
+  - `cards.json`: Added card `"21"` — **Scout**, Skill, 1 mana, SearchDeck filter=Skill
+  - **Layout fix**: `ScrollContainer.horizontal_scroll_mode = SCROLL_MODE_DISABLED` required so `HFlowContainer` knows its width and wraps correctly
+  - **Centering fix**: `CenterContainer(PRESET_FULL_RECT)` wrapping `PanelContainer` instead of `PRESET_CENTER` anchors on PanelContainer directly
+
+### Frail Debuff
+  - `card_play_service.gd`: Added `_apply_frail(damage, enemy_state)` helper — returns `floor(damage × 1.25)` if enemy has frail > 0; applied to all attack damage paths before `apply_damage_to_enemy`; `"frail"` case added to debuff match for stacking
+  - `effect_resolver.gd`: `apply_damage_to_player()` now applies `floor(damage × 1.25)` if `player_state["frail"] > 0` — enables Cripple intent to amplify enemy attacks on the player
+  - `turn_manager.gd`: `tick_enemy_status_effects()` decrements `enemy_state["frail"]` by 1 each round start (no damage); `start_player_round()` decrements `player_state["frail"]` by 1 each round start
+  - `battle_controller.gd`: `frail: 0` initialized in both player and enemy states; `FRL X` shown in player waifu stats and enemy stats labels; `selection_mode` stored from enemy data in `_build_enemy_states()`
+  - `card_ui.gd`: `set_damage_preview` extended with `frail_active: bool` — propagates through `_format_effects` and `_format_single_effect`; DealDamage shows `floor(buffed × 1.25)` when frail_active; hover over frail enemy during drag calls `set_damage_preview` with `frail_active = true` via `_highlight_hovered_enemy()`
+  - `cards.json`: Added card `"22"` — **Expose**, Skill, 1 mana, targeted, Apply Frail 3 to SingleEnemy
+
+### Enemy Random Intent Selection
+  - `enemy_ai.gd`: `_next_intent_index()` checks `enemy_state["selection_mode"]`; returns `randi() % intents.size()` for `"random"` mode, sequential cycle otherwise
+  - `enemy_library.gd`: Added `"cripple"` intent pattern — type `"debuff"`, applies `frail 2` to player
+  - `intent_library.gd`: `execute_debuff()` now fully implemented — applies `frail` stacks to player or enemy based on `params["target"]`; extensible for future debuffs
+  - `enemies.json`: Test Goblin updated to `"selection_mode": "random"` with 3 intents: `light_attack (5)`, `heavy_attack (8)`, `cripple (FRL 2 to player)` — equal 33% probability each turn
+
+### CardUI Container Sizing Fix
+  - `card_ui.gd`: `setup()` now sets `custom_minimum_size = Vector2(scaled_width, scaled_height)` alongside `size` — fixes cards being collapsed to zero size when placed inside `HFlowContainer` or any other Container node (affects search overlay and deck viewer)
+
+- Architecture Notes:
+  - Frail multiplier (`×1.25`) is applied at the call site in `card_play_service` for player attacks and inside `apply_damage_to_player` for enemy attacks — poison/burn ticks bypass both paths intentionally (status damage is not "attack" damage)
+  - Rage multiplier (`×1.5`) is applied in `effect_resolver.resolved_attack_damage` after all additive bonuses; stacks consumed one per attack card played
+  - Search overlay is fully dynamic (no scene changes) — built and freed each use; `PHASE_SEARCHING` blocks end-turn and card play while open
+  - Enemy `selection_mode` is stored in runtime enemy state so `EnemyAI` can read it without querying `enemies.json` again
+  - `_highlight_hovered_enemy()` now also drives the drag card preview update — single loop, no redundant iteration
+
+- Cards Added This Session: Ignite (19), Fury (20), Scout (21), Expose (22)
+
+- Next Session:
+  - Implement Weakness debuff (player deals −25% damage) as counterpart to Frail
+  - Implement Bleed (damage at round start, persistent) and Stun (skip enemy turn)
+  - Wire consumable and relic slots
+  - Build deck editor and card reward screen
+
+---
+
+## 2026-05-15 (Session 2) - Strength Mechanic, Starter Cards, Damage Preview UI
+
+- Focus:
+  - Implement Strength buff mechanic from card rules (v1.8)
+  - Add Warcry test card (+2 Strength, encounter-duration)
+  - Fix deck loading pipeline so real cards appear instead of fallback Strike/Guard
+  - Add live damage preview on attack cards showing actual final damage with color coding
+
+- Completed:
+
+### Strength System
+  - `content_db.gd`: Added `"GainStrength"` to `V1_SUPPORTED_EFFECTS`
+  - `effect_resolver.gd`: Added `player_state` parameter to `resolved_attack_damage()`; Strength and Strength_Round both added to attack damage math
+  - `card_play_service.gd`: Handles `strength_gain` (encounter) and `strength_gain_round` (round) runtime card fields; applies to `player_state` on card play
+  - `battle_setup_service.gd`: `_to_runtime_card()` extracts `GainStrength` effect into `strength_gain` or `strength_gain_round` based on `"duration"` field (`"encounter"` | `"round"`)
+  - `turn_manager.gd`: `strength_round` reset to 0 at start of every player round alongside block reset
+  - `battle_controller.gd`: `_player_state` initialised with `"strength": 0` and `"strength_round": 0`; stats label shows `| STR X` when non-zero
+
+### Strength Duration Architecture
+  - Three duration tiers fully supported:
+    - `"encounter"` → `player_state["strength"]` (persists until battle ends) — used by Warcry
+    - `"round"` → `player_state["strength_round"]` (reset each round start) — ready for future cards
+    - Permanent waifu/artifact → applied to `player_state["strength"]` at `_initialize_battle()` when relic system is built; existing `passive_attack_damage` waifu path continues to function
+
+### Warcry Test Card
+  - `cards.json`: Added card `"16"` — Warcry, Skill, 1 mana, Common; effect `{ "type": "GainStrength", "value": 2, "duration": "encounter" }`
+  - `card_ui.gd`: Added `"GainStrength"` case to `_format_single_effect()` displaying "Gain X Strength."
+
+### Starter Card Entries + Deck Pipeline Fix
+  - `cards.json`: Added `"S1"` (Strike — DealDamage 6) and `"D1"` (Defend — GainBlock 5) as proper card entries that pass `supported_in_v1`
+  - `save_manager.gd` `_default_profile()`: Default deck changed to `12×S1 + 8×D1 + 2×16` (22 cards); matches fallback deck proportions with Warcry added
+  - `data/save_template.json`: Kept in sync with `_default_profile()`
+  - Root cause fixed: `_default_profile()` is the only source of truth for default/reset decks — `save_template.json` is documentation only; always update the GDScript source
+
+### Damage Preview UI
+  - `card_ui.gd`: `EffectText` node type changed from `Label` to `RichTextLabel` (BBCode enabled) in both `Card.tscn` and script type annotation
+  - Font size override key updated: `"font_size"` → `"normal_font_size"` for RichTextLabel
+  - Text color property updated in scene: `font_color` → `default_color`
+  - `_format_effects()`: Wraps output in `[center]...[/center]` BBCode to preserve horizontal centering
+  - `_format_single_effect()`: DealDamage now calls `_color_damage_number()` to wrap the value in BBCode color tags
+  - `_color_damage_number()`: Gold (`#ffcc33`) when bonus > 0, Red (`#ff4444`) when bonus < 0, plain when zero
+  - `set_damage_preview(bonus)`: Simplified — only passes effective bonus to `_format_effects`; non-attack cards receive bonus 0
+  - `battle_controller.gd`: `_get_total_attack_bonus()` helper mirrors `EffectResolver` math exactly — `strength + strength_round + all passive_attack_damage from waifu_scaled_effects`
+  - Preview set in `_rebuild_hand_cards()` on each freshly created card (fixes timing bug where preview was set on cards about to be destroyed by rebuild)
+
+- Architecture Notes:
+  - `save_template.json` has no runtime effect — `SaveManager._default_profile()` is authoritative
+  - `supported_in_v1` flag remains as metadata in `ContentDB` but no longer gates card inclusion in `_build_runtime_deck()`; `_to_runtime_card()` handles unsupported effects gracefully (stored but not executed)
+  - `_get_total_attack_bonus()` is the single source of truth for displayed and resolved attack bonus — both must stay in sync with `EffectResolver.resolved_attack_damage()`
+
+- Next Session:
+  - Implement `ApplyDebuff` in `CardPlayService` (Bleed, Poison, Weakness, Frail, Stun)
+  - Add status tick at round start (Bleed, Poison, Regen damage/healing)
+  - Add Weakness mechanic (−25% damage) feeding into `_get_total_attack_bonus()` as negative bonus
+  - Wire consumable and relic slots in top bar
+  - Build deck editor / card reward screen
+
+---
+
+## 2026-05-15 - Battle UI Top Bar Reorganization, Relic Row, Deck Viewer Overlay
+
+- Focus:
+  - Reorganize persistent header row: left-to-right order of waifu portraits → consumables → battle info → deck button
+  - Add Slay the Spire-style relic/buff strip row between header and battle area
+  - Add in-battle deck viewer overlay showing all cards as real CardUI instances
+  - Add fallback portrait art for main waifu and both sub-waifu slots
+  - Polish layout: spacers between groups, hand hangs lower, bottom bar taller
+
+- Completed:
+  - **`BattleScene.tscn` — header row restructure**:
+    - Removed `PlayerGroupHeader` ("Main Waifu + Summons") and `EnemyGroupHeader` ("Enemies") labels
+    - Replaced `PersistentBox1/2/3` labels with `TextureRect` nodes (`MainWaifuPortraitRect`, `SideWaifu1PortraitRect`, `SideWaifu2PortraitRect`) using `sidewaifutest.png` as placeholder/fallback
+    - Added `MainSubWaifuSpacer` (20px) between main waifu and sub-waifu group
+    - Added `WaifuConsumableSpacer` (20px) between sub-waifu group and consumables
+    - Added 3 consumable slots (`ConsumableSlot1-3`, 65px min-width each) using `consumabletest.png`
+    - Added `BattleInfoPanel` (expands to fill) + `BattleInfoLabel` showing Floor / Turn / elapsed time
+    - Added `DeckViewButton` (TextureButton, `discardpile.png`, 65px min-width) as final top-bar item
+  - **`BattleScene.tscn` — relic row**:
+    - Added `RelicsRow` (HBoxContainer, stretch ratio 0.05) between PersistentHeaderRow and CombatRow
+    - 3 relic slots (55px min-width each) using `relictest.png`, followed by `RelicsSpacer` (expand) — relics anchor left, blank space fills right (STS style)
+  - **`BattleScene.tscn` — deck viewer overlay**:
+    - Added `DeckOverlay` (Control, full-rect anchors, `z_index = 100`, hidden by default) as direct child of scene root
+    - `DeckDimBg` (ColorRect, 75% black) dims the battle scene behind the panel
+    - `DeckPanel` (PanelContainer, anchored to 10–90% width, 5–95% height) centered on screen
+    - `DeckHeader` (HBoxContainer): `DeckTitleLabel` (expands) + `DeckCloseButton` (52px "X")
+    - `DeckScrollContainer` (vertical scroll only, `horizontal_scroll_mode = 0`) → `DeckCardGrid` (HFlowContainer, cards wrap to new rows)
+  - **`BattleScene.tscn` — row ratio rebalance**:
+    - PersistentHeaderRow: `0.07 → 0.09`
+    - RelicsRow: new `0.05`
+    - CombatRow: `0.60 → 0.52` (battle area gives space to hand and relics)
+    - HandHudRow: `0.25 → 0.26` (~13% taller — cards sit lower and raise battlefield zones)
+  - **`battle_controller.gd` — waifu portrait fallback**:
+    - Added `DEFAULT_SIDE_WAIFU_ART_PATH` constant (`sidewaifutest.png`)
+    - Added `_set_texture_with_fallback(target, path, fallback)` helper
+    - Updated `_apply_waifu_art()` to use fallback helper for all three portrait slots
+    - `@onready` refs updated to point to new TextureRect nodes
+  - **`battle_controller.gd` — battle info bar**:
+    - Added `_battle_elapsed_time: float` tracked in `_process()` (pauses when `_battle_over`)
+    - Reset to `0.0` in `_initialize_battle()`
+    - Added `_format_battle_time(seconds)` helper → `"M:SS"` format
+    - `_refresh_ui()` now drives `_battle_info_label.text` → `"Floor 1  •  Turn N  •  M:SS"`
+  - **`battle_controller.gd` — deck viewer**:
+    - Added `_full_deck: Array[Dictionary]` — snapshot of resolved deck from setup payload taken before shuffle in `_initialize_battle()`
+    - Added `@onready` refs for all deck overlay nodes
+    - `_open_deck_overlay()`: sets title with card count, instantiates `Card.tscn` at `CardSize.FULL` for every card in `_full_deck`, sets `custom_minimum_size = size` (so `HFlowContainer` respects card dimensions), sets `mouse_filter = PASS` for scroll passthrough, then shows overlay
+    - `_close_deck_overlay()`: hides overlay, frees all card instances
+    - Both wired in `_ready()` via `.pressed.connect()`
+  - **`battle_controller.gd` — hand hang**:
+    - `_arrange_hand_cards()`: `bottom_y = container_height + card_height * 0.15` — cards hang ~15% of card height below the hand container edge, exposing more of the battlefield; hover still raises them into full view
+
+- Architecture Notes:
+  - `_full_deck` is sourced from `_build_deck_from_setup(setup)` before shuffle — canonical save-file card order, independent of mid-battle pile state; no direct save/content queries in new code
+  - Deck overlay button wired directly (internal battle UI), consistent with `_end_turn_button` pattern — no SignalBus needed for intra-scene UI
+  - `CardSize.FULL` used for deck viewer (explicitly "card library / rewards" per `card_ui.gd` comments)
+  - `custom_minimum_size = card_ui.size` required after `setup()` so `HFlowContainer` uses the card's dimensions for wrapping layout (containers ignore the `size` property directly)
+  - All new placeholder assets (`sidewaifutest.png`, `consumabletest.png`, `relictest.png`) are placeholders — future save/setup payload data will replace them through existing `_apply_waifu_art()` / setup pipeline patterns
+
+- Next Session:
+  - Wire consumable slots to save/inventory data when consumable system is implemented
+  - Wire relic slots to player relic inventory when relic system is implemented
+  - Add floor tracking to `GameState`/`BattleSetupService` so info bar shows real floor number
+  - Load main waifu portrait from save file via `BattleSetupService` payload
+
 ## 2026-05-14 - Hand Layout Polish, Drag Threshold, Pile UI Overhaul
 
 - Focus:

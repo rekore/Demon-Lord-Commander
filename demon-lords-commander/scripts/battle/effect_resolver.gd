@@ -4,14 +4,22 @@ extends RefCounted
 # BattleController should call this and then only handle scene/UI and battle flow decisions.
 
 
-func resolved_attack_damage(card: Dictionary, waifu_scaled_effects: Array[Dictionary]) -> int:
+func resolved_attack_damage(card: Dictionary, player_state: Dictionary, waifu_scaled_effects: Array[Dictionary]) -> int:
 	var total_damage: int = int(card.get("damage", 0))
 	if String(card.get("type", "")) != "attack":
 		return total_damage
 
+	total_damage += int(player_state.get("strength", 0))
+	total_damage += int(player_state.get("strength_round", 0))
+
 	for effect: Dictionary in waifu_scaled_effects:
 		if String(effect.get("type", "")) == "passive_attack_damage":
 			total_damage += int(effect.get("value", 0))
+
+	var rage: int = int(player_state.get("rage", 0))
+	if rage > 0:
+		total_damage = int(float(total_damage) * 1.5)
+		player_state["rage"] = rage - 1
 
 	return total_damage
 
@@ -30,6 +38,8 @@ func apply_damage_to_enemy(enemy_state: Dictionary, amount: int) -> void:
 
 func apply_damage_to_player(player_state: Dictionary, amount: int) -> void:
 	var remaining_damage: int = max(amount, 0)
+	if int(player_state.get("frail", 0)) > 0:
+		remaining_damage = int(float(remaining_damage) * 1.25)
 	var player_block: int = int(player_state.get("block", 0))
 	if player_block > 0:
 		var absorbed: int = min(player_block, remaining_damage)

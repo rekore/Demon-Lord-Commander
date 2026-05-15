@@ -2,6 +2,36 @@
 	"version": "1.0.0",
 	"cards": [
 		{
+			"id": "S1",
+			"name": "Strike",
+			"type": "Attack",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["basic"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DealDamage", "target": "SingleEnemy", "value": 6 }
+			]
+		},
+		{
+			"id": "D1",
+			"name": "Defend",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["basic"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "GainBlock", "value": 5 }
+			]
+		},
+		{
 			"id": "1",
 			"name": "Shadow Strike",
 			"type": "Attack",
@@ -236,6 +266,114 @@
 			"effects": [
 				{ "type": "CopyCard", "target": "PlayerHand", "count": 1, "exhaustCopy": true },
 				{ "type": "Exhaust", "target": "ThisCard" }
+			]
+		},
+		{
+			"id": "22",
+			"name": "Expose",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["debuff"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"targeted": true,
+			"effects": [
+				{ "type": "ApplyDebuff", "debuff": "Frail", "stacks": 3, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "21",
+			"name": "Scout",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["utility", "search"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "SearchDeck", "filter": "Skill" }
+			]
+		},
+		{
+			"id": "20",
+			"name": "Fury",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["rage", "buff"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "GainRage", "value": 2 }
+			]
+		},
+		{
+			"id": "19",
+			"name": "Ignite",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["burn"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"targeted": true,
+			"effects": [
+				{ "type": "ApplyDebuff", "debuff": "Burn", "stacks": 3, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "18",
+			"name": "Venom",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["poison"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"targeted": true,
+			"effects": [
+				{ "type": "ApplyDebuff", "debuff": "Poison", "stacks": 6, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "17",
+			"name": "Insight",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["draw"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "DrawCards", "value": 2 }
+			]
+		},
+		{
+			"id": "16",
+			"name": "Warcry",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["strength", "buff"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{ "type": "GainStrength", "value": 2, "duration": "encounter" }
 			]
 		},
 		{

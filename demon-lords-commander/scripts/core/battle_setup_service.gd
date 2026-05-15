@@ -130,7 +130,8 @@ func _to_runtime_card(source_card: Dictionary) -> Dictionary:
 		"id": String(source_card.get("id", "")),
 		"name": String(source_card.get("name", "Unknown Card")),
 		"cost": int(source_card.get("cost", 0)),
-		"type": String(source_card.get("type", "Skill")).to_lower()
+		"type": String(source_card.get("type", "Skill")).to_lower(),
+		"targeted": bool(source_card.get("targeted", false))
 	}
 
 	var effects: Array = source_card.get("effects", [])
@@ -148,6 +149,24 @@ func _to_runtime_card(source_card: Dictionary) -> Dictionary:
 				runtime_card["draw"] = int(effect.get("value", 0))
 			"GainMana":
 				runtime_card["gain_mana"] = int(effect.get("value", 0))
+			"GainStrength":
+				var duration: String = String(effect.get("duration", "encounter"))
+				if duration == "round":
+					runtime_card["strength_gain_round"] = int(effect.get("value", 0))
+				else:
+					runtime_card["strength_gain"] = int(effect.get("value", 0))
+			"GainRage":
+				runtime_card["rage_gain"] = int(effect.get("value", 0))
+			"SearchDeck":
+				runtime_card["search_filter"] = String(effect.get("filter", "")).to_lower()
+			"ApplyDebuff":
+				if not runtime_card.has("debuffs"):
+					runtime_card["debuffs"] = []
+				(runtime_card["debuffs"] as Array).append({
+					"debuff": String(effect.get("debuff", "")),
+					"stacks": int(effect.get("stacks", 0)),
+					"target": String(effect.get("target", "SingleEnemy"))
+				})
 
 	return runtime_card
 

@@ -8,7 +8,11 @@ const V1_SUPPORTED_EFFECTS: PackedStringArray = [
 	"DealDamage",
 	"GainBlock",
 	"DrawCards",
-	"GainMana"
+	"GainMana",
+	"GainStrength",
+	"ApplyDebuff",
+	"GainRage",
+	"SearchDeck"
 ]
 
 var cards_by_id: Dictionary = {}

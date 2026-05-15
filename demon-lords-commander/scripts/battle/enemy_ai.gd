@@ -68,4 +68,6 @@ func _next_intent_index(enemy_state: Dictionary, intent_index: int) -> int:
 	var intents: Array = enemy_state.get("intents", [])
 	if intents.is_empty():
 		return intent_index
+	if String(enemy_state.get("selection_mode", "sequential")) == "random":
+		return randi() % intents.size()
 	return (intent_index + 1) % intents.size()

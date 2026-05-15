@@ -102,3 +102,14 @@ Retaliate cannot trigger another Retaliate. Retaliate damage is flagged as "Reac
     Ethereal: Exhausts automatically at turn end.
 
     Chain: Resolves targets in the specific priority order defined on the card text.
+
+    Strength: adds X damage to every instance of an attacks damage
+
+    Weakness: deal 25% less damage
+
+    Frail: take 25% more damage from incoming attacks
+
+    Draw: Draws X cards
+
+
+

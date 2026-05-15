@@ -6,8 +6,11 @@
 			"name": "Test Goblin",
 			"max_hp": 20,
 			"sprite_anchor": "bottom",
+			"selection_mode": "random",
 			"intents": [
-				{ "pattern_id": "light_attack" }
+				{ "pattern_id": "light_attack" },
+				{ "pattern_id": "heavy_attack" },
+				{ "pattern_id": "cripple" }
 			]
 		},
 		{

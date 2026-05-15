@@ -24,7 +24,7 @@ const DEFAULT_BORDER_PATH: String = "res://assets/art/cards/cardbaseorange.png"
 @export var CardArt: TextureRect
 @export var CardName: Label
 @export var ManaCost: Label
-@export var EffectText: Label
+@export var EffectText: RichTextLabel
 
 var _card_data: Dictionary = {}
 
@@ -36,13 +36,14 @@ func setup(card_data: Dictionary, size_preset: CardSize = CardSize.HAND) -> void
 	var scale_factor: float = _get_scale_for_preset(size_preset)
 	var scaled_width: float = BASE_WIDTH * scale_factor
 	var scaled_height: float = BASE_HEIGHT * scale_factor
+	custom_minimum_size = Vector2(scaled_width, scaled_height)
 	size = Vector2(scaled_width, scaled_height)
 
 	# Scale fonts proportionally (use larger bases so text stays readable)
 	var font_scale: float = scale_factor
 	CardName.add_theme_font_size_override("font_size", int(64 * font_scale))
 	ManaCost.add_theme_font_size_override("font_size", int(72 * font_scale))
-	EffectText.add_theme_font_size_override("font_size", int(64 * font_scale))
+	EffectText.add_theme_font_size_override("normal_font_size", int(64 * font_scale))
 
 	# Set border texture (with fallback)
 	var border_path: String = card_data.get("border_path", DEFAULT_BORDER_PATH)
@@ -56,6 +57,14 @@ func setup(card_data: Dictionary, size_preset: CardSize = CardSize.HAND) -> void
 	CardName.text = card_data.get("name", "Unknown")
 	ManaCost.text = str(card_data.get("cost", 0))
 	EffectText.text = _format_effects(card_data.get("effects", []))
+
+
+func set_damage_preview(bonus_damage: int, rage_stacks: int = 0, frail_active: bool = false) -> void:
+	var is_attack: bool = String(_card_data.get("type", "")).to_lower() == "attack"
+	var effective_bonus: int = bonus_damage if is_attack else 0
+	var effective_rage: int = rage_stacks if is_attack else 0
+	var effective_frail: bool = frail_active if is_attack else false
+	EffectText.text = _format_effects(_card_data.get("effects", []), effective_bonus, effective_rage, effective_frail)
 
 
 func set_unplayable_tint(enabled: bool) -> void:
@@ -96,7 +105,7 @@ func _safe_load_texture(path: String, fallback: String) -> Texture2D:
 	return null
 
 
-func _format_effects(effects: Array) -> String:
+func _format_effects(effects: Array, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false) -> String:
 	if effects.is_empty():
 		return ""
 
@@ -106,20 +115,28 @@ func _format_effects(effects: Array) -> String:
 			continue
 		var effect: Dictionary = raw_effect as Dictionary
 		var effect_type: String = String(effect.get("type", ""))
-		var line: String = _format_single_effect(effect_type, effect)
+		var line: String = _format_single_effect(effect_type, effect, damage_bonus, rage_stacks, frail_active)
 		if line != "":
 			lines.append(line)
 
-	return "\n".join(lines)
+	if lines.is_empty():
+		return ""
+	return "[center]" + "\n".join(lines) + "[/center]"
 
 
-func _format_single_effect(effect_type: String, effect: Dictionary) -> String:
+func _format_single_effect(effect_type: String, effect: Dictionary, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false) -> String:
 	match effect_type:
 		"DealDamage":
-			var value: int = int(effect.get("value", 0))
+			var base_val: int = int(effect.get("value", 0))
+			var buffed: int = base_val + damage_bonus
+			if rage_stacks > 0:
+				buffed = int(float(buffed) * 1.5)
+			if frail_active:
+				buffed = int(float(buffed) * 1.25)
 			var target: String = String(effect.get("target", "SingleEnemy"))
 			var target_str: String = _format_target(target)
-			return "Deal %d damage to %s." % [value, target_str]
+			var num_str: String = _color_damage_number(buffed, buffed - base_val)
+			return "Deal %s damage to %s." % [num_str, target_str]
 		"GainBlock":
 			var value: int = int(effect.get("value", 0))
 			return "Gain %d Block." % value
@@ -129,6 +146,15 @@ func _format_single_effect(effect_type: String, effect: Dictionary) -> String:
 		"GainMana":
 			var value: int = int(effect.get("value", 0))
 			return "Gain %d Mana." % value
+		"GainStrength":
+			var value: int = int(effect.get("value", 0))
+			return "Gain %d Strength." % value
+		"GainRage":
+			var value: int = int(effect.get("value", 0))
+			return "Gain %d Rage." % value
+		"SearchDeck":
+			var filter: String = String(effect.get("filter", ""))
+			return "Search your Draw Pile for a %s." % filter.capitalize()
 		"LoseHP":
 			var value: int = int(effect.get("value", 0))
 			return "Lose %d HP." % value
@@ -170,6 +196,14 @@ func _format_single_effect(effect_type: String, effect: Dictionary) -> String:
 			return "Take an extra turn."
 		_:
 			return "[%s]" % effect_type
+
+
+func _color_damage_number(value: int, bonus: int) -> String:
+	if bonus > 0:
+		return "[color=#ffcc33]%d[/color]" % value
+	elif bonus < 0:
+		return "[color=#ff4444]%d[/color]" % value
+	return str(value)
 
 
 func _format_target(target: String) -> String:

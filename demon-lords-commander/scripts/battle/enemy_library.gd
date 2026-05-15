@@ -35,6 +35,11 @@ var intent_patterns: Dictionary = {
 		"type": "attack",
 		"params": {"damage": 3},
 		"display_name": "Weak Strike"
+	},
+	"cripple": {
+		"type": "debuff",
+		"params": {"debuff_type": "frail", "stacks": 2, "target": "player"},
+		"display_name": "Cripple"
 	}
 }
 

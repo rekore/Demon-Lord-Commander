@@ -52,10 +52,17 @@ func execute_debuff(
 	effect_resolver: RefCounted,
 	params: Dictionary
 ) -> Dictionary:
-	# Placeholder for future debuff logic
 	var debuff_type: String = String(params.get("debuff_type", ""))
-	var value: int = int(params.get("value", 0))
-	return {"debuff_type": debuff_type, "value": value}
+	var stacks: int = int(params.get("stacks", 0))
+	var target: String = String(params.get("target", "player"))
+	if stacks > 0:
+		match debuff_type:
+			"frail":
+				if target == "player":
+					player_state["frail"] = int(player_state.get("frail", 0)) + stacks
+				else:
+					enemy_state["frail"] = int(enemy_state.get("frail", 0)) + stacks
+	return {"debuff_type": debuff_type, "stacks": stacks}
 
 
 func execute_intent(
