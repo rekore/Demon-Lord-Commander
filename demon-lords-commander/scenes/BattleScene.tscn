@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://fcn37n3eop3b" path="res://assets/art/Enemies/Test_Goblin.png" id="5_0yex5"]
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="6_mtres"]
 [ext_resource type="Texture2D" uid="uid://bq26b6gi62spc" path="res://assets/art/cards/discardpile.png" id="7_bsu3s"]
+[ext_resource type="Texture2D" uid="uid://2xwvljepsxww" path="res://assets/art/characters/sidewaifutest.png" id="8_swtest"]
+[ext_resource type="Texture2D" uid="uid://cis2n2u8wr2gv" path="res://assets/art/ui/icons/consumabletest.png" id="9_cons"]
+[ext_resource type="Texture2D" uid="uid://c773x56o7i1t1" path="res://assets/art/ui/icons/relictest.png" id="10_relic"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ftvu5"]
 atlas = ExtResource("2_28s16")
@@ -139,40 +142,160 @@ theme_override_constants/separation = 10
 [node name="PersistentHeaderRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1941091500]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.07
+size_flags_stretch_ratio = 0.09
 theme_override_constants/separation = 10
 
 [node name="PersistentBox1" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1902721425]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="MainWaifuPortraitRect" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox1" unique_id=1339330027]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("8_swtest")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="PersistentBox1Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox1" unique_id=1339330027]
+[node name="MainSubWaifuSpacer" type="Control" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900400002]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-text = "Main Waifu Buffs"
-autowrap_mode = 3
 
 [node name="PersistentBox2" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1224308053]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="SideWaifu1PortraitRect" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox2" unique_id=634816637]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="PersistentBox2Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox2" unique_id=634816637]
-layout_mode = 2
-text = "Sub Waifu Theme"
-autowrap_mode = 3
+size_flags_vertical = 3
+texture = ExtResource("8_swtest")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PersistentBox3" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=1134990133]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="SideWaifu2PortraitRect" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox3" unique_id=968231628]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("8_swtest")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WaifuConsumableSpacer" type="Control" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900400001]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="ConsumableSlot1" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900100001]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+
+[node name="ConsumableRect1" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/ConsumableSlot1" unique_id=900100002]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("9_cons")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ConsumableSlot2" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900100003]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+
+[node name="ConsumableRect2" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/ConsumableSlot2" unique_id=900100004]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("9_cons")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ConsumableSlot3" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900100005]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+
+[node name="ConsumableRect3" type="TextureRect" parent="Margin/RootVBox/PersistentHeaderRow/ConsumableSlot3" unique_id=900100006]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("9_cons")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BattleInfoPanel" type="PanelContainer" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900100007]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PersistentBox3Label" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/PersistentBox3" unique_id=968231628]
+[node name="BattleInfoLabel" type="Label" parent="Margin/RootVBox/PersistentHeaderRow/BattleInfoPanel" unique_id=900100008]
 layout_mode = 2
-text = "Relics / Mission Modifiers"
-autowrap_mode = 3
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"BattleSmall"
+text = "Floor 1  •  Turn 1  •  0:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeckViewButton" type="TextureButton" parent="Margin/RootVBox/PersistentHeaderRow" unique_id=900300001]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+size_flags_vertical = 3
+ignore_texture_size = true
+stretch_mode = 5
+texture_normal = ExtResource("7_bsu3s")
+
+[node name="RelicsRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=900200001]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+theme_override_constants/separation = 4
+
+[node name="RelicSlot1" type="PanelContainer" parent="Margin/RootVBox/RelicsRow" unique_id=900200002]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+
+[node name="RelicRect1" type="TextureRect" parent="Margin/RootVBox/RelicsRow/RelicSlot1" unique_id=900200003]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("10_relic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RelicSlot2" type="PanelContainer" parent="Margin/RootVBox/RelicsRow" unique_id=900200004]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+
+[node name="RelicRect2" type="TextureRect" parent="Margin/RootVBox/RelicsRow/RelicSlot2" unique_id=900200005]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("10_relic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RelicSlot3" type="PanelContainer" parent="Margin/RootVBox/RelicsRow" unique_id=900200006]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+
+[node name="RelicRect3" type="TextureRect" parent="Margin/RootVBox/RelicsRow/RelicSlot3" unique_id=900200007]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("10_relic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RelicsSpacer" type="Control" parent="Margin/RootVBox/RelicsRow" unique_id=900200008]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="CombatRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1678497399]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.6
+size_flags_stretch_ratio = 0.52
 theme_override_constants/separation = 8
 
 [node name="PlayerGroupPanel" type="PanelContainer" parent="Margin/RootVBox/CombatRow" unique_id=1407942923]
@@ -183,11 +306,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="PlayerGroupHeader" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox" unique_id=2011322741]
-layout_mode = 2
-text = "Main Waifu + Summons"
-horizontal_alignment = 1
 
 [node name="PlayerCardsRow" type="HBoxContainer" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox" unique_id=1516411697]
 layout_mode = 2
@@ -327,11 +445,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="EnemyGroupHeader" type="Label" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox" unique_id=307829125]
-layout_mode = 2
-text = "Enemies"
-horizontal_alignment = 1
 
 [node name="EnemyCardsRow" type="HBoxContainer" parent="Margin/RootVBox/CombatRow/EnemyGroupPanel/EnemyGroupVBox" unique_id=1757267208]
 layout_mode = 2
@@ -475,7 +588,7 @@ size_flags_horizontal = 3
 [node name="HandHudRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=1129171716]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.25
+size_flags_stretch_ratio = 0.26
 theme_override_constants/separation = 8
 
 [node name="DrawPilePanel" type="PanelContainer" parent="Margin/RootVBox/HandHudRow" unique_id=1766756793]
@@ -543,3 +656,70 @@ custom_minimum_size = Vector2(130, 120)
 layout_mode = 2
 theme_type_variation = &"BattleButton"
 text = "End Turn"
+
+[node name="DeckOverlay" type="Control" parent="." unique_id=900300002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 100
+visible = false
+mouse_filter = 0
+
+[node name="DeckDimBg" type="ColorRect" parent="DeckOverlay" unique_id=900300003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+mouse_filter = 0
+
+[node name="DeckPanel" type="PanelContainer" parent="DeckOverlay" unique_id=900300004]
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DeckVBox" type="VBoxContainer" parent="DeckOverlay/DeckPanel" unique_id=900300005]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="DeckHeader" type="HBoxContainer" parent="DeckOverlay/DeckPanel/DeckVBox" unique_id=900300006]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="DeckTitleLabel" type="Label" parent="DeckOverlay/DeckPanel/DeckVBox/DeckHeader" unique_id=900300007]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Your Deck"
+vertical_alignment = 1
+
+[node name="DeckCloseButton" type="Button" parent="DeckOverlay/DeckPanel/DeckVBox/DeckHeader" unique_id=900300008]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+theme_type_variation = &"BattleButton"
+text = "X"
+
+[node name="DeckScrollContainer" type="ScrollContainer" parent="DeckOverlay/DeckPanel/DeckVBox" unique_id=900300009]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="DeckCardGrid" type="HFlowContainer" parent="DeckOverlay/DeckPanel/DeckVBox/DeckScrollContainer" unique_id=900300010]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10

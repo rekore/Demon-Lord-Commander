@@ -3,6 +3,7 @@ extends Control
 const MAX_HAND_SIZE: int = 10
 const STARTING_DRAW: int = 5
 const DEFAULT_PILE_ART_PATH: String = "res://assets/art/ui/icons/cascade_orb.png"
+const DEFAULT_SIDE_WAIFU_ART_PATH: String = "res://assets/art/characters/sidewaifutest.png"
 const TurnManagerScript = preload("res://scripts/battle/turn_manager.gd")
 const EffectResolverScript = preload("res://scripts/battle/effect_resolver.gd")
 const EnemyAIScript = preload("res://scripts/battle/enemy_ai.gd")
@@ -11,9 +12,9 @@ const CardPlayServiceScript = preload("res://scripts/battle/card_play_service.gd
 const CardUIScript = preload("res://scripts/battle/card_ui.gd")
 const CardUIScene = preload("res://scenes/Card.tscn")
 
-@onready var _persistent_box_1_label: Label = $Margin/RootVBox/PersistentHeaderRow/PersistentBox1/PersistentBox1Label
-@onready var _persistent_box_2_label: Label = $Margin/RootVBox/PersistentHeaderRow/PersistentBox2/PersistentBox2Label
-@onready var _persistent_box_3_label: Label = $Margin/RootVBox/PersistentHeaderRow/PersistentBox3/PersistentBox3Label
+@onready var _main_waifu_header_portrait: TextureRect = $Margin/RootVBox/PersistentHeaderRow/PersistentBox1/MainWaifuPortraitRect
+@onready var _side_waifu_1_portrait: TextureRect = $Margin/RootVBox/PersistentHeaderRow/PersistentBox2/SideWaifu1PortraitRect
+@onready var _side_waifu_2_portrait: TextureRect = $Margin/RootVBox/PersistentHeaderRow/PersistentBox3/SideWaifu2PortraitRect
 
 @onready var _main_waifu_portrait: AnimatedSprite2D = $Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/MainWaifuCard/Portrait
 @onready var _main_waifu_stats_label: Label = $Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/MainWaifuCard/StatsLabel
@@ -44,8 +45,19 @@ var _enemy_intent_labels: Array[Label] = []
 @onready var _discard_pile_count_label: Label = $Margin/RootVBox/HandHudRow/DiscardPilePanel/DiscardPileCountLabel
 @onready var _end_turn_button: Button = $Margin/RootVBox/HandHudRow/EndTurnButton
 
+@onready var _consumable_rect_1: TextureRect = $Margin/RootVBox/PersistentHeaderRow/ConsumableSlot1/ConsumableRect1
+@onready var _consumable_rect_2: TextureRect = $Margin/RootVBox/PersistentHeaderRow/ConsumableSlot2/ConsumableRect2
+@onready var _consumable_rect_3: TextureRect = $Margin/RootVBox/PersistentHeaderRow/ConsumableSlot3/ConsumableRect3
+@onready var _battle_info_label: Label = $Margin/RootVBox/PersistentHeaderRow/BattleInfoPanel/BattleInfoLabel
+@onready var _deck_view_button: TextureButton = $Margin/RootVBox/PersistentHeaderRow/DeckViewButton
+@onready var _deck_overlay: Control = $DeckOverlay
+@onready var _deck_title_label: Label = $DeckOverlay/DeckPanel/DeckVBox/DeckHeader/DeckTitleLabel
+@onready var _deck_close_button: Button = $DeckOverlay/DeckPanel/DeckVBox/DeckHeader/DeckCloseButton
+@onready var _deck_card_grid: HFlowContainer = $DeckOverlay/DeckPanel/DeckVBox/DeckScrollContainer/DeckCardGrid
+
 var _battle_over: bool = false
 var _round_number: int = 1
+var _battle_elapsed_time: float = 0.0
 
 var _selected_waifu_id: String = ""
 var _selected_waifu_name: String = "Unknown"
@@ -62,6 +74,7 @@ var _draw_pile: Array[Dictionary] = []
 var _hand: Array[Dictionary] = []
 var _discard_pile: Array[Dictionary] = []
 var _exhaust_pile: Array[Dictionary] = []
+var _full_deck: Array[Dictionary] = []
 var _turn_manager: RefCounted = TurnManagerScript.new()
 var _effect_resolver: RefCounted = EffectResolverScript.new()
 var _enemy_ai: RefCounted = EnemyAIScript.new()
@@ -81,11 +94,15 @@ const DRAG_THRESHOLD_PX: float = 100.0
 func _ready() -> void:
 	_end_turn_button.pressed.connect(_on_end_turn_pressed)
 	_hand_container.resized.connect(_arrange_hand_cards)
+	_deck_view_button.pressed.connect(_open_deck_overlay)
+	_deck_close_button.pressed.connect(_close_deck_overlay)
 	_populate_enemy_ui_arrays()
 	_initialize_battle()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if not _battle_over:
+		_battle_elapsed_time += delta
 	if not _drag_active or _drag_card_ui == null:
 		return
 	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -261,7 +278,7 @@ func _arrange_hand_cards() -> void:
 	var total_width: float = card_width + (count - 1) * step
 	var start_x: float = h_padding + (usable_width - total_width) / 2.0
 	var center_index: float = (count - 1) / 2.0
-	var bottom_y: float = container_height
+	var bottom_y: float = container_height + card_height * 0.15
 
 	for i: int in range(count):
 		var card: Control = cards[i] as Control
@@ -294,6 +311,7 @@ func _arrange_hand_cards() -> void:
 func _initialize_battle() -> void:
 	_battle_over = false
 	_round_number = 1
+	_battle_elapsed_time = 0.0
 	_battle_state_machine.reset_for_new_battle()
 
 	var setup: Dictionary = BattleSetupService.current_setup
@@ -318,6 +336,7 @@ func _initialize_battle() -> void:
 
 	_enemy_states = _build_enemy_states(setup)
 	_draw_pile = _build_deck_from_setup(setup)
+	_full_deck = _draw_pile.duplicate(true)
 	_draw_pile.shuffle()
 	_hand.clear()
 	_discard_pile.clear()
@@ -328,14 +347,30 @@ func _initialize_battle() -> void:
 
 
 func _apply_waifu_art(setup: Dictionary) -> void:
+	var main_portrait_path: String = String(setup.get("waifu_portrait_path", ""))
 	var sub_portrait_path: String = String(setup.get("sub_waifu_portrait_path", ""))
 
-	# Main portrait is an AnimatedSprite2D with SpriteFrames configured in the scene;
-	# skip dynamic texture assignment here.
+	# Header row waifu portraits — fall back to DEFAULT_SIDE_WAIFU_ART_PATH if path is empty/invalid.
+	_set_texture_with_fallback(_main_waifu_header_portrait, main_portrait_path, DEFAULT_SIDE_WAIFU_ART_PATH)
+	_set_texture_with_fallback(_side_waifu_1_portrait, "", DEFAULT_SIDE_WAIFU_ART_PATH)
+	_set_texture_with_fallback(_side_waifu_2_portrait, "", DEFAULT_SIDE_WAIFU_ART_PATH)
+
 	# Pile art uses sub-waifu portrait when available; falls back to scene default (discardpile.png).
 	if sub_portrait_path != "":
 		_set_texture_if_valid(_draw_pile_art, sub_portrait_path)
 		_set_texture_if_valid(_discard_pile_art, sub_portrait_path)
+
+
+func _set_texture_with_fallback(target: TextureRect, texture_path: String, fallback_path: String) -> void:
+	if texture_path != "" and ResourceLoader.exists(texture_path):
+		var texture: Texture2D = load(texture_path) as Texture2D
+		if texture != null:
+			target.texture = texture
+			return
+	if ResourceLoader.exists(fallback_path):
+		var texture: Texture2D = load(fallback_path) as Texture2D
+		if texture != null:
+			target.texture = texture
 
 
 func _set_texture_if_valid(target: TextureRect, texture_path: String) -> void:
@@ -521,19 +556,35 @@ func _check_battle_end() -> void:
 	_battle_state_machine.enter_player_turn()
 
 
-func _refresh_ui(log_text: String = "") -> void:
-	var persistent_effect_text: String = "No passive effects"
-	if not _waifu_scaled_effects.is_empty():
-		var parts: Array[String] = []
-		for effect: Dictionary in _waifu_scaled_effects:
-			parts.append("%s +%d" % [String(effect.get("type", "effect")), int(effect.get("value", 0))])
-		persistent_effect_text = ", ".join(parts)
+func _format_battle_time(seconds: float) -> String:
+	var mins: int = int(seconds) / 60
+	var secs: int = int(seconds) % 60
+	return "%d:%02d" % [mins, secs]
 
-	_persistent_box_1_label.text = "Main: %s (Bond %d)\n%s" % [_selected_waifu_name, _selected_waifu_bond, persistent_effect_text]
-	_persistent_box_2_label.text = "Sub Waifu Theme: %s\nDraw/Discard art skin source" % _selected_sub_waifu_name
-	_persistent_box_3_label.text = "Round %d\n%s" % [_round_number, log_text if log_text != "" else "Battle in progress"]
-	_persistent_box_3_label.text += "\nPhase: %s" % String(_battle_state_machine.current_phase())
 
+func _open_deck_overlay() -> void:
+	_deck_title_label.text = "Your Deck (%d cards)" % _full_deck.size()
+	for child: Node in _deck_card_grid.get_children():
+		_deck_card_grid.remove_child(child)
+		child.queue_free()
+	_deck_overlay.visible = true
+	for card_data: Dictionary in _full_deck:
+		var card_ui: Control = CardUIScene.instantiate()
+		card_ui.call("setup", card_data, CardUI.CardSize.FULL)
+		card_ui.custom_minimum_size = card_ui.size
+		card_ui.mouse_filter = Control.MOUSE_FILTER_PASS
+		_deck_card_grid.add_child(card_ui)
+
+
+func _close_deck_overlay() -> void:
+	_deck_overlay.visible = false
+	for child: Node in _deck_card_grid.get_children():
+		_deck_card_grid.remove_child(child)
+		child.queue_free()
+
+
+func _refresh_ui(_log_text: String = "") -> void:
+	_battle_info_label.text = "Floor 1  •  Turn %d  •  %s" % [_round_number, _format_battle_time(_battle_elapsed_time)]
 	_main_waifu_stats_label.text = "%s\nHP %d/%d | Block %d" % [
 		_selected_waifu_name,
 		int(_player_state["hp"]),
