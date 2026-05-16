@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dh4feeu5qyfhs"]
+[gd_scene format=3 uid="uid://dh4feeu5qyfhs"]
 
-[ext_resource type="Script" path="res://scripts/battle/card_ui.gd" id="1_cardui"]
+[ext_resource type="Script" uid="uid://nlka0qg1tk1r" path="res://scripts/battle/card_ui.gd" id="1_cardui"]
 [ext_resource type="Texture2D" uid="uid://c2u00l8mgrwsl" path="res://assets/art/cards/cardbaseorange.png" id="2_qf083"]
 [ext_resource type="Texture2D" uid="uid://cobymbpajfdmq" path="res://assets/art/cards/Nyxcardsizetemplate.png" id="3_4dx8l"]
 
-[node name="Card" type="Control" node_paths=PackedStringArray("CardBorder", "CardArt", "CardName", "ManaCost", "EffectText")]
+[node name="Card" type="Control" unique_id=664196921 node_paths=PackedStringArray("CardBorder", "CardArt", "CardName", "ManaCost", "EffectText")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 784.0
@@ -16,36 +16,31 @@ CardName = NodePath("CardName")
 ManaCost = NodePath("ManaCost")
 EffectText = NodePath("EffectText")
 
-[node name="CardBorder" type="TextureRect" parent="."]
+[node name="CardBorder" type="TextureRect" parent="." unique_id=1307906671]
 z_index = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2_qf083")
 expand_mode = 1
 stretch_mode = 5
-texture = ExtResource("2_qf083")
 
-[node name="CardArt" type="TextureRect" parent="."]
+[node name="CardArt" type="TextureRect" parent="." unique_id=909004126]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.098
 anchor_right = 1.0
 anchor_bottom = 0.968
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("3_4dx8l")
 expand_mode = 1
 stretch_mode = 5
-texture = ExtResource("3_4dx8l")
 
-[node name="CardName" type="Label" parent="."]
+[node name="CardName" type="Label" parent="." unique_id=1797803429]
 z_index = 5
 layout_mode = 1
 anchors_preset = -1
@@ -53,10 +48,6 @@ anchor_left = 0.108
 anchor_top = 0.071
 anchor_right = 0.657
 anchor_bottom = 0.135
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -67,7 +58,7 @@ text = "Card Name"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="ManaCost" type="Label" parent="."]
+[node name="ManaCost" type="Label" parent="." unique_id=1325426583]
 z_index = 5
 layout_mode = 1
 anchors_preset = -1
@@ -75,10 +66,6 @@ anchor_left = 0.459
 anchor_top = 0.163
 anchor_right = 0.545
 anchor_bottom = 0.238
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -88,18 +75,14 @@ theme_override_font_sizes/font_size = 68
 text = "0"
 horizontal_alignment = 1
 
-[node name="EffectText" type="RichTextLabel" parent="."]
+[node name="EffectText" type="RichTextLabel" parent="." unique_id=442324716]
 z_index = 5
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.131
 anchor_top = 0.694
-anchor_right = 0.880
+anchor_right = 0.88
 anchor_bottom = 0.973
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
@@ -108,4 +91,3 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 text = "[center]Effect description goes here.[/center]"
-autowrap_mode = 3

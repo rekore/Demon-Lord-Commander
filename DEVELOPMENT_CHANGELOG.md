@@ -3,6 +3,33 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-05-16 (Session 4) - Dialogic Textbox Responsive Layout
+
+- Focus:
+  - Make the Dialogic2 custom textbox fully responsive to viewport size
+  - Fix skew, positioning, font scaling, and choice button layout
+
+### Textbox Responsive Layout
+  - `DialogicStuff/TextboxWithPortrait/speaker_portrait_textbox_layer.gd`:
+    - Root cause diagnosed: `.tscn` had wrong UID (`uid://bk84r61kckpxa` — the default Dialogic addon script) instead of our custom script's actual UID (`uid://du162elj5meks`), so all prior script edits were silently ignored
+    - Fixed UID in `custom_textbox_with_portrait_.tscn` to correctly load our custom script
+    - Added `_ready()` connecting `viewport.size_changed` → `_apply_responsive_layout` + `call_deferred` for initial sizing
+    - Added `_apply_responsive_layout()`: sizes panel via `offset_left/right/top/bottom` (not `position` — anchor-mode nodes require explicit offsets)
+      - Width: `vp.x × 0.70` (15% inset each side)
+      - Height: `vp.y × 0.325` (32.5% of viewport)
+      - Bottom margin: `vp.y × 0.15` (15% gap from screen bottom)
+    - Guard added: returns early if `not is_inside_tree() or get_viewport() == null` (Dialogic calls `_apply_export_overrides` before tree entry)
+    - Font scaling: dialog text `vp.y × 0.033`, name label `vp.y × 0.045`
+    - In-editor mode still uses `box_size`/`box_distance` exports for preview
+    - Stylebox duplicated from default addon resource, `skew` zeroed (was `Vector2(0.073, 0)` causing rhombus shape), content margins set to 24px L/R, 18px T/B
+
+### Custom VN Choices Layout
+  - `DialogicStuff/CustomChoices/custom_vn_choice_layer.tscn`: new custom copy of `vn_choice_layer.tscn`
+    - Reuses `vn_choice_layer.gd` (no script changes)
+    - `Choices` VBoxContainer anchor changed from dead-center (`preset 8`) to right-aligned: right edge at 85% of viewport width (matching chatbox right edge), top at 30% of viewport height
+    - 340px wide, grows downward to fit buttons
+  - `DialogicStyle.tres`: updated choices layer reference to custom scene; overrides set `boxes_min_size = Vector2(340, 60)`, `font_size_custom = 30`
+
 ## 2026-05-15 (Session 3) - Burn, Rage, Search, Frail, Enemy Random Intents
 
 - Focus:

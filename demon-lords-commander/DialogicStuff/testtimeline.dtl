@@ -1,0 +1,12 @@
+[background arg="res://assets/art/ui/title_background.png" fade="0.0"]
+join nyx center [animation="Zoom In"]
+nyx: Heellllooooooo!!!!!
+nyx (Nyxconfused): Why are you here?
+nyx (Nyxplead): wait no I was just kidding please dont go
+nyx (Nyxheartbroken): no dont leave me!
+nyx (Nyxyandere): I told you that YOU are not leaving!
+- Stay
+	nyx (Nyxbase): oh perfect I knew you wouldnt leave me
+- Run
+	nyx (Nyxplead): NOOOOO!
+	nyx (Nyxyandere): you wont get far...

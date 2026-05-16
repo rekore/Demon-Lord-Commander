@@ -1,0 +1,67 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+&"_translation_id": "",
+&"color": Color(0.9114583, 0.08307561, 0.8079105, 1),
+&"custom_info": {
+"prefix": "",
+"sound_mood_default": "",
+"sound_moods": {},
+"style": "",
+"suffix": ""
+},
+&"default_portrait": "Nyxbase",
+&"description": "",
+&"display_name": "Nyx",
+&"mirror": false,
+&"nicknames": [""],
+&"offset": Vector2(0, 0),
+&"portraits": {
+"Nyxbase": {
+"export_overrides": {
+"image": "\"res://DialogicStuff/DialogicArt/Nyx/nyxbase.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1.0,
+"scene": ""
+},
+"Nyxconfused": {
+"export_overrides": {
+"image": "\"res://DialogicStuff/DialogicArt/Nyx/nyxconfused.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+},
+"Nyxheartbroken": {
+"export_overrides": {
+"image": "\"res://DialogicStuff/DialogicArt/Nyx/nyxheartbroken.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+},
+"Nyxplead": {
+"export_overrides": {
+"image": "\"res://DialogicStuff/DialogicArt/Nyx/nyxplead.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+},
+"Nyxyandere": {
+"export_overrides": {
+"image": "\"res://DialogicStuff/DialogicArt/Nyx/nyxyandere.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+}
+},
+&"scale": 1.0
+}
