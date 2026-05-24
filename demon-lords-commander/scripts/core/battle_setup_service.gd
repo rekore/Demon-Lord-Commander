@@ -115,8 +115,6 @@ func _build_runtime_deck(deck_ids: Array[String]) -> Array[Dictionary]:
 		var source_card: Dictionary = ContentDB.get_card(card_id)
 		if source_card.is_empty():
 			continue
-		if not bool(source_card.get("supported_in_v1", false)):
-			continue
 		runtime_deck.append(_to_runtime_card(source_card))
 
 	if runtime_deck.is_empty():
@@ -164,9 +162,14 @@ func _to_runtime_card(source_card: Dictionary) -> Dictionary:
 					runtime_card["debuffs"] = []
 				(runtime_card["debuffs"] as Array).append({
 					"debuff": String(effect.get("debuff", "")),
-					"stacks": int(effect.get("stacks", 0)),
+					"stacks": int(effect.get("stacks", effect.get("duration", 0))),
 					"target": String(effect.get("target", "SingleEnemy"))
 				})
+			"Summon":
+				runtime_card["summon_name"] = String(effect.get("summonName", ""))
+				runtime_card["summon_hp"] = int(effect.get("summonHP", 0))
+			"SacrificeAllSummons":
+				runtime_card["sacrifice_summons"] = true
 
 	return runtime_card
 

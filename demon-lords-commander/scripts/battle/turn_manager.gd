@@ -19,6 +19,9 @@ func start_player_round(
 	var player_frail: int = int(player_state.get("frail", 0))
 	if player_frail > 0:
 		player_state["frail"] = player_frail - 1
+	var player_weak: int = int(player_state.get("weak", 0))
+	if player_weak > 0:
+		player_state["weak"] = player_weak - 1
 	_apply_start_of_turn_waifu_effects(player_state, waifu_scaled_effects)
 	draw_cards(draw_pile, hand, discard_pile, starting_draw, max_hand_size)
 
@@ -59,6 +62,9 @@ func tick_enemy_status_effects(enemy_states: Array[Dictionary], effect_resolver:
 		var frail: int = int(enemy_state.get("frail", 0))
 		if frail > 0:
 			enemy_state["frail"] = frail - 1
+		var weak: int = int(enemy_state.get("weak", 0))
+		if weak > 0:
+			enemy_state["weak"] = weak - 1
 
 
 func apply_start_of_turn_waifu_effects(player_state: Dictionary, waifu_scaled_effects: Array[Dictionary]) -> void:

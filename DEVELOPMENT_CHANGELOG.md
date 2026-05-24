@@ -3,6 +3,119 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-05-23 - Summon System
+
+- Focus:
+  - Implement Summon card effect (create HP-based summon units)
+  - Implement summon damage absorption: Block → Summons (right-to-left, taunt-first) → Player HP
+  - Implement summon replacement mode when all 3 slots are full
+  - Implement SacrificeAllSummons effect support
+  - Wire summons into enemy intent damage resolution
+
+- Completed:
+
+### Summon Core System
+  - `content_db.gd`: Added `"Summon"` and `"SacrificeAllSummons"` to `V1_SUPPORTED_EFFECTS`
+  - `battle_setup_service.gd`:
+    - `_to_runtime_card()`: Extracts `"Summon"` → `summon_name` + `summon_hp`
+    - `_to_runtime_card()`: Extracts `"SacrificeAllSummons"` → `sacrifice_summons: true`
+  - `effect_resolver.gd`:
+    - `apply_damage_to_player()`: After block is consumed, remaining damage now pierces through summons before hitting player HP
+    - Damage order: taunt summons first (right-to-left), then normal summons (right-to-left)
+    - Summons that drop to 0 HP are cleared in-place (`summons[idx] = {}`)
+    - Each damage instance independently consumes block then summons then HP
+  - `intent_library.gd` `execute_attack()`: Already calls `apply_damage_to_player(..., skip_frail = true)` — no signature change needed; summons are read from `player_state["summons"]`
+
+### CardPlayService Summon Handling
+  - Added `replace_summon_index: int = -1` optional parameter to `play_card()` and `_resolve_card_effects()`
+  - `SacrificeAllSummons`: Clears all summon slots in-place (mutates existing array, no reassignment)
+  - `Summon`: If `replace_summon_index >= 0`, replaces that slot; otherwise finds first empty slot (left-to-right placement). Warns if no space (BattleController pre-checks prevent this in practice)
+
+### BattleController Summon UI & Replacement Mode
+  - Added `_summons: Array[Dictionary] = [{}, {}, {}]` (3 slots, left-to-right index 0→2, damage hits index 2→0)
+  - Added `_summon_cards`, `_summon_stats_labels` arrays; populated in `_populate_summon_ui_arrays()`
+  - Added `_replace_summon_mode: bool` and `_pending_summon_card_id: String` state
+  - `_initialize_battle()`: `_player_state["summons"] = _summons` so EffectResolver can access summons through player_state
+  - `_play_card_by_id()`:
+    - Pre-check: if card has summon effect and all 3 slots full, enters replace mode instead of playing
+    - Otherwise passes `replace_summon_index` to `CardPlayService`
+  - `_enter_replace_summon_mode(card_id)`: Highlights occupied summon slots in yellow; shows "Select a summon to replace"
+  - `_exit_replace_summon_mode()`: Clears highlights and mode state
+  - `_on_summon_slot_gui_input(index)`: In replace mode, clicking an occupied slot exits mode and completes the card play with that replace index
+  - `_on_card_gui_input()`: Clicking any card while in replace mode cancels the mode
+  - `_on_end_turn_pressed()`: Blocked while in replace mode
+  - `_refresh_ui()`: Each summon slot shows `"Name\nX/Y HP"` or `"Summon N: Empty"`
+  - `_update_player_board_layout()`: Visibility derived from `_summons[i].is_empty()`; `active_count` derived from `_get_active_summon_count()`
+  - Helper functions: `_find_card_data_in_hand()`, `_card_has_summon_effect()`, `_get_active_summon_count()`
+
+### Deck Updates for Testing
+  - `save_manager.gd` + `data/save_template.json`: Added `"8", "8"` (Soulbound Wraith — 2× Summon 25 HP) to default deck
+
+### Architecture Notes
+  - Summons are stored inside `_player_state["summons"]` as an `Array[Dictionary]` reference. This lets `EffectResolver`, `IntentLibrary`, and `CardPlayService` all access/modify summons without changing function signatures across the entire chain
+  - Empty slots use `{}` (empty Dictionary). `is_empty()` checks distinguish occupied vs empty
+  - Summon placement fills left-to-right (index 0 first). Damage hits right-to-left (index 2 first) with taunt reordering
+  - Multi-hit enemy intents (e.g. double_attack) apply damage as separate instances; block and summons are consumed progressively across instances
+  - Card #8 "Soulbound Wraith" (Summon, 1 mana, 25 HP) is now fully supported in v1
+  - Card #6 "Last Breath Ritual" has `SacrificeAllSummons` supported, but still requires `PlayerHPBelow` and `HasSummonAlive` play conditions which are not yet implemented
+  - **Known issue**: Summon sprite appears but does not animate. The `SpriteFrames` resource in `BattleScene.tscn` currently contains a single static frame. Multi-frame animation must be configured in the Godot editor (add additional `AtlasTexture` frames to `SpriteFrames_summon` and set playback speed). The `AnimatedSprite2D` node and positioning script are already wired correctly.
+
+## 2026-05-23 - Weakness and Stun Status Effects
+
+- Focus:
+  - Implement Weakness debuff (player and enemy outgoing damage -25%)
+  - Implement Stun (skip enemy turn, advance intent, consume stack)
+  - Wire both into existing status infrastructure
+
+- Completed:
+
+### Weakness System
+  - `effect_resolver.gd`:
+    - `resolved_attack_damage()`: after rage, if `player_state["weak"] > 0` and no opposing frail, apply `floor(total × 0.75)`; weak+frail now cancel at base values
+    - `intent_library.gd` `execute_attack()`: if `enemy_state["weak"] > 0` and no player frail, apply `floor(damage × 0.75)` before hitting player
+  - `card_play_service.gd`: Added `"weak"` case to debuff match — stacks additively on target enemy
+  - `turn_manager.gd`:
+    - `start_player_round()`: decrements `player_state["weak"]` by 1 each round start (like frail)
+    - `tick_enemy_status_effects()`: decrements `enemy_state["weak"]` by 1 each round start
+  - `intent_library.gd`: Added `"weak"` to `execute_debuff()` with player/enemy target support
+  - `battle_controller.gd`:
+    - Player state initialized with `"weak": 0`
+    - Enemy states initialized with `"weak": 0`
+    - `_refresh_ui()`: `| WKN X` shown in player waifu stats and enemy stats labels
+    - `_rebuild_hand_cards()` + `_highlight_hovered_enemy()`: pass `player_weak_active` to `CardUI.set_damage_preview()`
+  - `card_ui.gd`:
+    - `set_damage_preview()` signature extended with `player_weak_active: bool`
+    - `_format_single_effect()` DealDamage: if `player_weak_active`, `floor(buffed × 0.75)`; red color if below base
+    - Propagates through `_format_effects` with new parameter
+
+### Stun System
+  - `card_play_service.gd`: Added `"stun"` case to debuff match — stacks additively on target enemy
+  - `intent_library.gd`: Added `"stun"` to `execute_debuff()` (enemy target only; player stun reserved)
+  - `enemy_ai.gd`:
+    - `run_enemy_turn()`: stun check at top — if `enemy_state["stun"] > 0`, decrement stack, skip intent execution, return next intent index with `"intent_name": "Stunned"`
+  - `battle_controller.gd`:
+    - Enemy states initialized with `"stun": 0`
+    - `_refresh_ui()`: `| STN X` shown in enemy stats labels
+    - If enemy stunned, intent label shows "Intent: Stunned" instead of resolved pattern
+
+### Duration Fallback Fix
+  - `battle_setup_service.gd`: `_to_runtime_card()` ApplyDebuff extraction now uses `int(effect.get("stacks", effect.get("duration", 0)))` so duration-based debuffs (e.g. card #6 Last Breath Ritual) produce correct stack counts
+
+- Architecture Notes:
+  - **Weak+Frail Counter**: Base Weak (×0.75) and base Frail (×1.25) now counter each other → 100% damage when both are present on opposing sides. Refactored into single call sites so multipliers are computed together and floor math is applied once:
+    - Player card attacks: `EffectResolver.resolved_attack_damage()` now accepts optional `enemy_state`; weak+frail cancellation is computed inside this function before returning
+    - Enemy intent attacks: `IntentLibrary.execute_attack()` handles weak+frail cancellation, then calls `apply_damage_to_player(..., skip_frail = true)` to prevent double-application
+    - `CardPlayService._apply_frail()` removed — frail no longer applied downstream; `resolved_attack_damage()` owns all outgoing-damage multipliers
+    - `EffectResolver.apply_damage_to_player()` now accepts `skip_frail: bool = false` for intent-damage paths that already handled frail
+  - Stun is consumed at the start of the enemy turn, before intent execution; intent index still advances via `_next_intent_index()`
+  - Both Weakness and Stun decay by 1 at round start (player via `start_player_round`, enemies via `tick_enemy_status_effects`)
+  - Card #7 "Mana Leech" (Apply Weak 2 to SingleEnemy) is `supported_in_v1`; card #6 "Last Breath Ritual" still has unsupported `SacrificeAllSummons` so remains excluded from runtime deck
+
+### Test Cards Added
+  - `cards.json`: Added card `"23"` — **Cripple**, Skill, 1 mana, targeted, Apply Weak 3 to SingleEnemy
+  - `cards.json`: Added card `"24"` — **Concuss**, Attack, 2 mana, targeted, Deal 6 damage + Apply Stun 1 to SingleEnemy
+  - `save_manager.gd` + `data/save_template.json`: Default deck updated to include `"23"` and `"24"` for testing
+
 ## 2026-05-16 (Session 4) - Dialogic Textbox Responsive Layout
 
 - Focus:

@@ -394,6 +394,58 @@
 				{ "type": "ExtraTurn" },
 				{ "type": "AddCurseToDeck", "curseId": "999", "count": 2 }
 			]
+		},
+		{
+			"id": "23",
+			"name": "Cripple",
+			"type": "Skill",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["debuff", "weak"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"targeted": true,
+			"effects": [
+				{ "type": "ApplyDebuff", "debuff": "Weak", "stacks": 3, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "24",
+			"name": "Concuss",
+			"type": "Attack",
+			"cost": 2,
+			"rarity": "Uncommon",
+			"archetype": ["attack", "stun"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"targeted": true,
+			"effects": [
+				{ "type": "DealDamage", "target": "SingleEnemy", "value": 6 },
+				{ "type": "ApplyDebuff", "debuff": "Stun", "stacks": 1, "target": "SingleEnemy" }
+			]
+		},
+		{
+			"id": "25",
+			"name": "Lesser Wraith",
+			"type": "Summon",
+			"cost": 1,
+			"rarity": "Common",
+			"archetype": ["summon"],
+			"associatedWaifu": null,
+			"art_path": "res://assets/art/cards/Nyxcardsizetemplate.png",
+			"border_path": "res://assets/art/cards/cardbaseorange.png",
+			"playConditions": [],
+			"effects": [
+				{
+					"type": "Summon",
+					"summonName": "Lesser Wraith",
+					"summonHP": 10
+				}
+			]
 		}
 	]
 }

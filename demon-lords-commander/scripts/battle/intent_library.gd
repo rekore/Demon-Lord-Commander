@@ -18,7 +18,16 @@ func execute_attack(
 ) -> Dictionary:
 	var damage: int = int(params.get("damage", 0))
 	if damage > 0:
-		effect_resolver.apply_damage_to_player(player_state, damage)
+		var enemy_weak: int = int(enemy_state.get("weak", 0))
+		var player_frail: int = int(player_state.get("frail", 0))
+		if enemy_weak > 0 and player_frail > 0:
+			# Base Weak and base Frail counter each other
+			pass
+		elif enemy_weak > 0:
+			damage = int(float(damage) * 0.75)
+		elif player_frail > 0:
+			damage = int(float(damage) * 1.25)
+		effect_resolver.apply_damage_to_player(player_state, damage, true)
 	return {"damage_dealt": damage}
 
 
@@ -62,6 +71,17 @@ func execute_debuff(
 					player_state["frail"] = int(player_state.get("frail", 0)) + stacks
 				else:
 					enemy_state["frail"] = int(enemy_state.get("frail", 0)) + stacks
+			"weak":
+				if target == "player":
+					player_state["weak"] = int(player_state.get("weak", 0)) + stacks
+				else:
+					enemy_state["weak"] = int(enemy_state.get("weak", 0)) + stacks
+			"stun":
+				if target == "player":
+					# Player stun not yet implemented; would skip player turn
+					pass
+				else:
+					enemy_state["stun"] = int(enemy_state.get("stun", 0)) + stacks
 	return {"debuff_type": debuff_type, "stacks": stacks}
 
 

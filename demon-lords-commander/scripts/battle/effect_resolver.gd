@@ -4,7 +4,12 @@ extends RefCounted
 # BattleController should call this and then only handle scene/UI and battle flow decisions.
 
 
-func resolved_attack_damage(card: Dictionary, player_state: Dictionary, waifu_scaled_effects: Array[Dictionary]) -> int:
+func resolved_attack_damage(
+	card: Dictionary,
+	player_state: Dictionary,
+	waifu_scaled_effects: Array[Dictionary],
+	enemy_state: Dictionary = {}
+) -> int:
 	var total_damage: int = int(card.get("damage", 0))
 	if String(card.get("type", "")) != "attack":
 		return total_damage
@@ -21,6 +26,17 @@ func resolved_attack_damage(card: Dictionary, player_state: Dictionary, waifu_sc
 		total_damage = int(float(total_damage) * 1.5)
 		player_state["rage"] = rage - 1
 
+	var player_weak: int = int(player_state.get("weak", 0))
+	var enemy_frail: int = int(enemy_state.get("frail", 0)) if not enemy_state.is_empty() else 0
+
+	if player_weak > 0 and enemy_frail > 0:
+		# Base Weak (×0.75) and base Frail (×1.25) counter each other → 100%
+		pass
+	elif player_weak > 0:
+		total_damage = int(float(total_damage) * 0.75)
+	elif enemy_frail > 0:
+		total_damage = int(float(total_damage) * 1.25)
+
 	return total_damage
 
 
@@ -36,15 +52,41 @@ func apply_damage_to_enemy(enemy_state: Dictionary, amount: int) -> void:
 		enemy_state["hp"] = int(enemy_state.get("hp", 0)) - remaining_damage
 
 
-func apply_damage_to_player(player_state: Dictionary, amount: int) -> void:
+func apply_damage_to_player(player_state: Dictionary, amount: int, skip_frail: bool = false) -> void:
 	var remaining_damage: int = max(amount, 0)
-	if int(player_state.get("frail", 0)) > 0:
+	if not skip_frail and int(player_state.get("frail", 0)) > 0:
 		remaining_damage = int(float(remaining_damage) * 1.25)
 	var player_block: int = int(player_state.get("block", 0))
 	if player_block > 0:
 		var absorbed: int = min(player_block, remaining_damage)
 		player_state["block"] = player_block - absorbed
 		remaining_damage -= absorbed
+
+	var summons: Array = player_state.get("summons", [])
+	if remaining_damage > 0 and not summons.is_empty():
+		var hit_order: Array[int] = []
+		# Taunt summons first, right-to-left (most recent first)
+		for i: int in range(summons.size() - 1, -1, -1):
+			var s: Dictionary = summons[i]
+			if not s.is_empty() and bool(s.get("taunt", false)):
+				hit_order.append(i)
+		# Normal summons, right-to-left
+		for i: int in range(summons.size() - 1, -1, -1):
+			var s: Dictionary = summons[i]
+			if not s.is_empty() and not bool(s.get("taunt", false)):
+				hit_order.append(i)
+
+		for idx: int in hit_order:
+			if remaining_damage <= 0:
+				break
+			var s: Dictionary = summons[idx]
+			var s_hp: int = int(s.get("hp", 0))
+			if s_hp > 0:
+				var absorbed: int = min(s_hp, remaining_damage)
+				s["hp"] = s_hp - absorbed
+				remaining_damage -= absorbed
+				if int(s.get("hp", 0)) <= 0:
+					summons[idx] = {}
 
 	if remaining_damage > 0:
 		player_state["hp"] = int(player_state.get("hp", 0)) - remaining_damage
@@ -66,6 +108,9 @@ func run_enemy_intent(enemy_state: Dictionary, intent_index: int, player_state: 
 	if intent_block > 0:
 		enemy_state["block"] = int(enemy_state.get("block", 0)) + intent_block
 	if intent_damage > 0:
+		var enemy_weak: int = int(enemy_state.get("weak", 0))
+		if enemy_weak > 0:
+			intent_damage = int(float(intent_damage) * 0.75)
 		apply_damage_to_player(player_state, intent_damage)
 
 	return {

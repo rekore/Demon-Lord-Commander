@@ -46,6 +46,9 @@ flowchart TD
     MainController --> VictoryScene["scenes/VictoryScreen.tscn"]
     VictoryScene --> VictoryScript["scripts/ui/victory_screen.gd"]
     VictoryScript --> SignalBus
+
+    SignalBus --> DialogicAutoload["Dialogic (autoload)"]
+    DialogicAutoload --> DialogicContent["DialogicStuff/ (timelines + characters + styles)"]
 ```
 
 ## System Ownership (Single Source of Truth)
@@ -68,12 +71,13 @@ flowchart TD
 - `EnemyAI`: intent selection + enemy turn resolution.
   - `EnemyLibrary`: enemy definitions and intent pattern resolution (class_name).
   - `IntentLibrary`: reusable intent type definitions and execution logic (class_name).
+- **Summon System** (integrated across multiple files): summon placement, damage absorption (block → summons → player HP), taunt ordering, summon replacement mode, `SacrificeAllSummons`. Owned by `BattleController` state + `EffectResolver` damage routing + `CardPlayService` effect handling.
 
 ### UI Scripts (presentation layer, emit intent through SignalBus)
 
 - `title_screen.gd`: title menu (new game, continue, options, quit, reset save).
 - `victory_screen.gd`: post-battle victory screen (return to title).
-- `main_waifu_sprites.gd`: sprite scaling/positioning within UI cards (enemy portrait helper).
+- `main_waifu_sprites.gd`: sprite scaling/positioning within UI cards (enemy + summon portrait helper).
 
 ## File Priority (Read This First)
 
@@ -121,6 +125,15 @@ flowchart TD
 28. `demon-lords-commander/data/save_template.json`
 29. `demon-lords-commander/assets/art/ui/MainTheme.tres`
 
+### Dialogic / VN Content
+
+30. `demon-lords-commander/DialogicStuff/Chesy.dch` — Dialogic character definition (Chesy)
+31. `demon-lords-commander/DialogicStuff/nyx.dch` — Dialogic character definition (nyx)
+32. `demon-lords-commander/DialogicStuff/testtimeline.dtl` — sample Dialogic timeline
+33. `demon-lords-commander/DialogicStuff/DialogicStyle.tres` — default Dialogic layout style
+34. `demon-lords-commander/DialogicStuff/TextboxWithPortrait/speaker_portrait_textbox_layer.gd` — custom textbox portrait layer script
+35. `demon-lords-commander/DialogicStuff/CustomChoices/custom_vn_choice_layer.tscn` — custom VN choice layer scene
+
 ## Edit Rules (Modular Workflow)
 
 - UI emits intent through `SignalBus`; UI does not mutate global state directly.
@@ -145,6 +158,9 @@ flowchart TD
 - New cross-system communication: `demon-lords-commander/scripts/core/signal_bus.gd`.
 - New UI screens: add `.tscn` in `demon-lords-commander/scenes/` + `.gd` in `demon-lords-commander/scripts/ui/`.
 - New theme styles: `demon-lords-commander/assets/art/ui/MainTheme.tres`.
+- New Dialogic characters: `demon-lords-commander/DialogicStuff/*.dch`.
+- New Dialogic timelines: `demon-lords-commander/DialogicStuff/*.dtl`.
+- New Dialogic styles/layouts: `demon-lords-commander/DialogicStuff/DialogicStyle.tres` + custom layer scenes in `DialogicStuff/`.
 
 ## Pre-Edit Checklist (Team + AI)
 
@@ -152,7 +168,7 @@ Before any substantive edit:
 1. Read `Demon-Lords-Beloved-Commander-ProjectOverview.txt`.
 2. Read `newcardrulesbeta.md`.
 3. Confirm the feature owner system from this map.
-4. Check the **File Priority** list above — all 29 project `.gd`, `.tscn`, `.json`, and `.tres` files are documented there.
+4. Check the **File Priority** list above — all 35 project `.gd`, `.tscn`, `.json`, `.tres`, `.dch`, and `.dtl` files are documented there.
 5. Add/adjust `SignalBus` contract before wiring downstream behavior.
 
 ## Session Continuity

@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://b77klu1nb48do" path="res://scripts/battle/battle_controller.gd" id="1_b8jqp"]
 [ext_resource type="Texture2D" uid="uid://bifuinnibgncm" path="res://assets/art/characters/femaleidlepink.png" id="2_28s16"]
-[ext_resource type="Texture2D" uid="uid://dqift1ykd3udf" path="res://assets/art/cards/cardarttest.png" id="3_2i4wd"]
 [ext_resource type="Script" uid="uid://4mwcard001ab" path="res://scripts/battle/main_waifu_sprites.gd" id="4_mwcard"]
 [ext_resource type="Texture2D" uid="uid://fcn37n3eop3b" path="res://assets/art/Enemies/Test_Goblin.png" id="5_0yex5"]
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="6_mtres"]
@@ -73,6 +72,49 @@ animations = [{
 "loop": true,
 "name": &"Face_Left",
 "speed": 8.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_summon"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ikhwg"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4gmaf"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_twkpy"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dhoow"]
+atlas = ExtResource("5_0yex5")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_summon"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_summon")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ikhwg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4gmaf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twkpy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dhoow")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_irk3j"]
@@ -242,9 +284,9 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(65, 0)
 layout_mode = 2
 size_flags_vertical = 3
+texture_normal = ExtResource("7_bsu3s")
 ignore_texture_size = true
 stretch_mode = 5
-texture_normal = ExtResource("7_bsu3s")
 
 [node name="RelicsRow" type="HBoxContainer" parent="Margin/RootVBox" unique_id=900200001]
 layout_mode = 2
@@ -347,17 +389,12 @@ custom_minimum_size = Vector2(140, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("4_mwcard")
 
-[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon1Card" unique_id=832153979]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_2i4wd")
-expand_mode = 1
-stretch_mode = 6
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon1Card" unique_id=832153979]
+sprite_frames = SubResource("SpriteFrames_summon")
+autoplay = "default"
+frame_progress = 0.38061383
 
 [node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon1Card" unique_id=733606921]
 layout_mode = 1
@@ -376,17 +413,11 @@ custom_minimum_size = Vector2(140, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("4_mwcard")
 
-[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon2Card" unique_id=911409771]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_2i4wd")
-expand_mode = 1
-stretch_mode = 6
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon2Card" unique_id=911409771]
+sprite_frames = SubResource("SpriteFrames_summon")
+autoplay = "default"
 
 [node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon2Card" unique_id=1037794171]
 layout_mode = 1
@@ -405,17 +436,11 @@ custom_minimum_size = Vector2(140, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("4_mwcard")
 
-[node name="Portrait" type="TextureRect" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon3Card" unique_id=1732964868]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_2i4wd")
-expand_mode = 1
-stretch_mode = 6
+[node name="Portrait" type="AnimatedSprite2D" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon3Card" unique_id=1732964868]
+sprite_frames = SubResource("SpriteFrames_summon")
+autoplay = "default"
 
 [node name="StatsLabel" type="Label" parent="Margin/RootVBox/CombatRow/PlayerGroupPanel/PlayerGroupVBox/PlayerCardsRow/Summon3Card" unique_id=619694458]
 layout_mode = 1
@@ -658,15 +683,14 @@ theme_type_variation = &"BattleButton"
 text = "End Turn"
 
 [node name="DeckOverlay" type="Control" parent="." unique_id=900300002]
+visible = false
+z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-z_index = 100
-visible = false
-mouse_filter = 0
 
 [node name="DeckDimBg" type="ColorRect" parent="DeckOverlay" unique_id=900300003]
 layout_mode = 1
@@ -676,10 +700,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.75)
-mouse_filter = 0
 
 [node name="DeckPanel" type="PanelContainer" parent="DeckOverlay" unique_id=900300004]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.05
 anchor_right = 0.9
@@ -702,7 +726,6 @@ theme_override_constants/separation = 8
 [node name="DeckTitleLabel" type="Label" parent="DeckOverlay/DeckPanel/DeckVBox/DeckHeader" unique_id=900300007]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
 text = "Your Deck"
 vertical_alignment = 1
 

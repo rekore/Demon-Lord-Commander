@@ -65,7 +65,11 @@ var _selected_waifu_bond: int = 1
 var _selected_sub_waifu_id: String = ""
 var _selected_sub_waifu_name: String = "Unknown"
 var _waifu_scaled_effects: Array[Dictionary] = []
-var _active_summon_count: int = 0
+var _summons: Array[Dictionary] = [{}, {}, {}]
+var _summon_cards: Array[Control] = []
+var _summon_stats_labels: Array[Label] = []
+var _replace_summon_mode: bool = false
+var _pending_summon_card_id: String = ""
 
 var _player_state: Dictionary = {}
 var _enemy_states: Array[Dictionary] = []
@@ -104,6 +108,7 @@ func _ready() -> void:
 	_deck_view_button.pressed.connect(_open_deck_overlay)
 	_deck_close_button.pressed.connect(_close_deck_overlay)
 	_populate_enemy_ui_arrays()
+	_populate_summon_ui_arrays()
 	_initialize_battle()
 
 
@@ -126,6 +131,13 @@ func _populate_enemy_ui_arrays() -> void:
 		_enemy_cards.append(card)
 		_enemy_stats_labels.append(card.get_node("InfoVBox/StatsLabel") as Label)
 		_enemy_intent_labels.append(card.get_node("InfoVBox/IntentLabel") as Label)
+
+
+func _populate_summon_ui_arrays() -> void:
+	_summon_cards = [_summon_1_card, _summon_2_card, _summon_3_card]
+	_summon_stats_labels = [_summon_1_stats_label, _summon_2_stats_label, _summon_3_stats_label]
+	for i: int in range(_summon_cards.size()):
+		_summon_cards[i].gui_input.connect(_on_summon_slot_gui_input.bind(i))
 
 
 func _is_card_targeted(card_data: Dictionary) -> bool:
@@ -221,7 +233,7 @@ func _highlight_hovered_enemy() -> void:
 		else:
 			enemy_card.modulate = Color.WHITE
 	if _drag_card_ui != null:
-		_drag_card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)), hovered_frail)
+		_drag_card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)), hovered_frail, int(_player_state.get("weak", 0)) > 0)
 
 
 func _play_dragged_card(target_enemy_index: int = -1) -> void:
@@ -348,6 +360,8 @@ func _initialize_battle() -> void:
 		"strength_round": 0,
 		"rage": 0,
 		"frail": 0,
+		"weak": 0,
+		"summons": _summons,
 	}
 
 	_enemy_states = _build_enemy_states(setup)
@@ -357,6 +371,8 @@ func _initialize_battle() -> void:
 	_hand.clear()
 	_discard_pile.clear()
 	_exhaust_pile.clear()
+	_summons = [{}, {}, {}]
+	_player_state["summons"] = _summons
 
 	_apply_waifu_art(setup)
 	_start_player_round()
@@ -424,6 +440,8 @@ func _build_enemy_states(setup: Dictionary) -> Array[Dictionary]:
 			"poison": 0,
 			"burn": 0,
 			"frail": 0,
+			"weak": 0,
+			"stun": 0,
 			"intents": enemy_data.get("intents", []),
 			"intent_index": 0,
 			"selection_mode": String(enemy_data.get("selection_mode", "sequential"))
@@ -489,7 +507,7 @@ func _start_player_round() -> void:
 
 
 func _on_end_turn_pressed() -> void:
-	if _battle_over or not _battle_state_machine.can_end_turn():
+	if _battle_over or not _battle_state_machine.can_end_turn() or _replace_summon_mode:
 		return
 	_discard_hand()
 	_run_enemy_turn()
@@ -528,9 +546,17 @@ func _run_enemy_turn() -> void:
 	_start_player_round()
 
 
-func _play_card_by_id(card_id: String, target_enemy_index: int = -1) -> void:
+func _play_card_by_id(card_id: String, target_enemy_index: int = -1, replace_summon_index: int = -1) -> void:
 	if _battle_over or not _battle_state_machine.can_play_cards():
 		return
+	if _replace_summon_mode and replace_summon_index < 0:
+		return
+
+	if replace_summon_index < 0:
+		var card_data: Dictionary = _find_card_data_in_hand(card_id)
+		if _card_has_summon_effect(card_data) and _get_active_summon_count() >= 3:
+			_enter_replace_summon_mode(card_id)
+			return
 
 	var play_result: Dictionary = _card_play_service.play_card(
 		card_id,
@@ -543,7 +569,8 @@ func _play_card_by_id(card_id: String, target_enemy_index: int = -1) -> void:
 		_draw_pile,
 		_discard_pile,
 		MAX_HAND_SIZE,
-		target_enemy_index
+		target_enemy_index,
+		replace_summon_index
 	)
 	if not bool(play_result.get("ok", false)):
 		_refresh_ui(String(play_result.get("message", "Card play failed.")))
@@ -623,24 +650,34 @@ func _refresh_ui(_log_text: String = "") -> void:
 	var _str_val: int = int(_player_state.get("strength", 0)) + int(_player_state.get("strength_round", 0))
 	var _rage_val: int = int(_player_state.get("rage", 0))
 	var _p_frail_val: int = int(_player_state.get("frail", 0))
+	var _p_weak_val: int = int(_player_state.get("weak", 0))
 	var _str_text: String = " | STR %d" % _str_val if _str_val > 0 else ""
 	var _rage_text: String = " | RAGE %d" % _rage_val if _rage_val > 0 else ""
 	var _p_frail_text: String = " | FRL %d" % _p_frail_val if _p_frail_val > 0 else ""
-	_main_waifu_stats_label.text = "%s\nHP %d/%d | Block %d%s%s%s" % [
+	var _p_weak_text: String = " | WKN %d" % _p_weak_val if _p_weak_val > 0 else ""
+	_main_waifu_stats_label.text = "%s\nHP %d/%d | Block %d%s%s%s%s" % [
 		_selected_waifu_name,
 		int(_player_state["hp"]),
 		int(_player_state["max_hp"]),
 		int(_player_state["block"]),
 		_str_text,
 		_rage_text,
-		_p_frail_text
+		_p_frail_text,
+		_p_weak_text
 	]
 
 	_update_player_board_layout()
 
-	_summon_1_stats_label.text = "Summon 1: Empty"
-	_summon_2_stats_label.text = "Summon 2: Empty"
-	_summon_3_stats_label.text = "Summon 3: Empty"
+	for i: int in range(_summons.size()):
+		var summon: Dictionary = _summons[i]
+		if summon.is_empty():
+			_summon_stats_labels[i].text = "Summon %d: Empty" % (i + 1)
+		else:
+			_summon_stats_labels[i].text = "%s\n%d/%d HP" % [
+				String(summon.get("name", "Summon")),
+				int(summon.get("hp", 0)),
+				int(summon.get("max_hp", 0))
+			]
 
 	for i: int in range(_enemy_cards.size()):
 		if i < _enemy_states.size():
@@ -663,6 +700,8 @@ func _refresh_ui(_log_text: String = "") -> void:
 			var _poison_val: int = int(enemy_state.get("poison", 0))
 			var _burn_val: int = int(enemy_state.get("burn", 0))
 			var _frail_val: int = int(enemy_state.get("frail", 0))
+			var _weak_val: int = int(enemy_state.get("weak", 0))
+			var _stun_val: int = int(enemy_state.get("stun", 0))
 			var _status_text: String = ""
 			if _poison_val > 0:
 				_status_text += " | PSN %d" % _poison_val
@@ -670,6 +709,10 @@ func _refresh_ui(_log_text: String = "") -> void:
 				_status_text += " | BRN %d" % _burn_val
 			if _frail_val > 0:
 				_status_text += " | FRL %d" % _frail_val
+			if _weak_val > 0:
+				_status_text += " | WKN %d" % _weak_val
+			if _stun_val > 0:
+				_status_text += " | STN %d" % _stun_val
 			_enemy_stats_labels[i].text = "%s\nHP %d/%d | Block %d%s" % [
 				String(enemy_state.get("name", "Enemy")),
 				int(enemy_state.get("hp", 0)),
@@ -677,7 +720,10 @@ func _refresh_ui(_log_text: String = "") -> void:
 				int(enemy_state.get("block", 0)),
 				_status_text
 			]
-			_enemy_intent_labels[i].text = intent_text
+			if _stun_val > 0:
+				_enemy_intent_labels[i].text = "Intent: Stunned"
+			else:
+				_enemy_intent_labels[i].text = intent_text
 			_enemy_cards[i].sprite_anchor = String(enemy_state.get("sprite_anchor", "bottom"))
 			_enemy_cards[i].visible = true
 		else:
@@ -709,7 +755,7 @@ func _rebuild_hand_cards() -> void:
 
 		var can_play: bool = int(card.get("cost", 0)) <= int(_player_state["mana"]) and not _battle_over
 		card_ui.call("set_unplayable_tint", not can_play)
-		card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)))
+		card_ui.call("set_damage_preview", _get_total_attack_bonus(), int(_player_state.get("rage", 0)), false, int(_player_state.get("weak", 0)) > 0)
 
 		_hand_container.add_child(card_ui)
 
@@ -729,6 +775,9 @@ func _on_card_gui_input(event: InputEvent, card_ui: Control) -> void:
 		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if _replace_summon_mode:
+				_exit_replace_summon_mode()
+				return
 			_start_card_drag(card_ui)
 
 
@@ -754,10 +803,11 @@ func _on_card_mouse_exited(card_ui: Control) -> void:
 
 func _update_player_board_layout() -> void:
 	var summon_cards: Array[Control] = [_summon_1_card, _summon_2_card, _summon_3_card]
-	var visible_units: int = 1 + _active_summon_count
+	var active_count: int = _get_active_summon_count()
+	var visible_units: int = 1 + active_count
 
 	for i: int in range(summon_cards.size()):
-		summon_cards[i].visible = i < _active_summon_count
+		summon_cards[i].visible = not _summons[i].is_empty()
 
 	# Keep the active units centered in the middle of available space.
 	_left_spacer.visible = true
@@ -770,7 +820,7 @@ func _update_player_board_layout() -> void:
 		summon_card.size_flags_stretch_ratio = 1.0
 
 	# When nothing is summoned, keep the commander centered with stronger side spacing.
-	if _active_summon_count == 0:
+	if active_count == 0:
 		_left_spacer.size_flags_stretch_ratio = 2.0
 		_right_spacer.size_flags_stretch_ratio = 2.0
 		_main_waifu_card.size_flags_stretch_ratio = 1.4
@@ -960,3 +1010,48 @@ func _update_enemy_board_layout() -> void:
 	if active_count >= 3:
 		_enemy_left_spacer.size_flags_stretch_ratio = 0.6
 		_enemy_right_spacer.size_flags_stretch_ratio = 0.6
+
+
+func _find_card_data_in_hand(card_id: String) -> Dictionary:
+	for card: Dictionary in _hand:
+		if String(card.get("id", "")) == card_id:
+			return card
+	return {}
+
+
+func _card_has_summon_effect(card_data: Dictionary) -> bool:
+	return card_data.get("summon_name", "") != "" and int(card_data.get("summon_hp", 0)) > 0
+
+
+func _get_active_summon_count() -> int:
+	var count: int = 0
+	for summon: Dictionary in _summons:
+		if not summon.is_empty():
+			count += 1
+	return count
+
+
+func _enter_replace_summon_mode(card_id: String) -> void:
+	_replace_summon_mode = true
+	_pending_summon_card_id = card_id
+	_refresh_ui("Select a summon to replace")
+	for i: int in range(_summon_cards.size()):
+		if not _summons[i].is_empty():
+			_summon_cards[i].modulate = Color.YELLOW
+
+
+func _exit_replace_summon_mode() -> void:
+	_replace_summon_mode = false
+	_pending_summon_card_id = ""
+	for card: Control in _summon_cards:
+		card.modulate = Color.WHITE
+
+
+func _on_summon_slot_gui_input(event: InputEvent, slot_index: int) -> void:
+	if not _replace_summon_mode:
+		return
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if slot_index < _summons.size() and not _summons[slot_index].is_empty():
+				_exit_replace_summon_mode()
+				_play_card_by_id(_pending_summon_card_id, -1, slot_index)

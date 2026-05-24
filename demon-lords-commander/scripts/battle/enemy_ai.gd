@@ -35,6 +35,16 @@ func run_enemy_turn(
 	player_state: Dictionary,
 	effect_resolver: RefCounted
 ) -> Dictionary:
+	var stun: int = int(enemy_state.get("stun", 0))
+	if stun > 0:
+		enemy_state["stun"] = stun - 1
+		return {
+			"had_intent": false,
+			"next_intent_index": _next_intent_index(enemy_state, intent_index),
+			"intent_name": "Stunned",
+			"execution_result": {}
+		}
+
 	var current_intent: Dictionary = get_current_intent(enemy_state, intent_index)
 	if current_intent.is_empty():
 		return {

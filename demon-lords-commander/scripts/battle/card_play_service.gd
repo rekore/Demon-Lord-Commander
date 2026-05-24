@@ -15,7 +15,8 @@ func play_card(
 	draw_pile: Array[Dictionary],
 	discard_pile: Array[Dictionary],
 	max_hand_size: int,
-	target_enemy_index: int = -1
+	target_enemy_index: int = -1,
+	replace_summon_index: int = -1
 ) -> Dictionary:
 	var card_index: int = _find_card_index(hand, card_id)
 	if card_index < 0:
@@ -38,19 +39,14 @@ func play_card(
 		hand,
 		discard_pile,
 		max_hand_size,
-		target_enemy_index
+		target_enemy_index,
+		replace_summon_index
 	)
 
 	discard_pile.append(card)
 	hand.remove_at(card_index)
 	var search_filter: String = String(card.get("search_filter", ""))
 	return {"ok": true, "message": "Played %s" % String(card.get("name", "Card")), "search_filter": search_filter}
-
-
-func _apply_frail(damage: int, enemy_state: Dictionary) -> int:
-	if int(enemy_state.get("frail", 0)) > 0:
-		return int(float(damage) * 1.25)
-	return damage
 
 
 func _get_debuff_targets(target_str: String, enemy_states: Array[Dictionary], target_index: int) -> Array[Dictionary]:
@@ -84,9 +80,9 @@ func _resolve_card_effects(
 	hand: Array[Dictionary],
 	discard_pile: Array[Dictionary],
 	max_hand_size: int,
-	target_enemy_index: int = -1
+	target_enemy_index: int = -1,
+	replace_summon_index: int = -1
 ) -> void:
-	var damage: int = effect_resolver.resolved_attack_damage(card, player_state, waifu_scaled_effects)
 	var block_gain: int = int(card.get("block", 0))
 	var draw_amount: int = int(card.get("draw", 0))
 	var mana_gain: int = int(card.get("gain_mana", 0))
@@ -94,16 +90,22 @@ func _resolve_card_effects(
 	var strength_gain_round: int = int(card.get("strength_gain_round", 0))
 	var debuffs: Array = card.get("debuffs", [])
 	var rage_gain: int = int(card.get("rage_gain", 0))
+	var summon_name: String = String(card.get("summon_name", ""))
+	var summon_hp: int = int(card.get("summon_hp", 0))
+	var sacrifice_summons: bool = bool(card.get("sacrifice_summons", false))
 
-	if damage > 0:
-		if target_enemy_index >= 0 and target_enemy_index < enemy_states.size():
-			var target_enemy: Dictionary = enemy_states[target_enemy_index]
-			if int(target_enemy.get("hp", 0)) > 0:
-				effect_resolver.apply_damage_to_enemy(target_enemy, _apply_frail(damage, target_enemy))
-		else:
-			for enemy_state: Dictionary in enemy_states:
-				if int(enemy_state.get("hp", 0)) > 0:
-					effect_resolver.apply_damage_to_enemy(enemy_state, _apply_frail(damage, enemy_state))
+	if target_enemy_index >= 0 and target_enemy_index < enemy_states.size():
+		var target_enemy: Dictionary = enemy_states[target_enemy_index]
+		if int(target_enemy.get("hp", 0)) > 0:
+			var damage: int = effect_resolver.resolved_attack_damage(card, player_state, waifu_scaled_effects, target_enemy)
+			if damage > 0:
+				effect_resolver.apply_damage_to_enemy(target_enemy, damage)
+	else:
+		for enemy_state: Dictionary in enemy_states:
+			if int(enemy_state.get("hp", 0)) > 0:
+				var damage: int = effect_resolver.resolved_attack_damage(card, player_state, waifu_scaled_effects, enemy_state)
+				if damage > 0:
+					effect_resolver.apply_damage_to_enemy(enemy_state, damage)
 	if block_gain > 0:
 		player_state["block"] = int(player_state.get("block", 0)) + block_gain
 	if draw_amount > 0:
@@ -116,6 +118,36 @@ func _resolve_card_effects(
 		player_state["strength_round"] = int(player_state.get("strength_round", 0)) + strength_gain_round
 	if rage_gain > 0:
 		player_state["rage"] = int(player_state.get("rage", 0)) + rage_gain
+	if sacrifice_summons:
+		var sums: Array = player_state.get("summons", [])
+		for i: int in range(sums.size()):
+			sums[i] = {}
+	if summon_name != "" and summon_hp > 0:
+		var sums: Array = player_state.get("summons", [])
+		var placed: bool = false
+		if replace_summon_index >= 0 and replace_summon_index < sums.size():
+			if not sums[replace_summon_index].is_empty():
+				sums[replace_summon_index] = {}
+			sums[replace_summon_index] = {
+				"name": summon_name,
+				"hp": summon_hp,
+				"max_hp": summon_hp,
+				"taunt": false
+			}
+			placed = true
+		else:
+			for i: int in range(sums.size()):
+				if sums[i].is_empty():
+					sums[i] = {
+						"name": summon_name,
+						"hp": summon_hp,
+						"max_hp": summon_hp,
+						"taunt": false
+					}
+					placed = true
+					break
+		if not placed:
+			push_warning("CardPlayService: No empty summon slot for %s" % summon_name)
 	for raw_debuff: Variant in debuffs:
 		if not (raw_debuff is Dictionary):
 			continue
@@ -134,3 +166,7 @@ func _resolve_card_effects(
 					target_enemy["burn"] = int(target_enemy.get("burn", 0)) + stacks
 				"frail":
 					target_enemy["frail"] = int(target_enemy.get("frail", 0)) + stacks
+				"weak":
+					target_enemy["weak"] = int(target_enemy.get("weak", 0)) + stacks
+				"stun":
+					target_enemy["stun"] = int(target_enemy.get("stun", 0)) + stacks

@@ -59,12 +59,13 @@ func setup(card_data: Dictionary, size_preset: CardSize = CardSize.HAND) -> void
 	EffectText.text = _format_effects(card_data.get("effects", []))
 
 
-func set_damage_preview(bonus_damage: int, rage_stacks: int = 0, frail_active: bool = false) -> void:
+func set_damage_preview(bonus_damage: int, rage_stacks: int = 0, frail_active: bool = false, player_weak_active: bool = false) -> void:
 	var is_attack: bool = String(_card_data.get("type", "")).to_lower() == "attack"
 	var effective_bonus: int = bonus_damage if is_attack else 0
 	var effective_rage: int = rage_stacks if is_attack else 0
 	var effective_frail: bool = frail_active if is_attack else false
-	EffectText.text = _format_effects(_card_data.get("effects", []), effective_bonus, effective_rage, effective_frail)
+	var effective_weak: bool = player_weak_active if is_attack else false
+	EffectText.text = _format_effects(_card_data.get("effects", []), effective_bonus, effective_rage, effective_frail, effective_weak)
 
 
 func set_unplayable_tint(enabled: bool) -> void:
@@ -105,7 +106,7 @@ func _safe_load_texture(path: String, fallback: String) -> Texture2D:
 	return null
 
 
-func _format_effects(effects: Array, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false) -> String:
+func _format_effects(effects: Array, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false, player_weak_active: bool = false) -> String:
 	if effects.is_empty():
 		return ""
 
@@ -115,7 +116,7 @@ func _format_effects(effects: Array, damage_bonus: int = 0, rage_stacks: int = 0
 			continue
 		var effect: Dictionary = raw_effect as Dictionary
 		var effect_type: String = String(effect.get("type", ""))
-		var line: String = _format_single_effect(effect_type, effect, damage_bonus, rage_stacks, frail_active)
+		var line: String = _format_single_effect(effect_type, effect, damage_bonus, rage_stacks, frail_active, player_weak_active)
 		if line != "":
 			lines.append(line)
 
@@ -124,15 +125,20 @@ func _format_effects(effects: Array, damage_bonus: int = 0, rage_stacks: int = 0
 	return "[center]" + "\n".join(lines) + "[/center]"
 
 
-func _format_single_effect(effect_type: String, effect: Dictionary, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false) -> String:
+func _format_single_effect(effect_type: String, effect: Dictionary, damage_bonus: int = 0, rage_stacks: int = 0, frail_active: bool = false, player_weak_active: bool = false) -> String:
 	match effect_type:
 		"DealDamage":
 			var base_val: int = int(effect.get("value", 0))
 			var buffed: int = base_val + damage_bonus
 			if rage_stacks > 0:
 				buffed = int(float(buffed) * 1.5)
-			if frail_active:
+			if player_weak_active and frail_active:
+				# Base Weak and base Frail counter each other → 100%
+				pass
+			elif frail_active:
 				buffed = int(float(buffed) * 1.25)
+			elif player_weak_active:
+				buffed = int(float(buffed) * 0.75)
 			var target: String = String(effect.get("target", "SingleEnemy"))
 			var target_str: String = _format_target(target)
 			var num_str: String = _color_damage_number(buffed, buffed - base_val)
