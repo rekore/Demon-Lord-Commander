@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://dhw6hrpxp8mru"]
 
 [ext_resource type="Script" uid="uid://b77klu1nb48do" path="res://scripts/battle/battle_controller.gd" id="1_b8jqp"]
-[ext_resource type="Texture2D" uid="uid://bifuinnibgncm" path="res://assets/art/characters/femaleidlepink.png" id="2_28s16"]
+[ext_resource type="Texture2D" uid="uid://bifuinnibgncm" path="res://assets/art/waifu/femaleidlepink.png" id="2_28s16"]
 [ext_resource type="Script" uid="uid://4mwcard001ab" path="res://scripts/battle/main_waifu_sprites.gd" id="4_mwcard"]
 [ext_resource type="Texture2D" uid="uid://fcn37n3eop3b" path="res://assets/art/Enemies/Test_Goblin.png" id="5_0yex5"]
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="6_mtres"]
 [ext_resource type="Texture2D" uid="uid://bq26b6gi62spc" path="res://assets/art/cards/discardpile.png" id="7_bsu3s"]
-[ext_resource type="Texture2D" uid="uid://2xwvljepsxww" path="res://assets/art/characters/sidewaifutest.png" id="8_swtest"]
+[ext_resource type="Texture2D" uid="uid://2xwvljepsxww" path="res://assets/art/waifu/sidewaifutest.png" id="8_swtest"]
 [ext_resource type="Texture2D" uid="uid://cis2n2u8wr2gv" path="res://assets/art/ui/icons/consumabletest.png" id="9_cons"]
 [ext_resource type="Texture2D" uid="uid://c773x56o7i1t1" path="res://assets/art/ui/icons/relictest.png" id="10_relic"]
 

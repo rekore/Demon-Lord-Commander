@@ -14,8 +14,18 @@ signal battle_start_requested(battle_id: String, payload: Dictionary)
 signal battle_setup_ready(payload: Dictionary)
 signal battle_setup_failed(reason: String)
 signal dialogue_start_requested(dialogue_id: String, payload: Dictionary)
+signal location_change_requested(location_id: String)
+signal poi_discovered(poi_id: String)
 signal victory_screen_requested()
 signal return_to_title_requested()
+signal relic_shop_open_requested()
+signal relic_purchased(relic_id: String)
+signal dungeon_run_requested(dungeon_id: String)
+signal dungeon_choices_ready(choices: Array)
+signal dungeon_node_selected(node_data: Dictionary)
+signal dungeon_run_completed(dungeon_id: String)
+signal dungeon_run_failed(dungeon_id: String)
+signal dungeon_rewards_claimed()
 
 # Broadcasts (facts) - authoritative systems publish completed outcomes through these.
 signal game_bootstrap_complete
@@ -67,12 +77,48 @@ func request_dialogue_start(dialogue_id: String, payload: Dictionary = {}) -> vo
 	dialogue_start_requested.emit(dialogue_id, payload)
 
 
+func request_location_change(location_id: String) -> void:
+	location_change_requested.emit(location_id)
+
+
 func request_victory_screen() -> void:
 	victory_screen_requested.emit()
 
 
 func request_return_to_title() -> void:
 	return_to_title_requested.emit()
+
+
+func request_relic_shop_open() -> void:
+	relic_shop_open_requested.emit()
+
+
+func broadcast_relic_purchased(relic_id: String) -> void:
+	relic_purchased.emit(relic_id)
+
+
+func request_dungeon_run(dungeon_id: String) -> void:
+	dungeon_run_requested.emit(dungeon_id)
+
+
+func broadcast_dungeon_choices_ready(choices: Array) -> void:
+	dungeon_choices_ready.emit(choices)
+
+
+func request_dungeon_node_select(node_data: Dictionary) -> void:
+	dungeon_node_selected.emit(node_data)
+
+
+func broadcast_dungeon_run_completed(dungeon_id: String) -> void:
+	dungeon_run_completed.emit(dungeon_id)
+
+
+func broadcast_dungeon_run_failed(dungeon_id: String) -> void:
+	dungeon_run_failed.emit(dungeon_id)
+
+
+func broadcast_dungeon_rewards_claimed() -> void:
+	dungeon_rewards_claimed.emit()
 
 
 func broadcast_bootstrap_complete() -> void:

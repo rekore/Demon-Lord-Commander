@@ -1,0 +1,166 @@
+{
+	"locations": [
+		{
+			"_dev_notes": [
+				"LOCATIONS vs POIS — READ THIS FIRST:",
+				"  locations.json = PLACES that exist in the world (destinations, hierarchy, events, art).",
+				"  pois.json      = BUTTONS that appear on a map and lead to those places.",
+				"  Example: 'crestfall' lives here. 'poi_crestfall' in pois.json is the button that takes you there.",
+				"",
+				"HOW TO ADD A NEW TOP-LEVEL LOCATION (accessible from world map):",
+				"  1. Add a new entry here with parent: 'world_map' and your children/events/art_path.",
+				"  2. Add its ID to THIS world_map entry's 'children' array.",
+				"  3. Add a matching POI entry in pois.json (parent_location_id: '') so the map button appears.",
+				"",
+				"HOW TO ADD A SUB-LOCATION (room/area inside an existing location, e.g. a shop inside Crestfall):",
+				"  1. Add a new entry here with parent: 'crestfall' (or whichever parent location).",
+				"  2. Add its ID to the parent location's 'children' array.",
+				"  3. NO POI NEEDED — WorldMapController auto-creates buttons for all children of the current location.",
+				"  4. Optionally add interior POIs in pois.json (parent_location_id: 'crestfall') for icons/battles.",
+				"",
+				"FIELDS:",
+				"  parent:           ID of the parent location ('world_map', 'crestfall', etc). Null for root.",
+				"  children:         IDs of sub-locations accessible from inside this location.",
+				"  art_path:         Background image shown when the player is in this location.",
+				"  position:         Where this location's button appears ON ITS PARENT's map (center coords).",
+				"  unlock_condition: 'flag:flag_name' to hide until that story flag is set. Leave empty = always visible.",
+				"  events:           Actions available at this location (rest, shop, talk, battle, explore).",
+				"",
+				"Fog regions and map_size still live here under world_map. Clickable map pins live in pois.json."
+			],
+			"id": "world_map",
+			"name": "World Map",
+			"description": "The known world of Valdoria.",
+			"parent": null,
+			"position": { "x": 0, "y": 0 },
+			"children": ["crestfall"],
+			"connections": [],
+			"art_path": "res://assets/art/map/worldmap.png",
+			"unlock_condition": "",
+			"map_size": { "width": 8192, "height": 4608 },
+			"fog_regions": [],
+			"events": [
+				{
+					"id": "world_map_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "crestfall",
+			"name": "Crestfall",
+			"description": "A bustling frontier town on the edge of the abyss.",
+			"parent": "world_map",
+			"position": { "x": 500, "y": 350 },
+			"children": ["home", "relic_shop"],
+			"connections": [],
+			"art_path": "res://assets/art/map/crestfallmap.png",
+			"unlock_condition": "flag:tutorial_complete",
+			"events": [
+				{
+					"id": "town_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": ["talk", "rest", "shop"]
+				}
+			]
+		},
+		{
+			"id": "home",
+			"name": "Commander's Quarters",
+			"description": "Your modest residence above the town square.",
+			"parent": "crestfall",
+			"position": { "x": 200, "y": 200 },
+			"children": [],
+			"connections": [],
+			"art_path": "",
+			"unlock_condition": "",
+			"events": [
+				{
+					"id": "home_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": ["rest", "bond"]
+				}
+			]
+		},
+		{
+			"id": "relic_shop",
+			"name": "Relic Shop",
+			"description": "A cluttered shop filled with strange artefacts and the faint smell of old magic.",
+			"parent": "crestfall",
+			"position": { "x": 400, "y": 300 },
+			"dialogue_on_enter": "testshopkeeper",
+			"children": [],
+			"connections": [],
+			"art_path": "",
+			"unlock_condition": "",
+			"events": []
+		},
+		{
+			"id": "forest",
+			"name": "Whispering Forest",
+			"description": "Ancient trees whisper secrets to those who listen.",
+			"parent": "world_map",
+			"position": { "x": 0, "y": 0 },
+			"children": [],
+			"connections": [],
+			"art_path": "",
+			"unlock_condition": "flag:discovered_north",
+			"events": [
+				{
+					"id": "forest_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": ["explore", "rest"]
+				}
+			]
+		},
+		{
+			"id": "dungeon",
+			"name": "Ruined Dungeon",
+			"description": "A crumbling dungeon filled with lost treasures.",
+			"parent": "world_map",
+			"position": { "x": 0, "y": 0 },
+			"children": [],
+			"connections": [],
+			"art_path": "",
+			"unlock_condition": "flag:discovered_east",
+			"events": [
+				{
+					"id": "dungeon_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": ["explore", "battle"]
+				}
+			]
+		},
+		{
+			"id": "swamp",
+			"name": "Fetid Swamp",
+			"description": "A treacherous swamp where few dare to tread.",
+			"parent": "world_map",
+			"position": { "x": 0, "y": 0 },
+			"children": [],
+			"connections": [],
+			"art_path": "",
+			"unlock_condition": "flag:discovered_south",
+			"events": [
+				{
+					"id": "swamp_default",
+					"priority": 0,
+					"conditions": [],
+					"scene": "hub",
+					"actions": ["explore", "rest"]
+				}
+			]
+		}
+	]
+}

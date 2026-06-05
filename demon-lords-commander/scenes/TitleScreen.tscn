@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://vgmxgsd0hx3p"]
 
 [ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="1_b5l2e"]
-[ext_resource type="Texture2D" uid="uid://bcbsooc0lq17m" path="res://assets/art/ui/title_background.png" id="1_gll47"]
-[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="3_eo536"]
+[ext_resource type="Texture2D" uid="uid://bcbsooc0lq17m" path="res://assets/art/background/title_background.png" id="1_gll47"]
+[ext_resource type="Script" uid="uid://edwkxhdte2xw" path="res://scripts/ui/title_screen.gd" id="3_eo536"]
+[ext_resource type="PackedScene" path="res://scenes/SaveSlotOverlay.tscn" id="4_slotoverlay"]
 
 [node name="TitleScreen" type="Control" unique_id=1711761782]
 layout_mode = 3
@@ -70,34 +71,47 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="OverallVerticalContainer/ButtonsHBox" unique_id=111849327]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Button" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1605107299]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
 text = "New Game"
 
 [node name="Button2" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1425443255]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
 text = "Continue"
 
 [node name="Button3" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=1033358432]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Buttonlarge"
+text = "Load Game"
+
+[node name="Button4" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534294]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
 text = "Options"
 
-[node name="Button4" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534294]
+[node name="Button5" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534295]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
 text = "Quit"
 
-[node name="Button5" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534295]
+[node name="Button6" type="Button" parent="OverallVerticalContainer/ButtonsHBox/VBoxContainer" unique_id=141534296]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"Buttonlarge"
@@ -111,3 +125,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
+
+[node name="SaveSlotOverlay" parent="." unique_id=648183097 instance=ExtResource("4_slotoverlay")]
+layout_mode = 1

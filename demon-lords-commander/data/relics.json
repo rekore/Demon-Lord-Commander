@@ -1,0 +1,122 @@
+{
+	"_dev_notes": [
+		"RELICS -- passive items the player collects and carries between battles.",
+		"",
+		"HOW TO ADD A RELIC:",
+		"  1. Add an entry to the 'relics' array below.",
+		"  2. Required fields: id, name, description, rarity, cost, relic_type.",
+		"  3. Optional: art_path (icon shown in shop and inventory).",
+		"  4. effect: describes what the relic does at runtime (resolved by a future RelicEffectResolver).",
+		"",
+		"RELIC TYPE values:",
+		"  shop   : Bought from the hub-world Relic Shop. Lasts duration runs then expires.",
+		"  run    : Drops from dungeon combat. Lasts for the current dungeon run only.",
+		"           Requires: min_level (int) and weight (int) for loot pool inclusion.",
+		"  crafted: Crafted from materials at the hub (future feature). Permanent.",
+		"",
+		"RARITY values: common, uncommon, rare, legendary",
+		"  Controls drop weight in loot pools.",
+		"",
+		"COST: gold price for shop relics (set 0 for non-shop relics).",
+		"",
+		"EFFECT FIELDS (plan -- implement when RelicEffectResolver is built):",
+		"  type:    effect identifier string (e.g. 'GainStrength', 'GainBlock', 'DrawCards')",
+		"  value:   numeric magnitude of the effect",
+		"  trigger: when the effect fires (start_of_battle, first_round, on_kill, passive, etc.)"
+	],
+	"relics": [
+		{
+			"id": "relic_dark_sword",
+			"name": "Dark Sword",
+			"relic_type": "shop",
+			"description": "Grants 2 Strength at the start of battle for 2 runs.",
+			"rarity": "common",
+			"cost": 75,
+			"duration": 2,
+			"art_path": "res://assets/art/ui/icons/relicicons/darkswordrelic.png",
+			"effect": { "type": "GainStrength", "value": 2, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_dark_shield",
+			"name": "Dark Shield",
+			"relic_type": "shop",
+			"description": "Grants 8 Block at the start of battle for 3 runs.",
+			"rarity": "common",
+			"cost": 75,
+			"duration": 3,
+			"art_path": "res://assets/art/ui/icons/relicicons/darkshieldrelic.png",
+			"effect": { "type": "GainBlock", "value": 8, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_dark_choker",
+			"name": "Dark Choker",
+			"relic_type": "shop",
+			"description": "Draw 2 extra cards at the start of battle for 2 runs.",
+			"rarity": "uncommon",
+			"cost": 100,
+			"duration": 2,
+			"art_path": "res://assets/art/ui/icons/relicicons/darkchokerrelic.png",
+			"effect": { "type": "DrawCards", "value": 2, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_bloodied_fang",
+			"name": "Bloodied Fang",
+			"relic_type": "run",
+			"description": "A trophy from a felled predator. Gain 1 Strength at the start of each battle. (Run only)",
+			"rarity": "common",
+			"cost": 0,
+			"min_level": 1,
+			"weight": 20,
+			"art_path": "",
+			"effect": { "type": "GainStrength", "value": 1, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_bone_talisman",
+			"name": "Bone Talisman",
+			"relic_type": "run",
+			"description": "Carved from a fallen warlord's skull. Gain 6 Block at the start of each battle. (Run only)",
+			"rarity": "common",
+			"cost": 0,
+			"min_level": 1,
+			"weight": 18,
+			"art_path": "",
+			"effect": { "type": "GainBlock", "value": 6, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_cursed_ring",
+			"name": "Cursed Ring",
+			"relic_type": "run",
+			"description": "An obsidian ring humming with stolen vitality. Draw 1 extra card each round. (Run only)",
+			"rarity": "uncommon",
+			"cost": 0,
+			"min_level": 3,
+			"weight": 10,
+			"art_path": "",
+			"effect": { "type": "DrawCards", "value": 1, "trigger": "start_of_battle" }
+		},
+		{
+			"id": "relic_void_pendant",
+			"name": "Void Pendant",
+			"relic_type": "run",
+			"description": "A pendant pulsing with void energy. Gain 1 extra Mana in the first round of each battle. (Run only)",
+			"rarity": "uncommon",
+			"cost": 0,
+			"min_level": 5,
+			"weight": 7,
+			"art_path": "",
+			"effect": { "type": "GainMana", "value": 1, "trigger": "first_round" }
+		},
+		{
+			"id": "relic_demon_heart",
+			"name": "Demon Heart",
+			"relic_type": "run",
+			"description": "Still faintly beating. Gain 3 Strength at the start of each battle. (Run only)",
+			"rarity": "rare",
+			"cost": 0,
+			"min_level": 8,
+			"weight": 4,
+			"art_path": "",
+			"effect": { "type": "GainStrength", "value": 3, "trigger": "start_of_battle" }
+		}
+	]
+}

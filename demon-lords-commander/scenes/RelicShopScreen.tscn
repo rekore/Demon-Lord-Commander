@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://buutwernihnxh"]
+
+[ext_resource type="Theme" uid="uid://o7few53j10fu" path="res://assets/art/ui/MainTheme.tres" id="1_geyof"]
+[ext_resource type="Script" uid="uid://dhca7ayhgl5dt" path="res://scripts/ui/relic_shop_screen.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portrait"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.07, 0.05, 0.11, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.25, 0.55, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shop"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.05, 0.04, 0.09, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.3, 0.7, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="RelicShopScreen" type="Control" unique_id=1189809305]
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="DarkOverlay" type="ColorRect" parent="." unique_id=966122249]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.82)
+
+[node name="OuterMargin" type="MarginContainer" parent="." unique_id=100002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 48
+
+[node name="ShopArea" type="HBoxContainer" parent="OuterMargin" unique_id=307498420]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="PortraitPanel" type="PanelContainer" parent="OuterMargin/ShopArea" unique_id=100003]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_portrait")
+
+[node name="portraitvbox" type="VBoxContainer" parent="OuterMargin/ShopArea/PortraitPanel" unique_id=551643453]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="ShopkeeperPortrait" type="TextureRect" parent="OuterMargin/ShopArea/PortraitPanel/portraitvbox" unique_id=1326618989]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RelicShopkeeperLabel" type="Label" parent="OuterMargin/ShopArea/PortraitPanel/portraitvbox" unique_id=405601796]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_geyof")
+theme_override_font_sizes/font_size = 15
+text = "Shopkeeper"
+horizontal_alignment = 1
+
+[node name="ShopPanel" type="PanelContainer" parent="OuterMargin/ShopArea" unique_id=131394131]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_shop")
+
+[node name="InnerMargin" type="MarginContainer" parent="OuterMargin/ShopArea/ShopPanel" unique_id=100004]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="ContentVBox" type="VBoxContainer" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin" unique_id=1370850334]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="HeaderHBox" type="HBoxContainer" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox" unique_id=100005]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/HeaderHBox" unique_id=100006]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_geyof")
+theme_override_font_sizes/font_size = 31
+text = "✦  Relic Shop  ✦"
+
+[node name="GoldLabel" type="Label" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/HeaderHBox" unique_id=621724726]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_geyof")
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 23
+text = "Gold: 300"
+horizontal_alignment = 2
+
+[node name="TitleSep" type="HSeparator" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox" unique_id=100007]
+layout_mode = 2
+
+[node name="RelicsContainer" type="HBoxContainer" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox" unique_id=820999936]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="BottomSep" type="HSeparator" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox" unique_id=100008]
+layout_mode = 2
+
+[node name="ButtonHBox" type="HBoxContainer" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox" unique_id=1662621280]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="RerollButton" type="Button" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/ButtonHBox" unique_id=1050168877]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("1_geyof")
+text = "Reroll"
+
+[node name="rerolllabelcost" type="Label" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/ButtonHBox" unique_id=1643647471]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_geyof")
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 23
+text = "(50 Gold)"
+
+[node name="ButtonSpacer" type="Control" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/ButtonHBox" unique_id=100009]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="OuterMargin/ShopArea/ShopPanel/InnerMargin/ContentVBox/ButtonHBox" unique_id=1113977530]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+theme = ExtResource("1_geyof")
+text = "Leave Shop"

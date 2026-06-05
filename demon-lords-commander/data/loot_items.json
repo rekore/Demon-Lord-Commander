@@ -1,0 +1,149 @@
+{
+	"_dev_notes": [
+		"GLOBAL LOOT ITEMS — can drop in any dungeon. Pool is filtered by min_level at runtime.",
+		"",
+		"type values:",
+		"  trash      : Junk with only a sell value. Feeds into a future merchant/sell system.",
+		"  material   : Crafting ingredient for permanent relics (hub-world crafting, future feature).",
+		"  consumable : Single-use item. effect{type, value} resolved by future ConsumableService.",
+		"  card_pack  : Opens to offer the player X random card choices (rarity_filter restricts pool).",
+		"",
+		"weight      : Relative drop weight. Higher = more common. Weighted random selection.",
+		"min_level   : Minimum dungeon level for this item to appear in the pool.",
+		"max_level   : Optional cap. Item removed from pool above this level.",
+		"sell_value  : Gold earned if sold at a future merchant (0 = not sellable).",
+		"",
+		"DUNGEON-SPECIFIC items (local_loot) are defined inline in dungeons.json per dungeon.",
+		"ENEMY-SPECIFIC bonus drops are optional per-enemy fields in enemies.json.",
+		"  bonus_drops: [{id, weight_bonus}] — adds weight_bonus to matching item in the merged pool.",
+		"",
+		"RUN RELICS drop from dungeons too, but are defined in relics.json with relic_type='run'.",
+		"  They are merged into the loot pool by DungeonService at generation time."
+	],
+	"items": [
+		{
+			"id": "tattered_cloth",
+			"name": "Tattered Cloth",
+			"type": "trash",
+			"description": "Ragged fabric torn from an unknown body. Worth a few coins at best.",
+			"sell_value": 2,
+			"min_level": 1,
+			"weight": 100
+		},
+		{
+			"id": "cracked_bone",
+			"name": "Cracked Bone",
+			"type": "trash",
+			"description": "A fractured bone from some unnamed creature. Collectors pay poorly for these.",
+			"sell_value": 3,
+			"min_level": 1,
+			"weight": 85
+		},
+		{
+			"id": "rusted_scrap",
+			"name": "Rusted Scrap",
+			"type": "trash",
+			"description": "Corroded metal salvaged from old equipment. A blacksmith might take it.",
+			"sell_value": 6,
+			"min_level": 3,
+			"weight": 70
+		},
+		{
+			"id": "broken_amulet",
+			"name": "Broken Amulet",
+			"type": "trash",
+			"description": "A shattered pendant of unknown origin. The enchantment is long gone.",
+			"sell_value": 10,
+			"min_level": 5,
+			"weight": 55
+		},
+		{
+			"id": "shadow_dust",
+			"name": "Shadow Dust",
+			"type": "material",
+			"description": "Essence scraped from shadow-touched creatures. Common crafting component.",
+			"sell_value": 12,
+			"min_level": 1,
+			"weight": 45
+		},
+		{
+			"id": "demon_shard",
+			"name": "Demon Shard",
+			"type": "material",
+			"description": "A crystallized fragment of demonic energy. Sought after by relic smiths.",
+			"sell_value": 30,
+			"min_level": 5,
+			"weight": 22
+		},
+		{
+			"id": "blood_iron",
+			"name": "Blood Iron",
+			"type": "material",
+			"description": "Ore saturated with spilled life force. Rare and valuable for forging.",
+			"sell_value": 45,
+			"min_level": 7,
+			"weight": 12
+		},
+		{
+			"id": "void_crystal",
+			"name": "Void Crystal",
+			"type": "material",
+			"description": "Resonates with the space between worlds. Exceptionally rare.",
+			"sell_value": 60,
+			"min_level": 10,
+			"weight": 6
+		},
+		{
+			"id": "healing_salve",
+			"name": "Healing Salve",
+			"type": "consumable",
+			"description": "A crude herbal paste. Restores 20 HP when used outside of battle.",
+			"sell_value": 15,
+			"min_level": 1,
+			"weight": 28,
+			"effect": { "type": "heal_flat", "value": 20 }
+		},
+		{
+			"id": "power_root",
+			"name": "Power Root",
+			"type": "consumable",
+			"description": "Chewing this bitter root grants a surge of strength for one battle.",
+			"sell_value": 22,
+			"min_level": 3,
+			"weight": 16,
+			"effect": { "type": "gain_strength_battle", "value": 2 }
+		},
+		{
+			"id": "mana_crystal",
+			"name": "Mana Crystal",
+			"type": "consumable",
+			"description": "A small reservoir of condensed mana. Grants 1 bonus Mana in your next battle.",
+			"sell_value": 28,
+			"min_level": 5,
+			"weight": 10,
+			"effect": { "type": "gain_mana_battle", "value": 1 }
+		},
+		{
+			"id": "card_pack_common",
+			"name": "Common Card Pack",
+			"type": "card_pack",
+			"description": "A sealed pack of cards. Contains 3 Common card choices.",
+			"sell_value": 0,
+			"min_level": 1,
+			"weight": 4,
+			"cards": 3,
+			"rarity_filter": "common"
+		},
+		{
+			"id": "card_pack_rare",
+			"name": "Rare Card Pack",
+			"type": "card_pack",
+			"description": "A sealed pack crackling with energy. Contains 3 Uncommon-or-better card choices.",
+			"sell_value": 0,
+			"min_level": 5,
+			"weight": 1,
+			"cards": 3,
+			"rarity_filter": "uncommon"
+		}
+	]
+}

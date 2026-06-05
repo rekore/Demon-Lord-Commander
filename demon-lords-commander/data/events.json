@@ -1,0 +1,271 @@
+{
+	"_dev_notes": [
+		"=== DUNGEON EVENTS ===",
+		"Events appear on 'event' node floors during dungeon runs.",
+		"",
+		"FIELDS:",
+		"  id          : unique string identifier.",
+		"  name        : short display name shown on the dungeon choice card.",
+		"  description : flavour text shown on the event screen (one sentence).",
+		"  min_level   : dungeon level required for this event to enter the pool (default 1).",
+		"  max_level   : dungeon level at which this event leaves the pool (default 999).",
+		"  weight      : relative probability within the eligible level pool.",
+		"  category    : 'neutral' | 'positive' | 'negative' | 'gamble'.",
+		"                Used for future filtering (e.g. a relic that removes negative events).",
+		"  choices     : array of player options. Each choice has:",
+		"    text      : button label shown to the player.",
+		"    effects   : array of effect objects resolved by a future EventService.",
+		"",
+		"=== EFFECT TYPES (for EventService to implement) ===",
+		"  heal_percent        : heal (value)% of max HP.",
+		"  damage_percent_max  : deal (value)% of max HP as damage.",
+		"  gain_gold           : add (value) gold to player.",
+		"  lose_gold           : remove (value) gold (clamped to 0).",
+		"  gain_strength       : permanent +value Strength for this run.",
+		"  gain_max_hp_percent : increase max HP by (value)% for this run.",
+		"  lose_max_hp_percent : reduce max HP by (value)% for this run.",
+		"  add_floor_modifier  : call DungeonService.add_floor_modifier(value).",
+		"  gain_bond           : add (value) bond with active waifu.",
+		"  nothing             : does nothing (used for 'Leave' / 'Refuse' options).",
+		"",
+		"=== TIERS ===",
+		"  Level  1+ : common encounters — mild risk/reward, good for early floors.",
+		"  Level  5+ : mid-tier — darker themes, sharper trade-offs.",
+		"  Level 10+ : extreme — high risk/reward, run-altering consequences.",
+		"",
+		"To add a new event: copy an entry, give it a unique id, set min_level appropriately.",
+		"Events are pre-selected at choice generation time; the player sees the event name on the card."
+	],
+	"events": [
+		{
+			"id": "event_abandoned_camp",
+			"name": "Abandoned Camp",
+			"description": "Embers still glow in a stone ring. Someone left in a hurry.",
+			"min_level": 1,
+			"max_level": 999,
+			"weight": 100,
+			"category": "positive",
+			"choices": [
+				{
+					"text": "Rest by the fire",
+					"effects": [{ "type": "heal_percent", "value": 15 }]
+				},
+				{
+					"text": "Keep moving",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_mysterious_chest",
+			"name": "Mysterious Chest",
+			"description": "A locked chest sits in the middle of the passage. It could be treasure — or a trap.",
+			"min_level": 1,
+			"max_level": 999,
+			"weight": 90,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Force it open",
+					"effects": [
+						{ "type": "gain_gold", "value": 60, "chance": 0.6 },
+						{ "type": "damage_percent_max", "value": 15, "chance": 0.4 }
+					]
+				},
+				{
+					"text": "Leave it alone",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_scavenged_supplies",
+			"name": "Scavenged Supplies",
+			"description": "Scattered pouches and broken crates — whoever fled left gold behind.",
+			"min_level": 1,
+			"max_level": 999,
+			"weight": 80,
+			"category": "positive",
+			"choices": [
+				{
+					"text": "Take everything",
+					"effects": [{ "type": "gain_gold", "value": 50 }]
+				}
+			]
+		},
+		{
+			"id": "event_wounded_soldier",
+			"name": "Wounded Soldier",
+			"description": "A dying soldier slumps against the wall. He has coin — and he can barely move.",
+			"min_level": 1,
+			"max_level": 999,
+			"weight": 70,
+			"category": "neutral",
+			"choices": [
+				{
+					"text": "Help him (lose 30 gold, gain bond)",
+					"effects": [
+						{ "type": "lose_gold", "value": 30 },
+						{ "type": "gain_bond", "value": 1 }
+					]
+				},
+				{
+					"text": "Take his gold (gain 40 gold)",
+					"effects": [{ "type": "gain_gold", "value": 40 }]
+				},
+				{
+					"text": "Walk past",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_dark_altar",
+			"name": "Dark Altar",
+			"description": "An obsidian altar hums with demonic energy. It wants an offering.",
+			"min_level": 5,
+			"max_level": 999,
+			"weight": 80,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Offer blood (lose 20% max HP, gain +2 Strength this run)",
+					"effects": [
+						{ "type": "damage_percent_max", "value": 20 },
+						{ "type": "gain_strength", "value": 2 }
+					]
+				},
+				{
+					"text": "Smash it",
+					"effects": [{ "type": "damage_percent_max", "value": 8 }]
+				},
+				{
+					"text": "Ignore it",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_forbidden_tome",
+			"name": "Forbidden Tome",
+			"description": "A tome bound in black leather. The text writhes when you look away.",
+			"min_level": 5,
+			"max_level": 999,
+			"weight": 60,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Read it (gain +15% max HP, lose 25 gold)",
+					"effects": [
+						{ "type": "gain_max_hp_percent", "value": 15 },
+						{ "type": "lose_gold", "value": 25 }
+					]
+				},
+				{
+					"text": "Burn it (nothing happens)",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_collapsed_shrine",
+			"name": "Collapsed Shrine",
+			"description": "A holy shrine lies in ruin. A faint blessing still lingers — but so does a curse.",
+			"min_level": 5,
+			"max_level": 999,
+			"weight": 70,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Pray at the ruins (heal 25% max HP, gain 1 extra floor)",
+					"effects": [
+						{ "type": "heal_percent", "value": 25 },
+						{ "type": "add_floor_modifier", "value": 1 }
+					]
+				},
+				{
+					"text": "Take the offering bowl (gain 70 gold)",
+					"effects": [{ "type": "gain_gold", "value": 70 }]
+				},
+				{
+					"text": "Leave",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_demon_bargain",
+			"name": "The Demon's Bargain",
+			"description": "A voice seeps from the stones. It offers power — at a terrible price.",
+			"min_level": 10,
+			"max_level": 999,
+			"weight": 50,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Accept (lose 30% max HP permanently, gain +4 Strength this run)",
+					"effects": [
+						{ "type": "lose_max_hp_percent", "value": 30 },
+						{ "type": "gain_strength", "value": 4 }
+					]
+				},
+				{
+					"text": "Refuse",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_void_rift",
+			"name": "The Void Rift",
+			"description": "A tear in reality pulses before you. It leads somewhere further in — or out.",
+			"min_level": 10,
+			"max_level": 999,
+			"weight": 40,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Leap through (skip 3 floors ahead)",
+					"effects": [{ "type": "add_floor_modifier", "value": -3 }]
+				},
+				{
+					"text": "Collapse it (gain 100 gold, take 10% max HP damage)",
+					"effects": [
+						{ "type": "gain_gold", "value": 100 },
+						{ "type": "damage_percent_max", "value": 10 }
+					]
+				},
+				{
+					"text": "Back away",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		},
+		{
+			"id": "event_cursed_idol",
+			"name": "Cursed Idol",
+			"description": "A golden idol sits on a pedestal. Its eyes follow you. Its worth is undeniable.",
+			"min_level": 10,
+			"max_level": 999,
+			"weight": 45,
+			"category": "gamble",
+			"choices": [
+				{
+					"text": "Take it (gain 200 gold, add 3 floors)",
+					"effects": [
+						{ "type": "gain_gold", "value": 200 },
+						{ "type": "add_floor_modifier", "value": 3 }
+					]
+				},
+				{
+					"text": "Destroy it (take 20% max HP damage, nothing gained)",
+					"effects": [{ "type": "damage_percent_max", "value": 20 }]
+				},
+				{
+					"text": "Leave it",
+					"effects": [{ "type": "nothing" }]
+				}
+			]
+		}
+	]
+}

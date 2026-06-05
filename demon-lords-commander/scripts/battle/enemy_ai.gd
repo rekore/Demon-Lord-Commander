@@ -54,8 +54,12 @@ func run_enemy_turn(
 		}
 
 	var intent_type: String = String(current_intent.get("type", "none"))
-	var intent_params: Dictionary = current_intent.get("params", {})
+	var intent_params: Dictionary = (current_intent.get("params", {}) as Dictionary).duplicate()
 	var intent_display_name: String = String(current_intent.get("display_name", "Unknown Intent"))
+
+	var dmg_mult: float = float(enemy_state.get("damage_multiplier", 1.0))
+	if dmg_mult != 1.0 and intent_params.has("damage"):
+		intent_params["damage"] = floori(float(int(intent_params["damage"])) * dmg_mult)
 	
 	# Execute intent using the intent library
 	var execution_result: Dictionary = intent_library.execute_intent(

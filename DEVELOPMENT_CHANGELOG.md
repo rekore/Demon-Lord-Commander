@@ -3,6 +3,548 @@
 This file tracks coding progress between long breaks.
 After each meaningful session, add a new entry at the top.
 
+## 2026-06-03 — Victory Screen Overhaul + Tooltip System
+
+- Focus: Polish pass on the battle victory screen — conditional card rewards, priority-ordered loot sections, click-to-collect row layout, real card scene for rewards, card re-selection, and a game-wide tooltip autoload.
+
+### New Files
+- `scripts/core/tooltip_manager.gd` — global autoload registered as `TooltipManager`. `show_tooltip(body, title="")` renders an optional amber title + HSeparator + body text inside a `PanelContainer` (auto-sizes to content). 85% opacity dark background, 2px border, drop shadow. Follows cursor, clamps to viewport. Fade-in tween. `hide_tooltip()` instant-hides. Any node can call from `mouse_entered`/`mouse_exited`.
+
+### Modified Files
+- `scripts/core/dungeon_service.gd` — card rewards now probabilistic per node type: boss 100%, elite 60%, normal/test 35%. `card_choices` is empty array when no card is rolled — victory screen detects this and hides the card section entirely.
+- `scripts/ui/battle_victory_screen.gd` — complete rewrite:
+  - **Architecture**: `_build_ui()` now builds only the static skeleton (title + `_content_vbox` + separator + Continue). `set_loot()` dynamically inserts sections into `_content_vbox` at runtime.
+  - **Section ordering**: rewards appear in priority order — RUN RELICS → CARD PACKS → CARD REWARD → MATERIALS → SPOILS (trash) → Gold. Each section is only added if that drop type actually exists.
+  - **Loot rows**: each item is a full-width clickable `Panel` (68px tall, coloured left-accent border). Item name 28px, type badge + sell price right-aligned. Click anywhere on the row to collect. Slides in from left with stagger tween. Hover shows `TooltipManager` popup with item name as title and description as body.
+  - **Take All**: single button below all item sections; only shown when drops exist. Updates to "All Taken ✓" when all rows collected.
+  - **Card reward**: uses real `scenes/Card.tscn` instantiated at `CardSize.FULL`. Clicking a card highlights it green; others dim via `set_unplayable_tint`. Player can re-select any card freely until Continue is pressed — no lock-in on first click. Skip button keeps cards interactive so player can change their mind.
+  - **Gold**: auto-collected on screen open, displayed at bottom as a label (not a section with rows).
+  - **Tooltips on loot rows only** — card panels have no tooltip since the card already shows all its information.
+- `project.godot` — `TooltipManager` registered as autoload after `DungeonService`.
+
+### Architecture Notes
+- `TooltipManager` lives on layer 128 (`CanvasLayer`) so it always renders above all game UI.
+- `PanelContainer` used (not `Panel`) so the background correctly auto-sizes to label content — no circular size dependency.
+- Card re-selection works because `_on_card_chosen` no longer has an early-return guard; it resets all cards to `MOUSE_FILTER_STOP` + `set_unplayable_tint(false)` before applying the new selection state.
+
+---
+
+## 2026-06-03 - Battle Victory Screen + Loot System
+
+- Focus: Per-battle victory screen with click-to-collect loot, card reward choice, and a full tiered loot framework. Dungeon loop is now complete: battle → loot → card pick → next floor.
+
+### New Files
+- `data/loot_items.json` — global loot pool (13 items): 4 trash tiers, 4 materials (level-gated), 3 consumables, 2 card pack types. All items have `weight`, `min_level`, `sell_value`.
+- `scenes/BattleVictoryScreen.tscn` + `scripts/ui/battle_victory_screen.gd` — full victory screen. Gold auto-collects on open. Loot items pop in with stagger animation (scale+fade tween). Each item is click-to-collect with visual confirmation. Card choice shows 3 rarity-weighted cards; player picks 1 or skips. Continue unlocks after card choice is resolved.
+
+### Modified Files
+- `data/relics.json` — added `relic_type` field to all entries (`shop` for existing 3). Added 5 new run relics (`relic_bloodied_fang`, `relic_bone_talisman`, `relic_cursed_ring`, `relic_void_pendant`, `relic_demon_heart`) — droppable from dungeon combat, last current run only, with `min_level` and `weight` for pool inclusion.
+- `data/enemies.json` — added `bonus_drops[]` to each enemy. Goblin: boosts `goblin_ear`+`tattered_cloth`. Rogue Knight: boosts `cursed_iron`+`shadow_dust`+`rusted_scrap`.
+- `data/dungeons.json` — added `local_loot[]` to `dungeon_catacombs`: 3 trash items + 3 materials unique to this zone (encourages players to visit different dungeons for different crafting stocks).
+- `scripts/core/signal_bus.gd` — added `dungeon_rewards_claimed` signal + `broadcast_dungeon_rewards_claimed()`.
+- `scripts/core/save_manager.gd` — added `materials: {}`, `consumables: []`, `trash: {}` to base profile; added `run_relics: []` inside `current_dungeon_run`.
+- `scripts/core/content_db.gd` — added `LOOT_ITEMS_PATH`, `loot_items_by_id` dict, `_ingest_loot_items()`, `get_loot_item()`, `get_loot_items_for_level()`, `get_all_cards()`, `get_run_relics_for_level()`.
+- `scripts/core/dungeon_service.gd` — added `apply_loot_rewards(items, card)`, `generate_battle_loot(node_data)`, `_build_loot_pool()`, `_loot_weighted_pick()`, `_pick_card_choices()`. Loot scales with dungeon level + node type (normal/elite/boss). Pool = global + dungeon local + run relics + enemy bonus weight adjustments.
+- `scripts/core/main_controller.gd` — preloads `BattleVictoryScreen`. `_on_victory_screen_requested` now generates loot from `pending_node` and shows victory screen instead of calling `complete_node()` directly. Connects `dungeon_rewards_claimed` → `complete_node()`.
+
+### Architecture Notes
+- **Three relic tiers**: `shop` (bought, multi-run), `run` (dropped, current run only), `crafted` (future hub crafting from materials).
+- **Two-layer loot pool**: global items + dungeon local items + run relics merged at generation time. Enemy `bonus_drops` adjust weights for thematic drops.
+- **Card reward pool**: excludes `basic` archetype (S1/D1 starter cards). Weights shift toward rarer cards at higher dungeon levels.
+- **Architecture rule maintained**: UI (`BattleVictoryScreen`) calls `DungeonService.apply_loot_rewards()` then emits signal — service owns state mutation, UI owns presentation only.
+
+---
+
+## 2026-05-31 - Dungeon Run System Framework
+
+- Focus: Build the complete framework for dungeon runs — scalable level system, 3-choice fog-of-war navigation, full signal/service/UI/routing pipeline.
+
+### New Files
+- `data/dungeons.json` — dungeon templates (id, name, level, floor count, boss floor, enemy pools, floor_configs with node-type weights per floor range). Seed dungeon: `dungeon_catacombs` (level 1, 5 floors).
+- `scripts/core/dungeon_service.gd` — new autoload. Authoritative owner of run state (floor progress, pending node, run status). Generates weighted node choices, handles boss detection, emits `dungeon_choices_ready`/`dungeon_run_completed`/`dungeon_run_failed`. Connects to `dungeon_node_selected` to store pending node before battle.
+- `scenes/DungeonChoiceScreen.tscn` + `scripts/ui/dungeon_choice_screen.gd` — post-battle choice screen showing 3 cards (1 for boss floor). Each card shows: type badge (COMBAT/ELITE/BOSS/EVENT/REST/SHOP) with colour, type-appropriate vague label for tension, floor number, Enter button. Built dynamically in script, populated via `set_choices()`.
+
+### Modified Files
+- `scripts/core/signal_bus.gd` — 5 new signals: `dungeon_run_requested`, `dungeon_choices_ready`, `dungeon_node_selected`, `dungeon_run_completed`, `dungeon_run_failed`. Helper functions for each.
+- `scripts/core/save_manager.gd` — added `shop_reroll_count: 0` and `current_dungeon_run: {dungeon_id, dungeon_level, current_floor, run_status, pending_node}` to default profile.
+- `scripts/core/content_db.gd` — added `DUNGEONS_PATH`, `dungeons_by_id` dict, `_ingest_dungeons()`, `get_dungeon()`, `get_all_dungeons()`. `reload_content()` now loads `dungeons.json`.
+- `scripts/core/battle_setup_service.gd` — reads `dungeon_level` from battle payload. Applies scaling: `max_hp = floor(base_hp * (1 + (level-1) * 0.15))`. Injects `damage_multiplier` into each enemy dict in the payload.
+- `scripts/battle/battle_controller.gd` — `_build_enemy_states` now reads and stores `damage_multiplier` from enemy_data into enemy_state.
+- `scripts/battle/enemy_ai.gd` — `run_enemy_turn` duplicates intent params and scales `damage` by `enemy_state["damage_multiplier"]` (floor math) before executing the intent.
+- `scripts/core/main_controller.gd` — preloads `DungeonChoiceScreen`. Connects 5 new dungeon signals. Overrides `_on_victory_screen_requested` and `_on_return_to_title_requested` to check `DungeonService.is_run_active()` — dungeon runs route to choice screen instead of victory/title. New handler `_on_dialogic_signal` case `"start_dungeon_catacombs"` wires Dialogic → dungeon start.
+- `project.godot` — registered `DungeonService` as autoload.
+
+### Dungeon Generator Refinement (same session)
+- Removed `shop` from dungeon node types permanently — dungeons do not have shops.
+- `rest` IS a valid dungeon node type (HP recovery breather floor) — restored. Green "REST" badge, "Rest" button. Stub auto-advances; TODO: rest screen with HP recovery.
+- Added `bond` node type (non-combat waifu interaction scene, stubs to Dialogic later). Pink "BOND" badge, "Approach" button.
+- **Story boss flags**: `dungeons.json` `story_boss_flags` array — `flag`, `enemy_id`, `consume_flag`. Priority: story_boss_flags → scripted_boss → boss_pool.
+- **Forced floors**: `floor_configs` entry can use `forced_type` + optional `forced_enemy_id` instead of `weights` — single-card floor with no player choice.
+- **Level flags**: each dungeon now has a `level_flag` string in `dungeons.json`. `DungeonService._resolve_dungeon_level()` reads that key from `SaveManager.profile["story_flags"]` at `start_run()`. If an integer >= 1 is stored there, it overrides the hardcoded `"level"` — dungeons scale with story chapter progression without editing JSON.
+- **Player penalties**: `DungeonService.get_player_penalties()` returns `{draw_reduction, mana_reduction}` for the active run's level. Injected into battle payload by `BattleSetupService` as `dungeon_player_penalties`. `BattleController` reads it at battle start: mana penalty reduces `base_mana` permanently for that battle; draw penalty is subtracted from `STARTING_DRAW` every round (clamped to min 1). Formula: draw = floori((level-1)/3) max 3; mana = floori((level-1)/4) max 2.
+- `_get_floor_config()` replaces `_get_floor_weights()` — returns full config dict.
+- Added comprehensive header comment block in `dungeon_service.gd` explaining: how to trigger a dungeon, how to set level via a story flag, how to trigger a story boss, how to add a new dungeon, how to add a new node type, and the full boss priority chain.
+
+### Adaptive Dungeon Generator + Level 1-100 Expansion (same session)
+- **Dungeon levels now range 1–100**. Scaling formula and penalty consts are placeholders pending full 1-100 curve design.
+- **`floor_history[]`** added to `current_dungeon_run` in `SaveManager`. Tracks last `HISTORY_WINDOW` (5) completed node types across the run. Persists through save/load. Boss nodes are never recorded.
+- **`ADAPTIVE_RULES`** const array in `dungeon_service.gd` — 6 built-in rules, data-driven, easy to extend:
+  - `elite_boss_streak` — 2+ elites/bosses in last 3 → boost rest +50, event +25, bond +15
+  - `heavy_combat_streak` — 3+ combats in last 4 → boost rest +35, event +15
+  - `rest_overuse` — 2+ rests in last 3 → suppress rest -50, boost normal +20
+  - `bond_overuse` — 2+ bonds in last 4 → suppress bond -60
+  - `combat_drought` — 0 combats in last 3 (requires full window) → boost normal +40, elite +20
+  - `event_drought` — 0 events in last 4 (requires full window) → boost event +20
+- **`_apply_adaptive_weights(base_weights, floor_history)`** — returns adjusted weight dict, never mutates base. New types introduced if delta > 0. Existing types clamped to `MIN_WEIGHT_AFTER_SUPPRESS` (5).
+- Forced floors (`forced_type`) skip adaptive entirely — story intent always wins.
+- `_generate_choices()` now takes `floor_history` as a parameter. `complete_node()` appends the completed node type before generating next choices.
+
+### Tiered Event System (same session)
+- **Enemy scaling confirmed already implemented**: `BattleSetupService` applies `1.0 + (level-1)*0.15` to both `max_hp` and `damage_multiplier` universally for ALL enemies. Every enemy in `enemies.json` scales automatically with dungeon level — no per-enemy code needed.
+- **`data/events.json`** created — 10 events across 3 tiers:
+  - **Level 1+** (common): Abandoned Camp, Mysterious Chest, Scavenged Supplies, Wounded Soldier
+  - **Level 5+** (risky): Dark Altar, Forbidden Tome, Collapsed Shrine
+  - **Level 10+** (extreme): The Demon's Bargain, The Void Rift, Cursed Idol
+- Each event has `min_level`, `max_level`, `weight`, `category` (neutral/positive/negative/gamble), and a `choices` array with `effects` (typed effect objects for a future `EventService` to resolve).
+- **`ContentDB`** already had `events_by_id`, `_ingest_events()`, `get_event()`, `get_events_for_level(dungeon_level)` — all pre-built and confirmed working.
+- **`DungeonService._pick_event_for_level(dungeon_level)`** — weighted random selection from the level-eligible event pool.
+- **`DungeonService._build_node()`** — event-type nodes now pre-select an event and store `event_id`, `event_name`, `event_description` in the node dict. The card `label` is set to the event name.
+- **`DungeonChoiceScreen`** — event cards now show the event name as the title AND a one-sentence flavour description below it in teal. Players see "Dark Altar" / "Abandoned Camp" / "Void Rift" as distinct choices instead of three identical "EVENT" cards.
+- Effect types defined in `events.json` (resolved by future `EventService`): `heal_percent`, `damage_percent_max`, `gain_gold`, `lose_gold`, `gain_strength`, `gain_max_hp_percent`, `lose_max_hp_percent`, `add_floor_modifier`, `gain_bond`, `nothing`.
+
+### Dynamic Floor Count Scaling (same session)
+- `base_floors` replaces `total_floors`/`boss_floor` in `dungeons.json` — the design-time value is now just the level-1 floor count.
+- `dungeon_catacombs` updated to `base_floors: 15`. Floor configs expanded to cover floors 1–999 in 5 tiers.
+- **Runtime formula**: `total = clamp(base_floors + floori((level-1)/5)*2, 15, 50) + floor_bonus`
+  - Level 1 = 15 floors, grows +2 per 5 levels, caps at 50 at level ~93.
+  - `floor_bonus` (starts 0) is applied after the clamp — can push beyond 50 if intended.
+- `total_floors`, `boss_floor`, `floor_bonus` stored in `current_dungeon_run` run state (also added to `SaveManager` default profile).
+- Boss is always the last floor (`boss_floor == total_floors`). Both update together.
+- **`DungeonService.add_floor_modifier(amount)`** — public API for relics/story to change floor count mid-run. Recomputes `total_floors`/`boss_floor` and saves.
+- **`DungeonService._compute_total_floors(dungeon, level, bonus)`** — private helper, used at `start_run()` and `add_floor_modifier()`.
+- `_generate_choices()` now takes `run` dict as a parameter and reads `total_floors`/`boss_floor`/`dungeon_level` from it rather than the dungeon dict.
+
+### Architecture Notes
+- `DungeonService` owns all run state — never mutate `current_dungeon_run` from UI.
+- Scaling is purely runtime — `enemies.json` base stats are never modified.
+- `event` and `bond` node types auto-complete the node for now (stubs with `TODO` comments).
+- To trigger a dungeon from Dialogic: emit signal `"start_dungeon_catacombs"` in a timeline.
+- To add a new dungeon: add entry in `dungeons.json` and add a POI entry in `pois.json`.
+- To set a story boss: set `SaveManager.profile["story_flags"]["your_flag_key"] = true` via a story event, and add the matching entry in that dungeon's `story_boss_flags` array.
+
+## 2026-05-25 - Relic Shop System
+
+- Focus:
+  - Implement a full Relic Shop: data, service, UI, and battle integration
+  - Shop opens via Dialogic signal from the `testshopkeeper` timeline in Crestfall
+  - Relics apply passive buffs (GainStrength, GainBlock, DrawCards) at battle start for a limited number of missions
+  - Shop shows 3 relics per visit, weighted by rarity; player can reroll for increasing gold cost
+
+### Data
+
+#### data/relics.json (new file)
+  - Created `data/relics.json` with 3 starter relics: `relic_dark_sword`, `relic_dark_shield`, `relic_dark_choker`
+  - Each relic has: `id`, `name`, `description`, `rarity`, `cost`, `duration`, `art_path`, `effect` (`type`, `value`, `trigger`)
+  - `duration` = number of missions the relic stays active before expiring
+  - `effect.trigger` = `start_of_battle`; supported `type` values: `GainStrength`, `GainBlock`, `DrawCards`
+  - `_dev_notes` in JSON explain how to add new relics
+  - Rarity values: `common`, `uncommon`, `rare`, `epic`, `legendary`
+
+#### data/locations.json
+  - Added `relic_shop` as a child location of `crestfall` with `dialogue_on_enter: "testshopkeeper"`
+  - Clicking the Relic Shop location on the map triggers the shopkeeper timeline directly (no navigate)
+
+#### scripts/core/save_manager.gd
+  - Default profile now includes: `"gold": 300`, `"owned_relics": []`, `"shop_inventory": []`, `"active_relics": []`, `"shop_reroll_count": 0`
+  - New saves start with 300 gold
+
+### Backend Service
+
+#### scripts/core/relic_shop_service.gd (new autoload)
+  - `SHOP_SIZE = 3`, `REROLL_BASE_COST = 50`, `REROLL_COST_INCREASE = 25`
+  - `RARITY_WEIGHTS`: common(100), uncommon(60), rare(25), epic(10), legendary(3)
+  - `refresh_shop()`: picks 3 unowned relics by weighted rarity, resets reroll count, saves profile
+  - `reroll_shop()`: deducts gold, increments reroll count, calls `refresh_shop()`; returns `false` if insufficient gold
+  - `get_reroll_cost()`: `50 + reroll_count × 25`
+  - `buy_relic(relic_id)`: checks inventory, checks gold affordability, deducts gold, adds to `active_relics` with `missions_remaining = duration`, adds to `owned_relics`, saves profile, emits `SignalBus.broadcast_relic_purchased`
+  - `tick_relic_durations()`: called on `battle_ended` — decrements `missions_remaining`; removes expired relics
+  - `get_active_relic_buffs()`: returns array of effect dictionaries from all active relics (for battle setup)
+  - `get_shop_inventory()`: resolves IDs from save into full relic dictionaries via `ContentDB`
+  - `_weighted_pick()`: weighted random selection without replacement using rarity weights
+  - Registered as autoload `RelicShopService`
+
+### ContentDB Integration
+
+#### scripts/core/content_db.gd
+  - Added `RELICS_PATH`, `relics_by_id` dictionary
+  - `reload_content()` now loads `relics.json` via `_ingest_relics()`
+  - Added `get_all_relics()` and `get_relic(relic_id)` helpers
+
+### SignalBus
+
+#### scripts/core/signal_bus.gd
+  - Added `relic_shop_open_requested` signal + `request_relic_shop_open()` helper
+  - Added `relic_purchased(relic_id: String)` signal + `broadcast_relic_purchased()` helper
+
+### Battle Integration
+
+#### scripts/core/battle_setup_service.gd
+  - Battle payload now includes `"relic_buffs": RelicShopService.get_active_relic_buffs()`
+
+#### scripts/battle/battle_controller.gd
+  - Added `_relic_buffs: Array` populated from setup payload `"relic_buffs"`
+  - `GainStrength` applied immediately to `_player_state["strength"]` before `_start_player_round()`
+  - `DrawCards` applied to `STARTING_DRAW` count on round 1 only
+  - `GainBlock` applied to `_player_state["block"]` on round 1 after block reset
+
+### UI
+
+#### scenes/RelicShopScreen.tscn (new scene) + scripts/ui/relic_shop_screen.gd (new script)
+  - Overlay UI: `z_index = 10` ensures it renders above WorldMap `UIOverlay` (`z_index = 1`)
+  - Dark overlay (`ColorRect` 82% opacity) blocks world map interaction
+  - Layout: `OuterMargin` → `ShopArea` (HBox) → `PortraitPanel` (shopkeeper portrait + name) + `ShopPanel` (relics + buttons)
+  - `ShopPanel` styled with `StyleBoxFlat` (dark purple, rounded corners, purple border)
+  - Header row: title label + gold label (right-aligned, gold colour)
+  - `RelicsContainer` (`HBoxContainer`, EXPAND_FILL): dynamically populated with relic cards
+  - Each relic card: icon (180px min), name, rarity (colour-coded), duration, description, cost (gold), Buy button (140×44, centered)
+  - Buy button → calls `RelicShopService.buy_relic()` only; service owns gold deduction (architecture rule compliance)
+  - Button row: `RerollButton` + `rerolllabelcost` | expanding spacer | `CloseButton`
+  - All interactive nodes use `unique_name_in_owner = true` (accessed via `%NodeName` in script)
+  - Shop auto-calls `refresh_shop()` on open if `shop_inventory` is empty (first visit)
+  - `MainTheme.tres` applied to each relic card for font consistency
+
+#### scripts/core/main_controller.gd
+  - Added `RELIC_SHOP_SCENE` preload
+  - Connected `SignalBus.relic_shop_open_requested` → `_on_relic_shop_open_requested()`
+  - Shop instantiated as full-rect overlay child of `_scene_host` (does not replace current scene)
+
+#### scripts/ui/world_map_controller.gd
+  - Removed `_update_actions()` call from `_refresh_ui()` — action buttons (talk, rest) removed from map
+  - Back button retained; `_update_back_button()` still called normally
+
+### Architecture Compliance
+  - `RelicShopService` owns all gold mutation, relic ownership, and inventory state
+  - `relic_shop_screen.gd` emits nothing to SignalBus directly for purchase — calls service only
+  - `buy_relic()` is a single authoritative purchase gate (affordability + deduction + ownership in one call)
+
+---
+
+## 2026-05-24 - Game Loop, Viewport-Stable Buttons & Sub-Map Rendering
+
+- Focus:
+  - Wire the full New Game → World Map → Town → Home → Battle → Victory → Continue loop
+  - Make POI/location buttons stay the same screen size regardless of map zoom
+  - Fix interior sub-maps to render their background image at correct viewport size
+  - Apply pan-margin only to world map; sub-maps hard-clamp to viewport edges
+
+### Game Loop (New Game → Battle → Continue)
+
+#### Interior Battle POIs (pois.json)
+  - Added `parent_location_id` field to all POIs: `""` = world map, location ID = interior map
+  - Added `action` field: `"navigate"` (default) or `"battle"`
+  - Added `battle_id` and `enemy_id` fields for battle POIs
+  - Added `poi_home_training` — interior battle POI for `home` location, triggers `tutorial_battle` vs `enemy_test_goblin`
+  - Updated `_dev_notes` in `pois.json` to document the new schema
+
+#### ContentDB
+  - `get_map_pois()` now filters to world-map-only POIs (`parent_location_id == ""`)
+  - Added `get_pois_for_location(location_id)` — returns all interior POIs for a given location
+
+#### WorldMapController — Interior POI Rendering
+  - `_show_interior_view()` now calls `_build_interior_poi_buttons()` to render interior POIs
+  - `_build_interior_poi_buttons()` reads from `ContentDB.get_pois_for_location()`, builds buttons at their map coords
+  - Battle-action POIs call `_on_interior_battle_poi_clicked(battle_id, enemy_id)` → `SignalBus.request_battle_start()`
+  - Navigate-action POIs use the existing `_on_poi_clicked()` flow
+
+#### VictoryScreen — Continue Button
+  - Added "Continue" button to `VictoryScreen.tscn` next to "Return to Title"
+  - `victory_screen.gd`: `_on_continue_pressed()` saves profile then calls `SignalBus.request_continue()`
+  - `continue_requested` → `GameState._on_continue_requested()` → `PHASE_HUB` → world map resumes at saved location
+  - Full loop confirmed: New Game → World Map → Town → Home → Battle → Victory → Continue → World Map
+
+### Viewport-Stable POI/Location Buttons
+
+#### Counter-Scale System (world_map_controller.gd)
+  - All POI and location buttons store their center position in map coordinates as `map_pos` node metadata
+  - `_update_poi_scales()` runs after every zoom/pan change (called from `_update_map_transform()`)
+  - Each button's `scale` is set to `1/zoom_level` so its screen size stays constant regardless of zoom
+  - Position is recalculated each frame: `map_pos - size * (1/zoom) * 0.5` to keep button centered on its map coord
+  - Applies to all maps (world map, town, home, any future map) — no per-map special casing
+  - Button positions in JSON are always **center coordinates** on the background image
+
+#### Interior Bounds Calculation
+  - `_show_interior_view()` bounds pass reads `map_pos` meta (center-based) rather than top-left position
+  - Padding offset step updates `map_pos` meta so `_update_poi_scales()` uses the correct offset position
+  - `_create_location_button()` and `_build_interior_poi_buttons()` both store `map_pos` meta and use center-based initial positioning
+
+### Sub-Map Rendering Fixes
+
+#### Background-Driven Content Size
+  - `_show_interior_view()` now mirrors `_show_world_map_view()`: if a background texture is loaded, `texture.get_size()` drives the content dimensions
+  - Falls back to button-bounds auto-fit only when no background image is set
+  - `locations.json` `town` entry: `art_path` set to `res://assets/art/background/map/crestfallmap.png`
+
+#### Pan Margin Scoped to World Map
+  - `_clamp_pan()` uses `PAN_MARGIN` (700px) only when `current_location_id == "world_map"`
+  - All other maps use `margin = 0.0` — content cannot be dragged past viewport edges
+
+---
+
+## 2026-05-24 - POI Discovery System (Save-Driven, Scalable to 100s)
+
+- Focus:
+  - Separate POI definitions from locations.json into a dedicated pois.json
+  - Make POI visibility driven by save data (`discovered_pois`) rather than story flags alone
+  - Allow any game system (battle, dialogue, exploration) to trigger POI discovery at runtime
+  - Keep the architecture clean for hundreds of POIs
+
+- Completed:
+
+### New Data File: data/pois.json
+  - Created `data/pois.json` with all existing POIs (town, forest, dungeon, swamp)
+  - Each POI now has: `id`, `name`, `region`, `category`, `position`, `icon_path`, `target_location_id`, `unlock_condition`
+  - `region` links POIs to fog_region IDs in `locations.json`
+  - `_dev_notes` array in the JSON explains how to add new POIs for other developers
+
+### locations.json Cleaned
+  - Removed `points_of_interest` array from `world_map` location
+  - Added `_dev_notes` redirecting developers to `data/pois.json` for POI documentation
+
+### ContentDB POI Loading
+  - `scripts/core/content_db.gd`: Added `POIS_PATH` constant, `pois_by_id` dictionary
+  - `reload_content()` now loads `data/pois.json` via `_ingest_pois()`
+  - `get_map_pois()` returns `pois_by_id.values()` (all defined POIs)
+  - `get_poi(poi_id)` returns a single POI by ID
+
+### SaveManager: discovered_pois
+  - `scripts/core/save_manager.gd`: Added `"discovered_pois": ["poi_town"]` to default profile
+  - New games start with only Crestfall Town discovered; other POIs are hidden until unlocked
+  - Existing saves will get the default empty array via `_with_defaults()` on next load
+
+### LocationService: Discovery API
+  - `scripts/core/location_service.gd`:
+    - `is_poi_discovered(poi_id)` — checks `SaveManager.profile["discovered_pois"]`
+    - `is_poi_visible(poi_id)` — now requires `is_poi_discovered()` first, then checks `unlock_condition`
+    - `discover_poi(poi_id)` — adds ID to save, persists, emits `SignalBus.poi_discovered`, returns `true` if newly discovered
+  - `discover_poi()` validates the POI exists in ContentDB before adding, preventing typos
+
+### SignalBus: poi_discovered
+  - `scripts/core/signal_bus.gd`: Added `poi_discovered(poi_id: String)` signal
+  - Emitted by `LocationService.discover_poi()` after save is written
+
+### WorldMapController: Live Refresh on Discovery
+  - `scripts/ui/world_map_controller.gd`: Connected `SignalBus.poi_discovered` → `_on_poi_discovered()`
+  - If player is on the world map when a POI is discovered, the map auto-refreshes and the new button appears
+  - No manual refresh needed — the signal handles it
+
+### How to Use from Any Game System
+  ```gdscript
+  # From battle victory, dialogue choice, bond level up, exploration, etc.
+  LocationService.discover_poi("poi_ruined_castle")
+  ```
+  - Automatically updates save data
+  - Automatically emits signal
+  - Automatically refreshes the world map if the player is looking at it
+  - Returns `false` if already discovered (idempotent)
+
+### POI Coordinate System
+  - Map space: `(0, 0)` = top-left, `(8192, 4608)` = bottom-right of `worldmap.png`
+  - POI `position: { "x": N, "y": N }` places the button **centered** on that pixel
+  - Best workflow: open `worldmap.png` in an image editor, read cursor coordinates, paste into `pois.json`
+  - Alternative: use percentage — `x = 8192 * 0.34`, `y = 4608 * 0.52`
+  - Interior locations (town, home, etc.) use relative positioning inside a fitted viewport; eyeballing is fine
+
+## 2026-05-24 - World Map Scaling, Vastness Feel, Responsive POIs
+
+- Focus:
+  - Scale world map to 8192×4608 pixels so it feels vast and requires scrolling
+  - Prevent player from zooming out enough to see the entire map at once
+  - Make POI/location buttons readable at all screen sizes (viewport-based sizing, not map-based)
+  - Allow dragging 700px past map edges for a smoother pan feel
+
+- Completed:
+
+### World Map Image & Data Scaling
+  - `data/locations.json`: `world_map.map_size` updated to `{"width": 8192, "height": 4608}`
+  - All `fog_regions` positions and sizes rescaled to match new map dimensions
+  - All `points_of_interest` positions rescaled to match new map dimensions
+  - `world_map` `art_path` set to `res://assets/art/background/map/worldmap.png`
+
+### Scene Layout Updates
+  - `scenes/WorldMap.tscn`: `MapContent`, `Background`, `FogOverlay`, `POIsContainer` resized to `8192×4608`
+  - `Background.expand_mode = 0` (EXPAND_KEEP_SIZE) so the 8192×4608 texture renders at native resolution
+  - `MapContent.mouse_filter = 2` (IGNORE) so drag/zoom events pass through empty map space to parent `WorldMap`
+  - `UIOverlay.z_index = 1` so buttons, breadcrumb, and panels always draw above the map
+
+### Dynamic Min-Zoom (No Full-Map View)
+  - `scripts/ui/world_map_controller.gd`: Replaced fixed `MIN_ZOOM = 0.3` with runtime `_recalculate_min_zoom()`
+  - Computes `max(fit_zoom_x, fit_zoom_y) * 1.5`, capped at `1.0`
+  - On 1080p: min zoom ≈ 0.35 — player sees only ~23% of map width at once
+  - On 4K: min zoom ≈ 0.70
+  - On ultrawide: min zoom ≈ 0.94
+  - Ensures the world always feels too big to fit on screen
+
+### Viewport-Based Button Sizing
+  - `scripts/ui/world_map_controller.gd`: Added `_get_button_size()` — computes from viewport dimensions
+    - Width: `max(180, viewport_width * 0.09)`
+    - Height: `max(55, viewport_height * 0.06)`
+    - Font size: `max(16, viewport_height * 0.018)`
+  - On 1080p: buttons are ~180×65 with ~19pt font
+  - On 4K: buttons are ~346×130 with ~39pt font
+  - Buttons remain readable regardless of zoom level
+
+### Map-Bound Buttons with Correct Centering
+  - POI and location buttons are children of `POIsContainer` (inside `MapContent`) so they pan and zoom with the map
+  - `_build_poi_buttons()`: buttons centered on POI coordinates using dynamic `_get_button_size()` (half-size offset)
+  - `_create_location_button()`: buttons placed at top-left of coordinate as before, but with viewport-based size
+  - `_clear_map_children()`: clears both `_fog_overlay` and `_pois_container` children
+
+### Pan Margin Past Map Edges
+  - `scripts/ui/world_map_controller.gd`: Added `PAN_MARGIN = 700.0`
+  - `_clamp_pan()` updated so player can drag the map 700px past every edge before clamping
+  - Provides empty buffer space around the map for a smoother scrolling experience
+
+### Resource Loading Fix
+  - `scripts/ui/world_map_controller.gd`: `_update_background()` now uses `Image.new()` + `ImageTexture.create_from_image()` for direct PNG loading
+  - Bypasses Godot's `ResourceLoader` import cache which had stale `.import` metadata (`valid=false`)
+
+### Interior View Still Fits Content
+  - `_show_interior_view()` dynamically calculates content bounds from button positions, then calls `_fit_map_to_viewport()`
+  - Interior locations zoom to fit their buttons; world map starts zoomed in at 1.0×
+
+## 2026-05-24 - World Map Overhaul (Fog of War, POIs, Pan/Zoom)
+
+- Focus:
+  - Add visual fog of war covering undiscovered map regions
+  - Add Points of Interest (POIs) that appear/disappear based on story tags
+  - Implement map drag/pan and mouse-wheel zoom
+  - Keep all UI responsive across resolutions
+
+- Completed:
+
+### Fog of War System
+  - `data/locations.json`: Added `fog_regions` array to `world_map` — each region has `id`, `position`, `size`, and `unlock_condition`
+  - `scripts/core/location_service.gd`: Added `is_fog_region_revealed(region_id)` — checks `unlock_condition` against `story_flags` (same condition system as locations)
+  - `scripts/ui/world_map_controller.gd`: `_build_fog_patches()` creates semi-transparent dark `ColorRect` patches (`Color(0.02, 0.02, 0.05, 0.92)`) for each unrevealed fog region
+  - Fog patches are hidden when their `unlock_condition` is met (e.g., `flag:discovered_north`)
+
+### Points of Interest (POIs)
+  - `data/locations.json`: Added `points_of_interest` array to `world_map` — each POI has `id`, `name`, `position`, `icon_path`, `unlock_condition`, `target_location_id`
+  - `scripts/core/content_db.gd`: Added `get_map_pois()`, `get_map_fog_regions()`, `get_map_size()` helpers
+  - `scripts/core/location_service.gd`: Added `is_poi_visible(poi_id)` — checks POI `unlock_condition` against `story_flags`
+  - `scripts/ui/world_map_controller.gd`: `_build_poi_buttons()` creates centered buttons for each visible POI; clicking navigates to `target_location_id`
+  - Added example POIs: Crestfall Town (visible by default), Whispering Forest, Ruined Dungeon, Fetid Swamp (locked until story flags set)
+  - Added example locations: `forest`, `dungeon`, `swamp` as POI targets with their own events
+
+### Map Pan & Zoom
+  - `scenes/WorldMap.tscn`: Restructured with `MapViewport` (clip area) + `MapContent` (pannable/zoomable layer) + `UIOverlay` (fixed HUD)
+  - `scripts/ui/world_map_controller.gd`: Mouse wheel zooms toward cursor (0.3x–3.0x); mouse drag pans the map
+  - Pan is clamped to keep map edges within viewport; content smaller than viewport is auto-centered
+  - `_fit_map_to_viewport()` calculates best initial zoom to show full map on load
+  - `MapViewport.resized` connected to refit map on window resize
+
+### Scene Restructure (Responsive)
+  - `scenes/WorldMap.tscn`: UI elements moved into `UIOverlay` (Control with `mouse_filter = PASS`) so they stay fixed while map pans underneath
+  - Map content nodes (`Background`, `FogOverlay`, `POIsContainer`) placed inside `MapViewport/MapContent` and scaled together
+  - `Background.mouse_filter = PASS` so drag events reach parent `WorldMap` when clicking empty map space
+  - Action buttons in `_actions_panel` get `custom_minimum_size = Vector2(0, 35)` for consistent sizing
+
+### Dual View Mode
+  - When `current_location_id == "world_map"`: shows POIs + fog patches + Battle Test button
+  - When in interior location (e.g., `town`, `home`): shows child location buttons (existing hierarchical behavior)
+  - `_show_world_map_view()` vs `_show_interior_view()` cleanly separates the two modes
+
+## 2026-05-24 - Save Slot System
+
+- Focus:
+  - Replace single hardcoded save with 10-slot save system
+  - Add slot picker overlay on title screen (New Game / Continue / Load Game)
+  - Allow creating, loading, deleting, and overwriting save slots
+
+- Completed:
+
+### SaveManager Refactor
+  - `scripts/core/save_manager.gd`: Replaced single `SAVE_PATH` with dynamic `_get_slot_path(slot_index)`
+  - `MAX_SLOTS = 10`
+  - `active_slot_index` tracks currently loaded slot
+  - New methods: `has_slot()`, `get_slot_metadata()`, `load_slot()`, `save_slot()`, `create_new_profile_in_slot()`, `delete_slot()`
+  - `reset_save()` now clears all 10 slots and recreates slot 1 with defaults
+  - Metadata extraction reads waifu name and location name from save file for display
+
+### Save Slot Overlay UI
+  - `scenes/SaveSlotOverlay.tscn`: Centered panel with ScrollContainer + VBoxContainer for vertical slot list
+  - `scripts/ui/save_slot_overlay.gd`: Rebuilds 10 slot rows dynamically
+  - Each slot row shows: Slot #, waifu name + location (or "Empty"), action buttons
+  - New Game mode: shows [New Game] for empty slots, [Overwrite] for occupied slots
+  - Continue/Load mode: shows [Play] + [Delete] for occupied slots, "—" for empty slots
+  - "Back" button closes overlay
+
+### Title Screen Integration
+  - `scripts/ui/title_screen.gd`: New Game and Continue now open slot picker overlay instead of directly starting
+  - Added "Load Game" button (same behavior as Continue)
+  - `scenes/TitleScreen.tscn`: Button order: New Game, Continue, Load Game, Options, Quit, Reset Save
+  - SaveSlotOverlay instanced as child of TitleScreen
+
+### GameState Sync
+  - `scripts/core/game_state.gd`: Added `_sync_from_save()` to load `current_location_id` and `story_flags` from `SaveManager.profile` on Continue/Load
+  - Ensures players resume at their last visited location with correct story progress
+
+### Resolution Scalability Fixes (Project Overview Compliance)
+  - `scenes/SaveSlotOverlay.tscn`: Panel changed from fixed 900×800 pixel offsets to percentage anchors (`0.15–0.85` width, `0.1–0.9` height)
+  - `scenes/TitleScreen.tscn`: Added `custom_minimum_size = Vector2(0, 40)` to all 6 buttons + `Vector2(300, 0)` to button column VBoxContainer
+  - `scripts/ui/save_slot_overlay.gd`: Added `custom_minimum_size` to Play, Delete, Overwrite, New Game buttons (80–100×35)
+  - `scenes/SaveSlotOverlay.tscn`: Added `custom_minimum_size = Vector2(0, 35)` to CloseButton
+  - Fixes checked against Project Overview v1.2 Core UI Scaling & Layout Rules: Full Rect roots, containers, size flags, spacer nodes, min sizes
+
+### Auto-Save
+  - `scripts/ui/world_map_controller.gd`: Saves active slot after every location change (clicked or back button)
+  - `scripts/ui/victory_screen.gd`: Saves before returning to title after battle victory
+  - **Defeat behavior**: `scripts/battle/battle_controller.gd` returns to title directly on defeat — no save. This preserves the player's pre-battle save (from world map navigation) so they can reload and choose whether to fight again, avoiding unwinnable fight locks
+
+## 2026-05-24 - World Map & Location Navigation
+
+- Focus:
+  - Implement hierarchical location navigation (World Map → Town → Home)
+  - Implement fog of war / unlock conditions for location visibility
+  - Implement priority-based event system per location
+  - Wire location navigation into existing phase flow
+
+- Completed:
+
+### Location Data & Service
+  - `data/locations.json`: Defines `world_map`, `town`, and `home` with hierarchy, positions, unlock conditions, and events
+  - `scripts/core/content_db.gd`: Loads `locations.json` into `locations_by_id`, adds `get_location()`
+  - `scripts/core/location_service.gd` (`class_name LocationService`): Resolves active events by priority, checks visibility via `unlock_condition` against `story_flags`
+  - Supported condition formats: `flag:X`, `!flag:X`, `bond:waifu_level`
+
+### State Persistence
+  - `scripts/core/game_state.gd`: Added `current_location_id` (String) and `story_flags` (Dictionary)
+  - `scripts/core/save_manager.gd` + `data/save_template.json`: Persist `current_location_id` and `story_flags`
+  - Default `story_flags` includes `tutorial_complete: true` so town is visible on new game
+
+### SignalBus
+  - `scripts/core/signal_bus.gd`: Added `location_change_requested(location_id: String)` signal + `request_location_change()` helper
+
+### World Map UI
+  - `scenes/WorldMap.tscn`: Full-screen Control with Background (TextureRect), BreadcrumbLabel, BackButton, LocationsContainer, ActionsPanel
+  - `scripts/ui/world_map_controller.gd`: Displays current location background, breadcrumb trail, positioned child location buttons, action buttons from active events, back navigation
+  - Fog of war: child locations hidden when `unlock_condition` is not met; buttons dynamically created from data
+
+### Scene Flow
+  - `scripts/core/main_controller.gd`: Changed `PHASE_HUB` to show `WorldMap.tscn` instead of immediately requesting battle
+  - Added `WORLD_MAP_SCENE` preload
+
+### Bug Fixes
+  - Fixed `Invalid call. Nonexistent 'String' constructor.` errors in `world_map_controller.gd` and `location_service.gd`
+  - Root cause: JSON `null` values (e.g., `"parent": null`, `"art_path": null`) were passed to `String()` which throws in GDScript 4
+  - Fix: All `String(value)` calls now use `String(value) if value != null else ""` pattern
+  - Files modified: `world_map_controller.gd` (7 locations), `location_service.gd` (1 location)
+
+### Architecture Notes
+  - Locations are data-driven; positions are set in `locations.json` (`position.x`, `position.y`) so they align with background art without code changes
+  - Event priority system allows locations to evolve over time (e.g., cutscene → hub → boss fight → empty)
+  - Navigation state flows through `SignalBus` → `GameState` → `WorldMapController` refresh
+
 ## 2026-05-23 - Summon System
 
 - Focus:

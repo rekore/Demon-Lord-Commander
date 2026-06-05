@@ -1,5 +1,9 @@
 {
 	"save_version": "0.1.0",
+	"current_location_id": "world_map",
+	"story_flags": {
+		"tutorial_complete": true
+	},
 	"selected_waifu_id": "waifu_nyx",
 	"selected_sub_waifu_id": "waifu_lyra",
 	"selected_enemy_id": "enemy_test_goblin",

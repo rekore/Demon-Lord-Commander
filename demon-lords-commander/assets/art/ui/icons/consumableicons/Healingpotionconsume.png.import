@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2xwvljepsxww"
-path="res://.godot/imported/sidewaifutest.png-3e0bae75c782fcc17b73f8c228d35d5d.ctex"
+uid="uid://12e0sib8f1ja"
+path="res://.godot/imported/Healingpotionconsume.png-848bac60dfce7c233616d5ba605ca4a6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/sidewaifutest.png"
-dest_files=["res://.godot/imported/sidewaifutest.png-3e0bae75c782fcc17b73f8c228d35d5d.ctex"]
+source_file="res://assets/art/ui/icons/consumableicons/Healingpotionconsume.png"
+dest_files=["res://.godot/imported/Healingpotionconsume.png-848bac60dfce7c233616d5ba605ca4a6.ctex"]
 
 [params]
 

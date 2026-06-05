@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cdhjc1s1i6dcq"
-path="res://.godot/imported/nyxspritetest.png-221e0938b790a9546ea6e24dd457f121.ctex"
+uid="uid://2xwvljepsxww"
+path="res://.godot/imported/sidewaifutest.png-d1ca461106952f9350b5b17256146894.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/nyxspritetest.png"
-dest_files=["res://.godot/imported/nyxspritetest.png-221e0938b790a9546ea6e24dd457f121.ctex"]
+source_file="res://assets/art/waifu/sidewaifutest.png"
+dest_files=["res://.godot/imported/sidewaifutest.png-d1ca461106952f9350b5b17256146894.ctex"]
 
 [params]
 

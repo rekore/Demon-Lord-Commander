@@ -45,14 +45,22 @@ func _build_setup_payload(payload: Dictionary) -> Dictionary:
 	if enemies_data.is_empty():
 		return {}
 
+	var dungeon_level: int = int(payload.get("dungeon_level", 1))
+	var damage_multiplier: float = 1.0
+	if dungeon_level > 1:
+		damage_multiplier = 1.0 + float(dungeon_level - 1) * 0.15
+
 	var enemies: Array[Dictionary] = []
 	for enemy_data: Dictionary in enemies_data:
+		var base_hp: int = int(enemy_data.get("max_hp", 40))
+		var scaled_hp: int = floori(float(base_hp) * damage_multiplier)
 		enemies.append({
 			"id": String(enemy_data.get("id", "unknown")),
 			"name": String(enemy_data.get("name", "Unknown Enemy")),
-			"max_hp": int(enemy_data.get("max_hp", 40)),
+			"max_hp": scaled_hp,
 			"sprite_anchor": String(enemy_data.get("sprite_anchor", "bottom")),
-			"intents": enemy_data.get("intents", [])
+			"intents": enemy_data.get("intents", []),
+			"damage_multiplier": damage_multiplier
 		})
 
 	var bond_level: int = SaveManager.get_bond_level(waifu_id)
@@ -69,7 +77,9 @@ func _build_setup_payload(payload: Dictionary) -> Dictionary:
 		"sub_waifu_name": String(sub_waifu_data.get("display_name", sub_waifu_id)),
 		"sub_waifu_portrait_path": String(sub_waifu_data.get("pile_art_path", sub_waifu_data.get("portrait_path", ""))),
 		"enemies": enemies,
-		"deck": runtime_deck
+		"deck": runtime_deck,
+		"relic_buffs": RelicShopService.get_active_relic_buffs(),
+		"dungeon_player_penalties": DungeonService.get_player_penalties()
 	}
 
 

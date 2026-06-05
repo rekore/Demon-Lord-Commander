@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://h2j384nnku1i"
-path="res://.godot/imported/WaifuTest.png-96165eda3819f373464f997056044e31.ctex"
+uid="uid://3xb1se4kg7o3"
+path="res://.godot/imported/snowvillagepoi.png-f5f65d5f1d2b7832f437480b746d79f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/characters/WaifuTest.png"
-dest_files=["res://.godot/imported/WaifuTest.png-96165eda3819f373464f997056044e31.ctex"]
+source_file="res://assets/art/map/poi/snowvillagepoi.png"
+dest_files=["res://.godot/imported/snowvillagepoi.png-f5f65d5f1d2b7832f437480b746d79f2.ctex"]
 
 [params]
 

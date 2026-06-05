@@ -3,6 +3,12 @@ extends Node
 const CARDS_PATH: String = "res://data/cards.json"
 const WAIFUS_PATH: String = "res://data/waifus.json"
 const ENEMIES_PATH: String = "res://data/enemies.json"
+const LOCATIONS_PATH: String = "res://data/locations.json"
+const POIS_PATH: String = "res://data/pois.json"
+const RELICS_PATH: String = "res://data/relics.json"
+const DUNGEONS_PATH: String = "res://data/dungeons.json"
+const EVENTS_PATH: String = "res://data/events.json"
+const LOOT_ITEMS_PATH: String = "res://data/loot_items.json"
 
 const V1_SUPPORTED_EFFECTS: PackedStringArray = [
 	"DealDamage",
@@ -20,6 +26,12 @@ const V1_SUPPORTED_EFFECTS: PackedStringArray = [
 var cards_by_id: Dictionary = {}
 var waifus_by_id: Dictionary = {}
 var enemies_by_id: Dictionary = {}
+var locations_by_id: Dictionary = {}
+var pois_by_id: Dictionary = {}
+var relics_by_id: Dictionary = {}
+var dungeons_by_id: Dictionary = {}
+var events_by_id: Dictionary = {}
+var loot_items_by_id: Dictionary = {}
 var validation_messages: PackedStringArray = []
 
 
@@ -31,15 +43,33 @@ func reload_content() -> void:
 	cards_by_id.clear()
 	waifus_by_id.clear()
 	enemies_by_id.clear()
+	locations_by_id.clear()
+	pois_by_id.clear()
+	relics_by_id.clear()
+	dungeons_by_id.clear()
+	events_by_id.clear()
+	loot_items_by_id.clear()
 	validation_messages = PackedStringArray()
 
 	var cards_data: Dictionary = _load_json_dict(CARDS_PATH)
 	var waifus_data: Dictionary = _load_json_dict(WAIFUS_PATH)
 	var enemies_data: Dictionary = _load_json_dict(ENEMIES_PATH)
+	var locations_data: Dictionary = _load_json_dict(LOCATIONS_PATH)
 
 	_ingest_cards(cards_data.get("cards", []))
 	_ingest_waifus(waifus_data.get("waifus", []))
 	_ingest_enemies(enemies_data.get("enemies", []))
+	_ingest_locations(locations_data.get("locations", []))
+	var pois_data: Dictionary = _load_json_dict(POIS_PATH)
+	_ingest_pois(pois_data.get("pois", []))
+	var relics_data: Dictionary = _load_json_dict(RELICS_PATH)
+	_ingest_relics(relics_data.get("relics", []))
+	var dungeons_data: Dictionary = _load_json_dict(DUNGEONS_PATH)
+	_ingest_dungeons(dungeons_data.get("dungeons", []))
+	var events_data: Dictionary = _load_json_dict(EVENTS_PATH)
+	_ingest_events(events_data.get("events", []))
+	var loot_data: Dictionary = _load_json_dict(LOOT_ITEMS_PATH)
+	_ingest_loot_items(loot_data.get("items", []))
 
 	if not validation_messages.is_empty():
 		for message: String in validation_messages:
@@ -56,6 +86,116 @@ func get_enemy(enemy_id: String) -> Dictionary:
 
 func get_waifu(waifu_id: String) -> Dictionary:
 	return waifus_by_id.get(waifu_id, {})
+
+
+func get_location(location_id: String) -> Dictionary:
+	return locations_by_id.get(location_id, {})
+
+
+func get_map_pois() -> Array:
+	var result: Array = []
+	for poi: Variant in pois_by_id.values():
+		if poi is Dictionary:
+			var parent: String = String((poi as Dictionary).get("parent_location_id", ""))
+			if parent == "":
+				result.append(poi)
+	return result
+
+
+func get_pois_for_location(location_id: String) -> Array:
+	var result: Array = []
+	for poi: Variant in pois_by_id.values():
+		if poi is Dictionary:
+			var parent: String = String((poi as Dictionary).get("parent_location_id", ""))
+			if parent == location_id:
+				result.append(poi)
+	return result
+
+
+func get_map_fog_regions() -> Array:
+	var world_map: Dictionary = get_location("world_map")
+	return world_map.get("fog_regions", [])
+
+
+func get_map_size() -> Vector2:
+	var world_map: Dictionary = get_location("world_map")
+	var map_size: Dictionary = world_map.get("map_size", {})
+	var width: int = int(map_size.get("width", 1920))
+	var height: int = int(map_size.get("height", 1080))
+	return Vector2(width, height)
+
+
+func get_poi(poi_id: String) -> Dictionary:
+	return pois_by_id.get(poi_id, {})
+
+
+func get_relic(relic_id: String) -> Dictionary:
+	return relics_by_id.get(relic_id, {})
+
+
+func get_all_relics() -> Array:
+	return relics_by_id.values()
+
+
+func get_dungeon(dungeon_id: String) -> Dictionary:
+	return dungeons_by_id.get(dungeon_id, {})
+
+
+func get_all_dungeons() -> Array:
+	return dungeons_by_id.values()
+
+
+func get_loot_item(item_id: String) -> Dictionary:
+	return loot_items_by_id.get(item_id, {})
+
+
+func get_loot_items_for_level(dungeon_level: int) -> Array:
+	var result: Array = []
+	for raw_item: Variant in loot_items_by_id.values():
+		if not (raw_item is Dictionary):
+			continue
+		var item: Dictionary = raw_item as Dictionary
+		var min_lv: int = int(item.get("min_level", 1))
+		var max_lv: int = int(item.get("max_level", 999))
+		if dungeon_level >= min_lv and dungeon_level <= max_lv:
+			result.append(item)
+	return result
+
+
+func get_all_cards() -> Array:
+	return cards_by_id.values()
+
+
+func get_run_relics_for_level(dungeon_level: int) -> Array:
+	var result: Array = []
+	for raw_relic: Variant in relics_by_id.values():
+		if not (raw_relic is Dictionary):
+			continue
+		var relic: Dictionary = raw_relic as Dictionary
+		if String(relic.get("relic_type", "")) != "run":
+			continue
+		var min_lv: int = int(relic.get("min_level", 1))
+		if dungeon_level >= min_lv:
+			result.append(relic)
+	return result
+
+
+func get_event(event_id: String) -> Dictionary:
+	return events_by_id.get(event_id, {})
+
+
+# Returns all events whose level range includes dungeon_level, sorted by weight descending.
+func get_events_for_level(dungeon_level: int) -> Array:
+	var result: Array = []
+	for raw_event: Variant in events_by_id.values():
+		if not (raw_event is Dictionary):
+			continue
+		var event: Dictionary = raw_event as Dictionary
+		var min_lv: int = int(event.get("min_level", 1))
+		var max_lv: int = int(event.get("max_level", 999))
+		if dungeon_level >= min_lv and dungeon_level <= max_lv:
+			result.append(event)
+	return result
 
 
 func get_bond_scaled_waifu_effects(waifu_id: String, bond_level: int) -> Array[Dictionary]:
@@ -132,6 +272,88 @@ func _ingest_enemies(raw_enemies: Array) -> void:
 			validation_messages.append("Enemy %s: %s" % [enemy_id, enemy_error])
 
 		enemies_by_id[enemy_id] = enemy
+
+
+func _ingest_locations(raw_locations: Array) -> void:
+	for raw_location: Variant in raw_locations:
+		if not (raw_location is Dictionary):
+			validation_messages.append("Location entry is not an object.")
+			continue
+
+		var location: Dictionary = (raw_location as Dictionary).duplicate(true)
+		var location_id: String = String(location.get("id", ""))
+		if location_id == "":
+			validation_messages.append("Location missing id.")
+			continue
+
+		locations_by_id[location_id] = location
+
+
+func _ingest_relics(raw_relics: Array) -> void:
+	for raw_relic: Variant in raw_relics:
+		if not (raw_relic is Dictionary):
+			validation_messages.append("Relic entry is not an object.")
+			continue
+		var relic: Dictionary = (raw_relic as Dictionary).duplicate(true)
+		var relic_id: String = String(relic.get("id", ""))
+		if relic_id == "":
+			validation_messages.append("Relic missing id.")
+			continue
+		relics_by_id[relic_id] = relic
+
+
+func _ingest_dungeons(raw_dungeons: Array) -> void:
+	for raw_dungeon: Variant in raw_dungeons:
+		if not (raw_dungeon is Dictionary):
+			validation_messages.append("Dungeon entry is not an object.")
+			continue
+		var dungeon: Dictionary = (raw_dungeon as Dictionary).duplicate(true)
+		var dungeon_id: String = String(dungeon.get("id", ""))
+		if dungeon_id == "":
+			validation_messages.append("Dungeon missing id.")
+			continue
+		dungeons_by_id[dungeon_id] = dungeon
+
+
+func _ingest_loot_items(raw_items: Array) -> void:
+	for raw_item: Variant in raw_items:
+		if not (raw_item is Dictionary):
+			validation_messages.append("Loot item entry is not an object.")
+			continue
+		var item: Dictionary = (raw_item as Dictionary).duplicate(true)
+		var item_id: String = String(item.get("id", ""))
+		if item_id == "":
+			validation_messages.append("Loot item missing id.")
+			continue
+		loot_items_by_id[item_id] = item
+
+
+func _ingest_events(raw_events: Array) -> void:
+	for raw_event: Variant in raw_events:
+		if not (raw_event is Dictionary):
+			validation_messages.append("Event entry is not an object.")
+			continue
+		var event: Dictionary = (raw_event as Dictionary).duplicate(true)
+		var event_id: String = String(event.get("id", ""))
+		if event_id == "":
+			validation_messages.append("Event missing id.")
+			continue
+		events_by_id[event_id] = event
+
+
+func _ingest_pois(raw_pois: Array) -> void:
+	for raw_poi: Variant in raw_pois:
+		if not (raw_poi is Dictionary):
+			validation_messages.append("POI entry is not an object.")
+			continue
+
+		var poi: Dictionary = (raw_poi as Dictionary).duplicate(true)
+		var poi_id: String = String(poi.get("id", ""))
+		if poi_id == "":
+			validation_messages.append("POI missing id.")
+			continue
+
+		pois_by_id[poi_id] = poi
 
 
 func _validate_card_schema(card: Dictionary) -> PackedStringArray:

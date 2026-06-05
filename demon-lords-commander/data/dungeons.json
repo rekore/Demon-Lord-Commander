@@ -1,0 +1,93 @@
+{
+	"_dev_notes": [
+		"=== NODE TYPES ===",
+		"battle_normal : random fight drawn from normal_enemy_pool.",
+		"battle_elite  : tougher fight drawn from elite_enemy_pool.",
+		"battle_boss   : final boss — resolved via story_boss_flags -> scripted_boss -> boss_pool.",
+		"event         : random discovery / narrative event (stub — hooks into event system later).",
+		"rest          : breather floor where the player can recover HP (stub — hooks into rest screen later).",
+		"bond          : non-combat waifu interaction scene (stub — hooks into Dialogic later).",
+		"",
+		"=== DUNGEON LEVEL + LEVEL FLAG ===",
+		"level (int)      : baseline difficulty, 1-100. Used when no level_flag override is active.",
+		"level_flag (str) : key in SaveManager.profile[\"story_flags\"].",
+		"                   If the flag value is an integer >= 1, it overrides 'level' at runtime.",
+		"                   Set it from a story event: SaveManager.profile[\"story_flags\"][\"your_flag\"] = 2",
+		"                   This lets dungeons scale with chapter progression without touching this file.",
+		"",
+		"Scaling formula (enemies): stat * (1.0 + (level - 1) * 0.15)  — level 1 = base, level 100 = +1485% (placeholder; full curve TODO).",
+		"Player penalties (per level above 1, formula defined in dungeon_service.gd PENALTY consts):",
+		"  draw_reduction : floori((level-1) / 3) — e.g. level 4 = draw 1 fewer card per round.",
+		"  mana_reduction : floori((level-1) / 4) — e.g. level 5 = 1 less base mana per round.",
+		"",
+		"=== FLOOR COUNT ===",
+		"base_floors (int) : floor count for this dungeon at level 1. Must be in [15, 50].",
+		"  Runtime formula : total = clamp(base_floors + floori((level-1)/5)*2, 15, 50) + floor_bonus",
+		"  floor_bonus     : starts at 0 each run; relics/story call DungeonService.add_floor_modifier(n).",
+		"  Boss is always the last floor (total_floors). No separate boss_floor field needed.",
+		"",
+		"=== FLOOR CONFIGS ===",
+		"floor_configs: ordered array. First entry whose floor_min..floor_max includes the current floor wins.",
+		"  weights (dict)         : weighted random pick. Keys are node type strings, values are relative ints.",
+		"  forced_type (string)   : skips weighting entirely; floor presents exactly ONE card of this type.",
+		"  forced_enemy_id (str)  : optional companion to forced_type — pins a specific enemy to that floor.",
+		"  Cover floors 1..(base_floors-1). Any uncovered floor falls back to battle_normal.",
+		"  For long dungeons use large floor_max values (e.g. 999) on the final config entry.",
+		"",
+		"=== STORY BOSS FLAGS ===",
+		"story_boss_flags: array of conditional boss overrides, checked in ORDER before scripted_boss.",
+		"  flag          : key in SaveManager.profile[\"story_flags\"]. If value is true, this entry fires.",
+		"  enemy_id      : the enemy to spawn when the flag is active.",
+		"  consume_flag  : if true, the flag is set to false after the boss node is generated (one-shot).",
+		"",
+		"Priority chain for battle_boss enemy selection:",
+		"  1. story_boss_flags (first matching active flag wins)",
+		"  2. scripted_boss    (non-empty string = always this enemy, ignores flags)",
+		"  3. boss_pool        (random pick from array)",
+		"",
+		"=== HOW TO ADD A NEW DUNGEON ===",
+		"1. Copy this template, give it a unique 'id' string.",
+		"2. Define your enemy pools using IDs from data/enemies.json.",
+		"3. Set level 1 as the baseline difficulty. Add a level_flag if the dungeon should scale with story chapters.",
+		"4. Add floor_configs covering floors 1..(boss_floor-1). Any uncovered floor falls back to battle_normal.",
+		"5. Add a POI entry in data/pois.json that calls SignalBus.request_dungeon_run(dungeon_id).",
+		"6. To trigger via Dialogic, emit signal 'start_dungeon_<id>' and add a case in MainController._on_dialogic_signal."
+	],
+	"dungeons": [
+		{
+			"id": "dungeon_catacombs",
+			"name": "The Catacombs",
+			"level": 1,
+			"level_flag": "dungeon_catacombs_difficulty_level",
+			"description": "Dark tunnels beneath Crestfall. Something stirs in the deep.",
+			"base_floors": 15,
+			"local_loot": [
+				{ "id": "goblin_ear",   "name": "Goblin Ear",   "type": "trash",    "description": "A pickled goblin ear. Surprisingly popular with collectors.",          "sell_value": 2,  "min_level": 1, "weight": 90 },
+				{ "id": "moldy_cloth",  "name": "Moldy Cloth",  "type": "trash",    "description": "Damp wrappings from an old tomb. Smells terrible.",                   "sell_value": 1,  "min_level": 1, "weight": 75 },
+				{ "id": "bone_fragment","name": "Bone Fragment","type": "trash",    "description": "A shard of ancient bone. Could grind into something useful.",          "sell_value": 3,  "min_level": 1, "weight": 80 },
+				{ "id": "dark_essence", "name": "Dark Essence", "type": "material", "description": "A vial of condensed darkness siphoned from catacomb creatures.",        "sell_value": 18, "min_level": 1, "weight": 40 },
+				{ "id": "cursed_iron",  "name": "Cursed Iron",  "type": "material", "description": "Ore suffused with necromantic energy. Prized by relic smiths.",         "sell_value": 32, "min_level": 3, "weight": 20 },
+				{ "id": "soul_shred",   "name": "Soul Shred",   "type": "material", "description": "A sliver of captured soul. Rare even in the deepest catacombs.",        "sell_value": 65, "min_level": 8, "weight": 6  }
+			],
+			"normal_enemy_pool": ["enemy_test_goblin"],
+			"elite_enemy_pool": ["enemy_rogue_knight"],
+			"boss_pool": ["enemy_rogue_knight"],
+			"scripted_boss": "",
+			"story_boss_flags": [
+				{
+					"flag": "dungeon_catacombs_story_boss_queued",
+					"enemy_id": "enemy_rogue_knight",
+					"consume_flag": true
+				}
+			],
+			"floor_configs": [
+				{ "floor_min": 1,  "floor_max": 1,   "weights": { "battle_normal": 60, "event": 30, "rest": 10 } },
+				{ "floor_min": 2,  "floor_max": 2,   "forced_type": "bond" },
+				{ "floor_min": 3,  "floor_max": 7,   "weights": { "battle_normal": 55, "battle_elite": 20, "event": 15, "rest": 10 } },
+				{ "floor_min": 8,  "floor_max": 14,  "weights": { "battle_normal": 40, "battle_elite": 40, "event": 10, "rest": 10 } },
+				{ "floor_min": 15, "floor_max": 24,  "weights": { "battle_normal": 30, "battle_elite": 50, "event": 10, "rest": 10 } },
+				{ "floor_min": 25, "floor_max": 999, "weights": { "battle_normal": 20, "battle_elite": 65, "event": 10, "rest": 5 } }
+			]
+		}
+	]
+}

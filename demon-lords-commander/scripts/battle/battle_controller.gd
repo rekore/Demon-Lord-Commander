@@ -65,6 +65,8 @@ var _selected_waifu_bond: int = 1
 var _selected_sub_waifu_id: String = ""
 var _selected_sub_waifu_name: String = "Unknown"
 var _waifu_scaled_effects: Array[Dictionary] = []
+var _relic_buffs: Array = []
+var _dungeon_penalties: Dictionary = {}
 var _summons: Array[Dictionary] = [{}, {}, {}]
 var _summon_cards: Array[Control] = []
 var _summon_stats_labels: Array[Label] = []
@@ -349,6 +351,8 @@ func _initialize_battle() -> void:
 	_selected_sub_waifu_id = String(setup.get("sub_waifu_id", _selected_waifu_id))
 	_selected_sub_waifu_name = String(setup.get("sub_waifu_name", _selected_sub_waifu_id))
 	_waifu_scaled_effects = setup.get("waifu_effects", [])
+	_relic_buffs = setup.get("relic_buffs", [])
+	_dungeon_penalties = setup.get("dungeon_player_penalties", {})
 
 	_player_state = {
 		"max_hp": int(GameState.player["max_hp"]),
@@ -364,6 +368,13 @@ func _initialize_battle() -> void:
 		"summons": _summons,
 	}
 
+	# Apply dungeon mana penalty: reduces base_mana for the entire battle.
+	var mana_reduction: int = int(_dungeon_penalties.get("mana_reduction", 0))
+	if mana_reduction > 0:
+		var reduced_mana: int = maxi(1, _player_state["base_mana"] - mana_reduction)
+		_player_state["base_mana"] = reduced_mana
+		_player_state["mana"] = reduced_mana
+
 	_enemy_states = _build_enemy_states(setup)
 	_draw_pile = _build_deck_from_setup(setup)
 	_full_deck = _draw_pile.duplicate(true)
@@ -375,6 +386,14 @@ func _initialize_battle() -> void:
 	_player_state["summons"] = _summons
 
 	_apply_waifu_art(setup)
+
+	for raw_buff: Variant in _relic_buffs:
+		if not (raw_buff is Dictionary):
+			continue
+		var buff: Dictionary = raw_buff as Dictionary
+		if String(buff.get("trigger", "")) == "start_of_battle" and String(buff.get("type", "")) == "GainStrength":
+			_player_state["strength"] = int(_player_state.get("strength", 0)) + int(buff.get("value", 0))
+
 	_start_player_round()
 
 
@@ -444,7 +463,8 @@ func _build_enemy_states(setup: Dictionary) -> Array[Dictionary]:
 			"stun": 0,
 			"intents": enemy_data.get("intents", []),
 			"intent_index": 0,
-			"selection_mode": String(enemy_data.get("selection_mode", "sequential"))
+			"selection_mode": String(enemy_data.get("selection_mode", "sequential")),
+			"damage_multiplier": float(enemy_data.get("damage_multiplier", 1.0))
 		})
 	return states
 
@@ -492,6 +512,18 @@ func _start_player_round() -> void:
 	if _battle_over:
 		return
 
+	var extra_draw: int = 0
+	if _round_number == 1:
+		for raw_buff: Variant in _relic_buffs:
+			if not (raw_buff is Dictionary):
+				continue
+			var buff: Dictionary = raw_buff as Dictionary
+			if String(buff.get("trigger", "")) == "start_of_battle" and String(buff.get("type", "")) == "DrawCards":
+				extra_draw += int(buff.get("value", 0))
+
+	# Dungeon draw penalty applies every round for the duration of the battle.
+	var draw_penalty: int = int(_dungeon_penalties.get("draw_reduction", 0))
+
 	_battle_state_machine.enter_round_start()
 	_turn_manager.start_player_round(
 		_player_state,
@@ -499,9 +531,18 @@ func _start_player_round() -> void:
 		_draw_pile,
 		_hand,
 		_discard_pile,
-		STARTING_DRAW,
+		maxi(1, STARTING_DRAW + extra_draw - draw_penalty),
 		MAX_HAND_SIZE
 	)
+
+	if _round_number == 1:
+		for raw_buff: Variant in _relic_buffs:
+			if not (raw_buff is Dictionary):
+				continue
+			var buff: Dictionary = raw_buff as Dictionary
+			if String(buff.get("trigger", "")) == "start_of_battle" and String(buff.get("type", "")) == "GainBlock":
+				_player_state["block"] = int(_player_state.get("block", 0)) + int(buff.get("value", 0))
+
 	_battle_state_machine.enter_player_turn()
 	_refresh_ui("Round %d start" % _round_number)
 
@@ -608,10 +649,11 @@ func _check_battle_end() -> void:
 		_battle_over = true
 		_battle_state_machine.enter_battle_over()
 		_player_state["hp"] = 0
-		_end_turn_button.disabled = true
 		GameState.set_player_combat_stats(0, int(_player_state["max_hp"]), 0, int(_player_state["base_mana"]))
 		SignalBus.broadcast_battle_ended(false, {})
 		_refresh_ui("Defeat")
+		# Return to title so player can reload their pre-battle save and choose whether to fight again
+		SignalBus.request_return_to_title()
 		return
 
 	# Battle continues - return to player turn

@@ -23,14 +23,19 @@ GameState="*res://scripts/core/game_state.gd"
 SaveManager="*res://scripts/core/save_manager.gd"
 SignalBus="*res://scripts/core/signal_bus.gd"
 Dialogic="*uid://ds2q0uclmolvu"
+RelicShopService="*res://scripts/core/relic_shop_service.gd"
+DungeonService="*res://scripts/core/dungeon_service.gd"
+TooltipManager="*res://scripts/core/tooltip_manager.gd"
 
 [dialogic]
 
 directories/dch_directory={
 "Chesy": "res://DialogicStuff/Chesy.dch",
-"nyx": "res://DialogicStuff/nyx.dch"
+"nyx": "res://DialogicStuff/nyx.dch",
+"shopkeepfoxgirl": "res://DialogicStuff/shopkeepfoxgirl.dch"
 }
 directories/dtl_directory={
+"testshopkeeper": "res://DialogicStuff/Timelines/testshopkeeper.dtl",
 "testtimeline": "res://DialogicStuff/testtimeline.dtl"
 }
 layout/style_directory={
@@ -84,6 +89,10 @@ window/stretch/mode="canvas_items"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dialogic/plugin.cfg")
+
+[gui]
+
+theme/custom_font="res://assets/fonts/Merriweather_48pt_SemiCondensed-Bold.ttf"
 
 [input]
 

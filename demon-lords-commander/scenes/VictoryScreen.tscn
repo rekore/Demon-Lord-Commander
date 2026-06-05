@@ -71,6 +71,15 @@ layout_mode = 2
 theme_type_variation = &"Buttonlarge"
 text = "Return to Title"
 
+[node name="ButtonSpacer" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=701234567]
+layout_mode = 2
+custom_minimum_size = Vector2(40, 0)
+
+[node name="ContinueButton" type="Button" parent="OverallVerticalContainer/ButtonsHBox" unique_id=801234568]
+layout_mode = 2
+theme_type_variation = &"Buttonlarge"
+text = "Continue"
+
 [node name="Control2" type="Control" parent="OverallVerticalContainer/ButtonsHBox" unique_id=151602525]
 layout_mode = 2
 size_flags_horizontal = 3

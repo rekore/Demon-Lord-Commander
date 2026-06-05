@@ -1,42 +1,115 @@
 extends Node
 
-const SAVE_PATH: String = "user://save_slot_1.json"
+const MAX_SLOTS: int = 10
 
 var profile: Dictionary = {}
+var active_slot_index: int = -1
 
 
 func _ready() -> void:
 	load_or_create_profile()
 
 
+func _get_slot_path(slot_index: int) -> String:
+	return "user://save_slot_%d.json" % (slot_index + 1)
+
+
 func load_or_create_profile() -> void:
-	if FileAccess.file_exists(SAVE_PATH):
-		var raw_text: String = FileAccess.get_file_as_string(SAVE_PATH)
+	# Legacy: try slot 1 first, then fall back
+	load_slot(0)
+
+
+func has_slot(slot_index: int) -> bool:
+	return FileAccess.file_exists(_get_slot_path(slot_index))
+
+
+func get_slot_metadata(slot_index: int) -> Dictionary:
+	var path: String = _get_slot_path(slot_index)
+	if not FileAccess.file_exists(path):
+		return { "exists": false }
+
+	var raw_text: String = FileAccess.get_file_as_string(path)
+	var parsed: Variant = JSON.parse_string(raw_text)
+	if not (parsed is Dictionary):
+		return { "exists": false }
+
+	var data: Dictionary = parsed as Dictionary
+	var waifu_value: Variant = data.get("selected_waifu_id", "waifu_nyx")
+	var waifu_id: String = String(waifu_value) if waifu_value != null else "waifu_nyx"
+	var waifu_data: Dictionary = ContentDB.get_waifu(waifu_id)
+	var waifu_name_value: Variant = waifu_data.get("name", waifu_id)
+	var waifu_name: String = String(waifu_name_value) if waifu_name_value != null else waifu_id
+	var loc_value: Variant = data.get("current_location_id", "world_map")
+	var location_id: String = String(loc_value) if loc_value != null else "world_map"
+	var loc_data: Dictionary = ContentDB.get_location(location_id)
+	var loc_name_value: Variant = loc_data.get("name", location_id)
+	var location_name: String = String(loc_name_value) if loc_name_value != null else location_id
+
+	return {
+		"exists": true,
+		"waifu_name": waifu_name,
+		"location_name": location_name,
+		"current_location_id": location_id
+	}
+
+
+func load_slot(slot_index: int) -> void:
+	var path: String = _get_slot_path(slot_index)
+	active_slot_index = slot_index
+
+	if FileAccess.file_exists(path):
+		var raw_text: String = FileAccess.get_file_as_string(path)
 		var parsed: Variant = JSON.parse_string(raw_text)
 		if parsed is Dictionary:
 			profile = _with_defaults(parsed as Dictionary)
 			return
 
 	profile = _default_profile()
-	save_profile()
+	save_slot(slot_index)
 
 
-func save_profile() -> void:
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+func save_slot(slot_index: int) -> void:
+	var path: String = _get_slot_path(slot_index)
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
-		push_warning("Could not write save file: %s" % SAVE_PATH)
+		push_warning("Could not write save file: %s" % path)
 		return
 
 	file.store_string(JSON.stringify(profile, "\t"))
 	file.close()
+	active_slot_index = slot_index
+
+
+func create_new_profile_in_slot(slot_index: int) -> void:
+	active_slot_index = slot_index
+	profile = _default_profile()
+	save_slot(slot_index)
+
+
+func delete_slot(slot_index: int) -> void:
+	var path: String = _get_slot_path(slot_index)
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+	if active_slot_index == slot_index:
+		active_slot_index = -1
+		profile = {}
+
+
+func save_profile() -> void:
+	if active_slot_index < 0:
+		active_slot_index = 0
+	save_slot(active_slot_index)
 
 
 func reset_save() -> void:
-	if FileAccess.file_exists(SAVE_PATH):
-		DirAccess.remove_absolute(SAVE_PATH)
+	for i: int in range(MAX_SLOTS):
+		var path: String = _get_slot_path(i)
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(path)
 	profile = _default_profile()
-	save_profile()
-	print("Save file reset to defaults.")
+	active_slot_index = 0
+	save_slot(0)
+	print("All save slots reset to defaults.")
 
 
 func get_selected_deck_card_ids() -> Array[String]:
@@ -74,6 +147,31 @@ func _with_defaults(raw_profile: Dictionary) -> Dictionary:
 func _default_profile() -> Dictionary:
 	return {
 		"save_version": "0.1.0",
+		"current_location_id": "world_map",
+		"story_flags": {
+			"tutorial_complete": true
+		},
+		"discovered_pois": ["poi_crestfall"],
+		"gold": 300,
+		"owned_relics": [],
+		"shop_inventory": [],
+		"shop_reroll_count": 0,
+		"active_relics": [],
+		"materials": {},
+		"consumables": [],
+		"trash": {},
+		"current_dungeon_run": {
+			"dungeon_id": "",
+			"dungeon_level": 1,
+			"current_floor": 0,
+			"run_status": "none",
+			"pending_node": {},
+			"floor_history": [],
+			"total_floors": 15,
+			"boss_floor": 15,
+			"floor_bonus": 0,
+			"run_relics": []
+		},
 		"selected_waifu_id": "waifu_nyx",
 		"selected_sub_waifu_id": "waifu_lyra",
 		"selected_enemy_id": "enemy_test_goblin",

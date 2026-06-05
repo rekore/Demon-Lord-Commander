@@ -15,6 +15,8 @@ signal player_stats_changed(current_hp: int, max_hp: int, current_mana: int, bas
 
 var run_seed: int = 0
 var current_phase: StringName = PHASE_BOOT
+var current_location_id: String = "world_map"
+var story_flags: Dictionary = {}
 
 var player: Dictionary = {
 	"id": "player",
@@ -39,6 +41,7 @@ func _ready() -> void:
 	SignalBus.continue_requested.connect(_on_continue_requested)
 	SignalBus.phase_change_requested.connect(_on_phase_change_requested)
 	SignalBus.mission_selected.connect(_on_mission_selected)
+	SignalBus.location_change_requested.connect(_on_location_change_requested)
 
 	# Start from a known clean baseline for deterministic boot behavior.
 	new_campaign()
@@ -47,6 +50,8 @@ func _ready() -> void:
 
 func new_campaign(run_seed_value: int = -1) -> void:
 	run_seed = run_seed_value if run_seed_value >= 0 else randi()
+	current_location_id = "world_map"
+	story_flags = { "tutorial_complete": true }
 	player = {
 		"id": "player",
 		"current_hp": 100,
@@ -113,6 +118,8 @@ func get_snapshot() -> Dictionary:
 	return {
 		"run_seed": run_seed,
 		"current_phase": current_phase,
+		"current_location_id": current_location_id,
+		"story_flags": story_flags.duplicate(true),
 		"player": player.duplicate(true),
 		"mission": mission.duplicate(true)
 	}
@@ -137,10 +144,25 @@ func _on_new_game_requested() -> void:
 
 
 func _on_continue_requested() -> void:
-	# Save/load system is not implemented yet; this keeps the flow functional for now.
+	_sync_from_save()
 	if current_phase == PHASE_HUB:
 		set_phase(PHASE_TITLE)
 	set_phase(PHASE_HUB)
+
+
+func _sync_from_save() -> void:
+	var save_profile: Dictionary = SaveManager.profile
+	if save_profile.is_empty():
+		return
+
+	var save_loc: Variant = save_profile.get("current_location_id", "world_map")
+	current_location_id = String(save_loc) if save_loc != null else "world_map"
+
+	var save_flags: Variant = save_profile.get("story_flags", {})
+	if save_flags is Dictionary:
+		story_flags = (save_flags as Dictionary).duplicate(true)
+	else:
+		story_flags = {}
 
 
 func _on_phase_change_requested(target_phase: StringName) -> void:
@@ -150,3 +172,8 @@ func _on_phase_change_requested(target_phase: StringName) -> void:
 func _on_mission_selected(mission_id: StringName, deck_id: StringName, main_waifu_id: StringName, backup_waifu_ids: Array[StringName]) -> void:
 	# Default mission length can be replaced by mission data later.
 	start_mission(mission_id, deck_id, main_waifu_id, backup_waifu_ids, 3)
+
+
+func _on_location_change_requested(location_id: String) -> void:
+	current_location_id = location_id
+	SignalBus.broadcast_game_state_changed(get_snapshot())

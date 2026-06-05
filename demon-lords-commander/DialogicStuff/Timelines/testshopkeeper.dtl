@@ -1,0 +1,5 @@
+shopkeepfoxgirl: Welcome to the item shop
+- Shop
+	[signal arg="open_relic_shop"]
+- Leave
+	[end_timeline]

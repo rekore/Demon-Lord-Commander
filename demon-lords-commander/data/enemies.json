@@ -11,6 +11,10 @@
 				{ "pattern_id": "light_attack" },
 				{ "pattern_id": "heavy_attack" },
 				{ "pattern_id": "cripple" }
+			],
+			"bonus_drops": [
+				{ "id": "goblin_ear", "weight_bonus": 70 },
+				{ "id": "tattered_cloth", "weight_bonus": 30 }
 			]
 		},
 		{
@@ -22,6 +26,11 @@
 				{ "pattern_id": "heavy_attack" },
 				{ "pattern_id": "guard_up" },
 				{ "pattern_id": "double_attack" }
+			],
+			"bonus_drops": [
+				{ "id": "cursed_iron", "weight_bonus": 60 },
+				{ "id": "shadow_dust", "weight_bonus": 25 },
+				{ "id": "rusted_scrap", "weight_bonus": 20 }
 			]
 		}
 	]
